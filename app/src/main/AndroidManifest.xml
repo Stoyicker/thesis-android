@@ -3,6 +3,7 @@
 
     <application
         android:allowBackup="true"
+        android:name=".CApplication"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         android:icon="@drawable/ic_launcher">
@@ -18,7 +19,8 @@
         </activity>
         <activity
             android:name=".ui.activity.NavDrawerActivity"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
             </intent-filter>

@@ -1,15 +1,12 @@
 package org.thesis.android.ui.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 
-import org.thesis.android.dev.CLog;
-
-public class NavDrawerActivity extends Activity {
+public class NavDrawerActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CLog.e("testtag", "testmessage");
     }
 }

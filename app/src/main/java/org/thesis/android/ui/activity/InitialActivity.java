@@ -1,22 +1,23 @@
 package org.thesis.android.ui.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 
+import org.thesis.android.CApplication;
 import org.thesis.android.dev.CLog;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.io.file.FileOperations;
 
 import java.io.File;
 
-public class InitialActivity extends Activity {
+public class InitialActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final Context context = getApplicationContext();
+        final Context context = initContext();
         flushCacheIfNecessary(context);
         initDatabase(context);
 
@@ -42,5 +43,12 @@ public class InitialActivity extends Activity {
                 CLog.e(getClass().getName(), "Could not clean the cache.");
             }
         }
+    }
+
+    private Context initContext() {
+        Context ret;
+        CApplication.getInstance().setContext(ret = getSupportActionBar().getThemedContext());
+
+        return ret;
     }
 }
