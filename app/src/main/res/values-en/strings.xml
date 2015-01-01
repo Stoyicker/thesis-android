@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_section0">Create new group…</string>
+    <string name="drawer_open">Navigation drawer opened</string>
+    <string name="drawer_close">Navigation drawer closed</string>
+</resources>

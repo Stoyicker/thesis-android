@@ -3,4 +3,10 @@
     <color name="material_purple_900">#4A148C</color>
     <color name="material_deep_purple_900">#311B92</color>
     <color name="material_grey_300">#EEEEEE</color>
+
+    <!-- Navigation Drawer colors -->
+
+    <color name="navigation_drawer_background">@android:color/white</color>
+    <color name="navigation_drawer_entry_background_selected">#99FFFFFF</color>
+    <color name="navigation_drawer_entry_text_selected">@android:color/black</color>
 </resources>

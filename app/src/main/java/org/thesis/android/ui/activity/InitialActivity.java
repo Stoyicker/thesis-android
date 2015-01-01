@@ -29,7 +29,7 @@ public class InitialActivity extends ActionBarActivity {
     }
 
     private void launchHomeActivity(Context context) {
-        final Intent homeIntent = new Intent(context, NavDrawerActivity.class);
+        final Intent homeIntent = new Intent(context, NavigationDrawerActivity.class);
         finish();
         startActivity(homeIntent);
     }

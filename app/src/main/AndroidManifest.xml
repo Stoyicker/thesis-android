@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activity.NavDrawerActivity"
+            android:name=".ui.activity.NavigationDrawerActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape">
             <intent-filter>

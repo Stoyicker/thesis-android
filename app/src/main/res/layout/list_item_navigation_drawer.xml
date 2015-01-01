@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@android:id/text1"
+          android:layout_width="match_parent"
+          android:ellipsize="end"
+          android:singleLine="true"
+          android:layout_height="@dimen/navigation_drawer_entry_height"
+          android:paddingLeft="@dimen/navigation_drawer_entry_standard_margin"
+          android:paddingRight="@dimen/navigation_drawer_entry_standard_margin"
+          android:layout_marginTop="@dimen/navigation_drawer_entry_standard_margin"
+          android:drawablePadding="@dimen/navigation_drawer_entry_standard_margin"
+          style="@style/NavigationDrawerEntryText"
+          android:gravity="center_vertical"/>

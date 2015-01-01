@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name" translatable="false">COMM SYS</string>
+    <string name="navigation_title_standard_resource_pattern" translatable="false">drawable_section{0}</string>
     <string name="database_name_template" translatable="false">{0}.db</string>
 </resources>
