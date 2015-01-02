@@ -21,7 +21,7 @@
         android:layout_height="match_parent"
         android:clickable="true"
         android:focusableInTouchMode="true"
-        android:scrollbars="none"
+        android:scrollbars="vertical"
         android:focusable="true"
         android:fillViewport="true"
         tools:ignore="UnusedAttribute"/>
