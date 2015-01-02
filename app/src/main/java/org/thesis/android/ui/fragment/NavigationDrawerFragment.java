@@ -1,7 +1,6 @@
 package org.thesis.android.ui.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -9,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
+import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.ui.adapter.NavigationDrawerAdapter;
 
 import java.lang.reflect.Field;
@@ -33,11 +34,10 @@ import java.util.Locale;
 import java.util.Queue;
 
 public class NavigationDrawerFragment extends Fragment implements NavigationDrawerAdapter
-        .NavigationDrawerCallbacks {
-    private final String TAG = NavigationDrawerFragment.class.getName();
+        .INavigationDrawerCallback {
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
-    private NavigationDrawerAdapter.NavigationDrawerCallbacks mCallbacks;
+    private NavigationDrawerAdapter.INavigationDrawerCallback mCallbacks;
     private RecyclerView mDrawerList;
     private View mFragmentContainerView;
     private DrawerLayout mDrawerLayout;
@@ -95,7 +95,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mCallbacks = (NavigationDrawerAdapter.NavigationDrawerCallbacks) activity;
+            mCallbacks = (NavigationDrawerAdapter.INavigationDrawerCallback) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
         }
@@ -103,8 +103,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mContext = CApplication.getInstance().getContext();
     }
 
-    public void setup(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar,
-                      String userImageUrl, String userName, String realm) {
+    public void setup(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar) {
         mFragmentContainerView = mActivity.findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
         mActionBarDrawerToggle = new ActionBarDrawerToggle(mActivity, mDrawerLayout, toolbar,
@@ -160,9 +159,13 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     public List<NavigationDrawerAdapter.NavigationItem> readMenuItems() {
         List<NavigationDrawerAdapter.NavigationItem> items = new ArrayList<>();
         Resources resources = mContext.getResources();
+        final List<String> tagGroups = SQLiteDAO.getInstance().getTagGroups();
+        for (String x : tagGroups) {
+            items.add(new NavigationDrawerAdapter.NavigationItem(x,
+                    resources.getDrawable(R.drawable.ic_message_group)));
+        }
         final String NAVIGATION_TITLE_STANDARD_DRAWABLE_PATTERN = mContext.getString(R.string
                 .navigation_title_standard_resource_pattern);
-        //TODO BEFORE THAN ANY OTHER THING, I WANT TO SHOW THE EXISTING TAG GROUPS
         final String[] itemNames = resources.getStringArray(R.array.navigation_drawer_items);
         final List<Drawable> standardItemIcons = new LinkedList<>();
         for (int i = 0; i < itemNames.length; i++) {
@@ -199,7 +202,11 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         ((NavigationDrawerAdapter) mDrawerList.getAdapter()).selectPosition(position);
     }
 
-    public boolean isDrawerOpen() {
+    public Integer getPosition() {
+        return ((NavigationDrawerAdapter) mDrawerList.getAdapter()).getSelectedPosition();
+    }
+
+    public Boolean isDrawerOpen() {
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
     }
 
@@ -220,14 +227,14 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         selectItem(position);
     }
 
-    public static void saveSharedSetting(Context ctx, String settingName, String settingValue) {
+    private static void saveSharedSetting(Context ctx, String settingName, String settingValue) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ctx);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(settingName, settingValue);
         editor.apply();
     }
 
-    public static String readSharedSetting(Context ctx, String settingName, String defaultValue) {
+    private static String readSharedSetting(Context ctx, String settingName, String defaultValue) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ctx);
         return sharedPref.getString(settingName, defaultValue);
     }

@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:animateLayoutChanges="true"
               android:background="@color/navigation_drawer_background">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/logo_ericsson"
+        android:layout_height="@dimen/navigation_drawer_header_height"
+        tools:ignore="ContentDescription"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/drawerList"
+        android:requiresFadingEdge="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
         android:focusableInTouchMode="true"
         android:scrollbars="none"
         android:focusable="true"
-        android:fillViewport="true"/>
+        android:fillViewport="true"
+        tools:ignore="UnusedAttribute"/>
 </LinearLayout>

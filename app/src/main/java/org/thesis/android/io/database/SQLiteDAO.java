@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import org.thesis.android.BuildConfig;
 import org.thesis.android.R;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class SQLiteDAO extends RobustSQLiteOpenHelper {
@@ -17,7 +19,9 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
     private static SQLiteDAO mInstance;
 
     private SQLiteDAO(@NonNull Context _context) {
-        super(_context, String.format(Locale.ENGLISH, _context.getString(R.string.database_name_template), _context.getString(R.string.app_name)), null, BuildConfig.VERSION_CODE);
+        super(_context, String.format(Locale.ENGLISH, _context.getString(R.string
+                        .database_name_template), _context.getString(R.string.app_name)), null,
+                BuildConfig.VERSION_CODE);
         mContext = _context;
     }
 
@@ -32,11 +36,25 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
                 }
             }
         }
+        mInstance.getWritableDatabase();//Force database creation
     }
 
     @Override
     public void onRobustUpgrade(SQLiteDatabase db, int oldVersion,
                                 int newVersion) throws SQLiteException {
         //No other database versions to upgrade from.
+    }
+
+    public static SQLiteDAO getInstance() {
+        return mInstance;
+    }
+
+    /**
+     * TODO getTagGroups
+     */
+    public List<String> getTagGroups() {
+        return Arrays.asList("Tag group 1", "tag group 2", "group3",
+                "gröup with weird chåräctersñ", "reaaaaally looooooooooooooooong-named group",
+                "another group", "plus another one");
     }
 }

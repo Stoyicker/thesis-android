@@ -18,7 +18,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         .ViewHolder> {
 
     private List<NavigationItem> mData;
-    private NavigationDrawerCallbacks mNavigationDrawerCallbacks;
+    private INavigationDrawerCallback mNavigationDrawerCallbacks;
     private int mSelectedPosition;
     private int mTouchedPosition = -1;
     private Context mContext;
@@ -28,8 +28,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         mData = data;
     }
 
-    public void setNavigationDrawerCallbacks(NavigationDrawerCallbacks navigationDrawerCallbacks) {
-        mNavigationDrawerCallbacks = navigationDrawerCallbacks;
+    public void setNavigationDrawerCallbacks(INavigationDrawerCallback INavigationDrawerCallback) {
+        mNavigationDrawerCallbacks = INavigationDrawerCallback;
     }
 
     @Override
@@ -40,10 +40,11 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     }
 
     @Override
-    public void onBindViewHolder(NavigationDrawerAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(NavigationDrawerAdapter.ViewHolder viewHolder, final int i) {
         viewHolder.textView.setText(mData.get(i).getText());
         viewHolder.textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
 
+        //TODO Correct this and put wherever it proceeds
         viewHolder.itemView.setOnTouchListener(new View.OnTouchListener() {
                                                    @Override
                                                    public boolean onTouch(View v,
@@ -98,6 +99,10 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
             notifyItemChanged(position);
     }
 
+    public Integer getSelectedPosition() {
+        return mSelectedPosition;
+    }
+
     public void selectPosition(int position) {
         int lastPosition = mSelectedPosition;
         mSelectedPosition = position;
@@ -137,7 +142,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         }
     }
 
-    public interface NavigationDrawerCallbacks {
+    public interface INavigationDrawerCallback {
         void onNavigationDrawerItemSelected(int position);
     }
 }
