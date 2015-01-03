@@ -4,10 +4,12 @@ import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class CLog {
 
-    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("HH:mm:ss");
+    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("HH:mm:ss", Locale
+            .ENGLISH);
 
     public static void e(String tag, String msg) {
         Log.e(tag, FORMATTER.format(new Date()) + ": " + msg);
