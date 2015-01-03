@@ -41,7 +41,6 @@ dependencies {
     compile 'com.android.support:support-annotations:21.0.3'
     compile 'commons-io:commons-io:2.4'
     compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.squareup.picasso:picasso:2.4.0'
     compile 'com.android.support:recyclerview-v7:21.0.3'
     compile 'com.github.traex.rippleeffect:library:1.2.3'
 }

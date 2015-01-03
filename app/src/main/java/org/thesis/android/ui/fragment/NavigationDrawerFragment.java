@@ -18,6 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 
 import org.thesis.android.CApplication;
@@ -82,6 +84,9 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mIsNameBeingEdited = Boolean.FALSE;
         mNameEditSuccess = Boolean.TRUE;
         mNameField = (BackPreImeAutoCompleteTextView) view.findViewById(R.id.name_field);
+        mNameField.setThreshold(1);
+        refreshAutoCompleteEntries(mNameField);
+
         mNameField.setText(
                 PreferenceAssistant.readSharedString(mContext,
                         PreferenceAssistant.PREF_USER_NAME, ""));
@@ -123,6 +128,15 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mDrawerList.setAdapter(adapter);
         selectItem(mCurrentSelectedPosition);
         return view;
+    }
+
+    private void refreshAutoCompleteEntries(AutoCompleteTextView autoCompleteTextView) {
+        List<String> allNames = SQLiteDAO.getInstance().getNames();
+        String[] entries = allNames.toArray(new String[allNames.size()]);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
+                android.R.layout.select_dialog_item,
+                entries);
+        autoCompleteTextView.setAdapter(adapter);
     }
 
     @Override
@@ -204,9 +218,11 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         imm.hideSoftInputFromWindow(mNameField.getWindowToken(), 0);
         mNameField.clearFocus();
         if (success) {
+            final String name = mNameField.getText().toString();
             PreferenceAssistant.saveSharedString(mContext,
-                    PreferenceAssistant.PREF_USER_NAME, mNameField.getText().toString());
-            //TODO Save new name in db
+                    PreferenceAssistant.PREF_USER_NAME, name);
+            SQLiteDAO.getInstance().addUserName(name);
+            refreshAutoCompleteEntries(mNameField);
         }
         mNameField.setText(PreferenceAssistant.readSharedString(mContext, PREF_USER_NAME, ""));
     }

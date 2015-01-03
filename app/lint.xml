@@ -13,4 +13,8 @@
         <!--Required-->
         <ignore path="src/main/java/org/thesis/android/ui/adapter/NavigationDrawerAdapter.java"/>
     </issue>
+    <issue id="Overdraw">
+        <!--Required-->
+        <ignore path="src/main/res/layout/fragment_navigation_drawer.xml"/>
+    </issue>
 </lint>

@@ -11,6 +11,7 @@ import android.widget.EditText;
 
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
+import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.io.prefs.PreferenceAssistant;
 
 public class NameProvisionActivity extends ActionBarActivity {
@@ -31,8 +32,10 @@ public class NameProvisionActivity extends ActionBarActivity {
                 .OnClickListener() {
             @Override
             public void onClick(View v) {
+                final String name = nameField.getText().toString();
                 PreferenceAssistant.saveSharedString(context,
-                        PreferenceAssistant.PREF_USER_NAME, nameField.getText().toString());
+                        PreferenceAssistant.PREF_USER_NAME, name);
+                SQLiteDAO.getInstance().addUserName(name);
                 PreferenceAssistant.saveSharedBoolean(context,
                         PreferenceAssistant.PREF_USER_HAS_SET_NAME, Boolean.TRUE);
                 v.postDelayed(new Runnable() {
