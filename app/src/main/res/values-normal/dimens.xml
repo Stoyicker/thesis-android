@@ -4,4 +4,8 @@
     <dimen name="navigation_drawer_entry_standard_margin">16dp</dimen>
     <dimen name="navigation_drawer_entry_text">14sp</dimen>
     <dimen name="navigation_drawer_header_height">85dp</dimen>
+    <dimen name="user_name_text">18sp</dimen>
+    <dimen name="name_edit_button_ripple_side">30dp</dimen>
+    <dimen name="margin_bottom_name_provision_activity_element">60dp</dimen>
+    <dimen name="provision_activity_margin">20dp</dimen>
 </resources>

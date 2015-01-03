@@ -12,4 +12,8 @@ public class CLog {
     public static void e(String tag, String msg) {
         Log.e(tag, FORMATTER.format(new Date()) + ": " + msg);
     }
+
+    public static void d(String tag, String msg) {
+        Log.d(tag, FORMATTER.format(new Date()) + ": " + msg);
+    }
 }

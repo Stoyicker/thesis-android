@@ -10,4 +10,6 @@
           android:layout_marginTop="@dimen/navigation_drawer_entry_standard_margin"
           android:drawablePadding="@dimen/navigation_drawer_entry_standard_margin"
           style="@style/AppTheme.NavigationDrawerEntryText"
-          android:gravity="center_vertical"/>
+          android:gravity="center_vertical"
+          android:clickable="false"
+          android:longClickable="false"/>

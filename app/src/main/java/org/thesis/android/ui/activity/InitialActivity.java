@@ -9,6 +9,7 @@ import org.thesis.android.CApplication;
 import org.thesis.android.dev.CLog;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.io.file.FileOperations;
+import org.thesis.android.io.prefs.PreferenceAssistant;
 
 import java.io.File;
 
@@ -29,7 +30,12 @@ public class InitialActivity extends ActionBarActivity {
     }
 
     private void launchHomeActivity(Context context) {
-        final Intent homeIntent = new Intent(context, NavigationDrawerActivity.class);
+        Class c;
+        if (PreferenceAssistant.readSharedSetting(context,
+                PreferenceAssistant.PREF_USER_HAS_SET_NAME, Boolean.FALSE)) {
+            c = NameProvisionActivity.class;
+        } else c = NavigationDrawerActivity.class;
+        final Intent homeIntent = new Intent(context, c);
         finish();
         startActivity(homeIntent);
     }

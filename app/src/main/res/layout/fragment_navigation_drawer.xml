@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
@@ -10,9 +11,50 @@
     <ImageView
         android:layout_width="match_parent"
         android:scaleType="fitCenter"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:src="@drawable/logo_ericsson"
         android:layout_height="@dimen/navigation_drawer_header_height"
         tools:ignore="ContentDescription"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/navigation_drawer_entry_standard_margin"
+        android:paddingRight="@dimen/navigation_drawer_entry_standard_margin">
+
+        <org.thesis.android.ui.util.BackPreImeAutoCompleteTextView
+            android:id="@+id/name_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nextFocusUp="@id/name_field"
+            android:nextFocusLeft="@id/name_field"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:text="Gustav Jönsson"
+            android:clickable="false"
+            android:longClickable="false"
+            android:background="@null"
+            style="@style/AppTheme.UserNameText"/>
+
+        <com.andexert.library.RippleView
+            android:layout_width="@dimen/name_edit_button_ripple_side"
+            android:layout_height="@dimen/name_edit_button_ripple_side"
+            app:rv_rippleDuration="200"
+            app:rv_color="@color/ripple"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true">
+
+            <ImageButton
+                android:id="@+id/edit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_edit"
+                android:background="@null"
+                android:contentDescription="@string/edit"
+                android:hapticFeedbackEnabled="true"/>
+        </com.andexert.library.RippleView>
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/drawerList"

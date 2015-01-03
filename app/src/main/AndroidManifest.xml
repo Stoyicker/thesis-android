@@ -18,6 +18,16 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.activity.NameProvisionActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.ClearBackground"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".ui.activity.NavigationDrawerActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape">

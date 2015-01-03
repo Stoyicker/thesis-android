@@ -1,6 +1,8 @@
 package org.thesis.android.ui.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -43,9 +45,30 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
 
     @Override
     public void onBackPressed() {
+        Boolean handled = Boolean.FALSE;
+
         if (mNavigationDrawerFragment.isDrawerOpen()) {
-            mNavigationDrawerFragment.closeDrawer();
-        } else
+            if (!mNavigationDrawerFragment.requestNameEditCancel()) {
+                mNavigationDrawerFragment.closeDrawer();
+            }
+            handled = Boolean.TRUE;
+        }
+
+        if (!handled) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            for (int i = fragmentManager.getBackStackEntryCount() - 1; i >= 0 && !handled; i--) {
+                Fragment thisFragment = fragmentManager.findFragmentByTag(fragmentManager
+                        .getBackStackEntryAt(i).getName());
+                if (thisFragment instanceof IOnBackPressedListener)
+                    handled = ((IOnBackPressedListener) thisFragment).onBackPressed();
+            }
+        }
+
+        if (!handled)
             super.onBackPressed();
+    }
+
+    public interface IOnBackPressedListener {
+        public Boolean onBackPressed();
     }
 }

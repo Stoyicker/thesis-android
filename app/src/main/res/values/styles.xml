@@ -7,6 +7,10 @@
         <item name="android:windowBackground">@color/material_grey_300</item>
     </style>
 
+    <style name="AppTheme.ClearBackground" parent="AppTheme">
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
     <style name="AppTheme.Transparent" parent="Theme.AppCompat.Light">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -24,5 +28,21 @@
     <style name="AppTheme.Toolbar">
         <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
         <item name="android:background">@color/material_deep_purple_900</item>
+    </style>
+
+    <style name="AppTheme.UserNameText">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/user_name_text</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="WelcomeProvideNameText">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/user_name_text</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:ellipsize">end</item>
     </style>
 </resources>

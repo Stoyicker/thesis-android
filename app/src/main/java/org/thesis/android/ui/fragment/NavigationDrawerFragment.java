@@ -2,12 +2,10 @@ package org.thesis.android.ui.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -19,11 +17,15 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageButton;
 
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
 import org.thesis.android.io.database.SQLiteDAO;
+import org.thesis.android.io.prefs.PreferenceAssistant;
 import org.thesis.android.ui.adapter.NavigationDrawerAdapter;
+import org.thesis.android.ui.util.BackPreImeAutoCompleteTextView;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -33,9 +35,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Queue;
 
+import static org.thesis.android.io.prefs.PreferenceAssistant.PREF_USER_NAME;
+import static org.thesis.android.io.prefs.PreferenceAssistant.readSharedSetting;
+import static org.thesis.android.io.prefs.PreferenceAssistant.saveSharedSetting;
+
 public class NavigationDrawerFragment extends Fragment implements NavigationDrawerAdapter
         .INavigationDrawerCallback {
-    private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
     private NavigationDrawerAdapter.INavigationDrawerCallback mCallbacks;
     private RecyclerView mDrawerList;
@@ -48,6 +53,10 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     private ActionBarActivity mActivity;
     private Context mContext;
     private final Queue<Runnable> mWhenClosedTasks = new LinkedList<>();
+    private BackPreImeAutoCompleteTextView mNameField;
+    private ImageButton mEditNameButton;
+    private Boolean mIsNameBeingEdited;
+    private Boolean mNameEditSuccess;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -72,6 +81,41 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mDrawerList.setHasFixedSize(Boolean.TRUE);
         mDrawerList.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
+        mIsNameBeingEdited = Boolean.FALSE;
+        mNameEditSuccess = Boolean.TRUE;
+        mNameField = (BackPreImeAutoCompleteTextView) view.findViewById(R.id.name_field);
+        mNameField.clearFocus();
+        mNameField.setOnBackPressedAdditionalTask(new Runnable() {
+            @Override
+            public void run() {
+                requestNameEditCancel();
+            }
+        });
+        mEditNameButton = (ImageButton) view.findViewById(R.id.edit_button);
+        mEditNameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mNameField.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        final Integer newDrawableId;
+                        if (mIsNameBeingEdited) {
+                            finishNameEdit(mNameEditSuccess);
+                            mNameEditSuccess = Boolean.TRUE;
+                            newDrawableId = R.drawable.ic_edit;
+                        } else {
+                            mNameField.setFocusable(Boolean.TRUE);
+                            mNameField.setFocusableInTouchMode(Boolean.TRUE);
+                            startNameEdit();
+                            newDrawableId = R.drawable.ic_check;
+                        }
+                        mEditNameButton.setImageDrawable(NavigationDrawerFragment.this.mContext
+                                .getResources().getDrawable(newDrawableId));
+                    }
+                }, 400);
+            }
+        });
+
         final List<NavigationDrawerAdapter.NavigationItem> navigationItems = readMenuItems();
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(mContext, navigationItems);
         adapter.setNavigationDrawerCallbacks(this);
@@ -84,7 +128,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mUserLearnedDrawer = Boolean.valueOf(readSharedSetting(mActivity,
-                PREF_USER_LEARNED_DRAWER, "false"));
+                PreferenceAssistant.PREF_USER_LEARNED_DRAWER, "false"));
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = Boolean.TRUE;
@@ -109,22 +153,28 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mActionBarDrawerToggle = new ActionBarDrawerToggle(mActivity, mDrawerLayout, toolbar,
                 R.string.drawer_open, R.string.drawer_close) {
             @Override
-            public void onDrawerClosed(View drawerView) {
+            public synchronized void onDrawerClosed(View drawerView) {
+                if (mIsNameBeingEdited) {
+                    mNameField.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mNameEditSuccess = Boolean.FALSE;
+                            mEditNameButton.performClick();
+                        }
+                    });
+                }
                 super.onDrawerClosed(drawerView);
-                if (!isAdded()) return;
-                mActivity.invalidateOptionsMenu();
             }
 
             @Override
-            public void onDrawerOpened(View drawerView) {
+            public synchronized void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 if (!isAdded()) return;
                 if (!mUserLearnedDrawer) {
                     mUserLearnedDrawer = Boolean.TRUE;
-                    saveSharedSetting(mActivity, PREF_USER_LEARNED_DRAWER, "true");
+                    saveSharedSetting(mActivity, PreferenceAssistant.PREF_USER_LEARNED_DRAWER,
+                            "true");
                 }
-
-                mActivity.invalidateOptionsMenu();
             }
         };
 
@@ -143,17 +193,38 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
+    private synchronized void finishNameEdit(Boolean success) {
+        mNameField.setFocusable(Boolean.FALSE);
+        mNameField.setFocusableInTouchMode(Boolean.FALSE);
+        mIsNameBeingEdited = Boolean.FALSE;
+        final InputMethodManager imm = (InputMethodManager) mContext
+                .getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mNameField.getWindowToken(), 0);
+        mNameField.clearFocus();
+        if (success) {
+            PreferenceAssistant.saveSharedSetting(mContext,
+                    PreferenceAssistant.PREF_USER_NAME, mNameField.getText().toString());
+            //TODO Save new name in db
+        }
+        mNameField.setText(PreferenceAssistant.readSharedSetting(mContext, PREF_USER_NAME, ""));
+    }
+
+    private synchronized void startNameEdit() {
+        mIsNameBeingEdited = Boolean.TRUE;
+        mNameField.requestFocus();
+        final InputMethodManager imm = (InputMethodManager) mContext
+                .getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(mNameField, 0);
+    }
+
     public void closeDrawer(Runnable... runnables) {
         mDrawerLayout.closeDrawer(mFragmentContainerView);
         Collections.addAll(mWhenClosedTasks, runnables);
         while (!mWhenClosedTasks.isEmpty()) {
             mActivity.runOnUiThread(mWhenClosedTasks.poll());
         }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
     public List<NavigationDrawerAdapter.NavigationItem> readMenuItems() {
@@ -227,15 +298,12 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         selectItem(position);
     }
 
-    private static void saveSharedSetting(Context ctx, String settingName, String settingValue) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ctx);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(settingName, settingValue);
-        editor.apply();
-    }
-
-    private static String readSharedSetting(Context ctx, String settingName, String defaultValue) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ctx);
-        return sharedPref.getString(settingName, defaultValue);
+    public Boolean requestNameEditCancel() {
+        if (mIsNameBeingEdited) {
+            mNameEditSuccess = Boolean.FALSE;
+            mEditNameButton.performClick();
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
     }
 }
