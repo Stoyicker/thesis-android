@@ -82,9 +82,12 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         viewHolder.textView.setCompoundDrawablesWithIntrinsicBounds(mData.get(i)
                 .getStandardDrawable(), null, null, null);
 
-        if (mSelectedPosition == i || mTouchedPosition == i) {
+        if (mSelectedPosition == i) {
             viewHolder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color
                     .navigation_drawer_entry_background_selected));
+        } else if (mTouchedPosition == i) {
+            viewHolder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color
+                    .navigation_drawer_entry_background_hovered));
         } else {
             viewHolder.itemView.setBackgroundColor(Color.TRANSPARENT);
         }
