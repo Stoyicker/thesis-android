@@ -54,7 +54,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
      */
     public List<String> getTagGroups() {
         return Arrays.asList("Tag group 1", "tag group 2", "group3",
-                "gröup with weird chåräctersñ", "reaaaaally looooooooooooooooong-named group",
+                "gröup with strange chåräctersñ", "reaaaaally looooooooooooooooong-named group",
                 "another group", "plus another one");
     }
 }

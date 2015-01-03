@@ -16,6 +16,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         NavigationDrawerAdapter.INavigationDrawerCallback {
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
+    private static final String USER_NAME = "USER_NAME";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

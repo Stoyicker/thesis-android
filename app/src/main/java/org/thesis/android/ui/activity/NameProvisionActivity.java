@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import org.thesis.android.CApplication;
@@ -30,13 +31,17 @@ public class NameProvisionActivity extends ActionBarActivity {
                 .OnClickListener() {
             @Override
             public void onClick(View v) {
-                PreferenceAssistant.saveSharedSetting(context,
+                PreferenceAssistant.saveSharedString(context,
                         PreferenceAssistant.PREF_USER_NAME, nameField.getText().toString());
-                PreferenceAssistant.saveSharedSetting(context,
+                PreferenceAssistant.saveSharedBoolean(context,
                         PreferenceAssistant.PREF_USER_HAS_SET_NAME, Boolean.TRUE);
                 v.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        final InputMethodManager imm = (InputMethodManager) context
+                                .getSystemService(
+                                        Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(nameField.getWindowToken(), 0);
                         final Intent homeIntent = new Intent(context,
                                 NavigationDrawerActivity.class);
                         finish();

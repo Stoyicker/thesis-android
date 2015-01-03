@@ -31,7 +31,6 @@
             android:nextFocusLeft="@id/name_field"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:text="Gustav Jönsson"
             android:clickable="false"
             android:longClickable="false"
             android:background="@null"

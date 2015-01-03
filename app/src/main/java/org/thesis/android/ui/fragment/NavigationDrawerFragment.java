@@ -36,8 +36,6 @@ import java.util.Locale;
 import java.util.Queue;
 
 import static org.thesis.android.io.prefs.PreferenceAssistant.PREF_USER_NAME;
-import static org.thesis.android.io.prefs.PreferenceAssistant.readSharedSetting;
-import static org.thesis.android.io.prefs.PreferenceAssistant.saveSharedSetting;
 
 public class NavigationDrawerFragment extends Fragment implements NavigationDrawerAdapter
         .INavigationDrawerCallback {
@@ -84,6 +82,9 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mIsNameBeingEdited = Boolean.FALSE;
         mNameEditSuccess = Boolean.TRUE;
         mNameField = (BackPreImeAutoCompleteTextView) view.findViewById(R.id.name_field);
+        mNameField.setText(
+                PreferenceAssistant.readSharedString(mContext,
+                        PreferenceAssistant.PREF_USER_NAME, ""));
         mNameField.clearFocus();
         mNameField.setOnBackPressedAdditionalTask(new Runnable() {
             @Override
@@ -127,8 +128,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUserLearnedDrawer = Boolean.valueOf(readSharedSetting(mActivity,
-                PreferenceAssistant.PREF_USER_LEARNED_DRAWER, "false"));
+        mUserLearnedDrawer = PreferenceAssistant.readSharedBoolean(mActivity,
+                PreferenceAssistant.PREF_USER_LEARNED_DRAWER, Boolean.FALSE);
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = Boolean.TRUE;
@@ -172,8 +173,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
                 if (!isAdded()) return;
                 if (!mUserLearnedDrawer) {
                     mUserLearnedDrawer = Boolean.TRUE;
-                    saveSharedSetting(mActivity, PreferenceAssistant.PREF_USER_LEARNED_DRAWER,
-                            "true");
+                    PreferenceAssistant.saveSharedBoolean(mActivity, PreferenceAssistant
+                            .PREF_USER_LEARNED_DRAWER, Boolean.TRUE);
                 }
             }
         };
@@ -203,11 +204,11 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         imm.hideSoftInputFromWindow(mNameField.getWindowToken(), 0);
         mNameField.clearFocus();
         if (success) {
-            PreferenceAssistant.saveSharedSetting(mContext,
+            PreferenceAssistant.saveSharedString(mContext,
                     PreferenceAssistant.PREF_USER_NAME, mNameField.getText().toString());
             //TODO Save new name in db
         }
-        mNameField.setText(PreferenceAssistant.readSharedSetting(mContext, PREF_USER_NAME, ""));
+        mNameField.setText(PreferenceAssistant.readSharedString(mContext, PREF_USER_NAME, ""));
     }
 
     private synchronized void startNameEdit() {
