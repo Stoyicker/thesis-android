@@ -2,7 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     dexOptions {
-        preDexLibraries = false
+        preDexLibraries = Boolean.FALSE
+    }
+
+    packagingOptions {
+        //To be able to include both Apache Commons libs
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
     }
 
     compileSdkVersion 21
@@ -11,7 +17,7 @@ android {
     productFlavors {
         defaultConfig {
             applicationId "org.thesis.android"
-            minSdkVersion 11
+            minSdkVersion 14
             targetSdkVersion 21
             versionCode 1
             versionName "0.1"
@@ -20,14 +26,14 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled Boolean.TRUE
             proguardFiles 'proguard-rules.pro'
-            zipAlignEnabled true
+            zipAlignEnabled Boolean.TRUE
         }
 
         debug {
-            minifyEnabled false
-            zipAlignEnabled false
+            minifyEnabled Boolean.FALSE
+            zipAlignEnabled Boolean.FALSE
         }
     }
 
@@ -44,4 +50,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:21.0.3'
     compile 'com.github.traex.rippleeffect:library:1.2.3'
     compile 'org.ligi:floatlabel:0.2.0'
+    compile 'com.github.gabrielemariotti.cards:cardslib-core:2.0.1'
+    compile 'org.apache.commons:commons-lang3:3.0'
 }
