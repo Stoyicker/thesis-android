@@ -383,4 +383,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         }
         return Boolean.FALSE;
     }
+
+    public void setDrawerLockMode(int lockMode) {
+        mDrawerLayout.setDrawerLockMode(lockMode);
+    }
 }

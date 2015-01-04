@@ -16,12 +16,20 @@ import org.thesis.android.ui.adapter.NavigationDrawerAdapter;
 import org.thesis.android.ui.fragment.MessageContainerFragment;
 import org.thesis.android.ui.fragment.NavigationDrawerFragment;
 
+import java.util.Stack;
+
+import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.internal.CardExpand;
+import it.gmariotti.cardslib.library.internal.CardHeader;
+import it.gmariotti.cardslib.library.internal.ViewToClickToExpand;
+import it.gmariotti.cardslib.library.view.CardView;
+
 public class NavigationDrawerActivity extends ActionBarActivity implements
         NavigationDrawerAdapter.INavigationDrawerCallback {
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Context mContext;
-    private static final String FRAGMENT_TAG_MESSAGE_CONTAINER = "MESSAGE_CONTAINER";
+    private Stack<Integer> mTagGroupIndexStack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +52,11 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         mNavigationDrawerFragment.setup(R.id.navigation_drawer_fragment,
                 (DrawerLayout) findViewById(R.id.navigation_drawer), toolbar);
 
+        mTagGroupIndexStack = new Stack<>();
+
+        mTagGroupIndexStack.push(0);
+
+        setTagGroupConfigHeader(mTagGroupIndexStack.peek());
         showInitialFragment();
     }
 
@@ -53,6 +66,8 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         getSupportFragmentManager().beginTransaction().
                 replace(R.id.content_fragment_container, fragment)
                 .commitAllowingStateLoss(); //This transaction must not go into the back stack
+        //Otherwise it might happen that the message content is hidden but the app is still
+        //running
     }
 
     private Fragment configureMessageContainer(Integer tagGroupIndex) {
@@ -61,7 +76,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void onNavigationTagGroupSelected(int position) {
+    public void onNavigationTagGroupSelected(final int position) {
         if (mNavigationDrawerFragment == null || mNavigationDrawerFragment.getPosition() ==
                 position) {
             return;
@@ -74,6 +89,8 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                 getSupportFragmentManager().beginTransaction().replace(R.id
                                 .content_fragment_container,
                         target).addToBackStack(null).commitAllowingStateLoss();
+                mTagGroupIndexStack.push(position);
+                setTagGroupConfigHeader(mTagGroupIndexStack.peek());
             }
         });
     }
@@ -94,8 +111,9 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
             handled = Boolean.TRUE;
         }
 
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+
         if (!handled) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
             for (int i = fragmentManager.getBackStackEntryCount() - 1; i >= 0 && !handled; i--) {
                 Fragment thisFragment = fragmentManager.findFragmentByTag(fragmentManager
                         .getBackStackEntryAt(i).getName());
@@ -104,11 +122,47 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
             }
         }
 
-        if (!handled)
+        if (!handled) {
+            mTagGroupIndexStack.pop();
             super.onBackPressed();
+            setTagGroupConfigHeader(mTagGroupIndexStack.peek());
+        }
     }
 
     public interface IOnBackPressedListener {
         public Boolean onBackPressed();
+    }
+
+    private void setTagGroupConfigHeader(Integer groupIndex) {
+        final Card card = new Card(mContext);
+        final CardHeader header = new CardHeader(mContext);
+        header.setTitle(SQLiteDAO.getInstance().getTagGroups().get(groupIndex));
+        header.setButtonExpandVisible(Boolean.TRUE);
+        card.addCardHeader(header);
+        CardExpand expand = new CardExpand(mContext);
+        expand.setTitle("expanded area title");
+        card.addCardExpand(expand);
+        CardView cardView = (CardView) findViewById(R.id.card_tag_group_configuration);
+        ViewToClickToExpand viewToClickToExpand =
+                ViewToClickToExpand.builder()
+                        .highlightView(Boolean.FALSE)
+                        .setupView(cardView);
+        card.setViewToClickToExpand(viewToClickToExpand);
+
+        card.setOnCollapseAnimatorEndListener(new Card.OnCollapseAnimatorEndListener() {
+            @Override
+            public void onCollapseEnd(Card card) {
+                mNavigationDrawerFragment.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            }
+        });
+
+        card.setOnExpandAnimatorStartListener(new Card.OnExpandAnimatorStartListener() {
+            @Override
+            public void onExpandStart(Card card) {
+                mNavigationDrawerFragment.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            }
+        });
+
+        cardView.setCard(card);
     }
 }

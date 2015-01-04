@@ -8,4 +8,5 @@
     <string name="title_section0">Create new…</string>
     <string name="welcome_provide_name">Welcome! Please provide your name (used for sender identification):</string>
     <string name="name_activity_field_hint">Hello, my name is…</string>
+    <string name="tag_settings">Tag settings</string>
 </resources>
