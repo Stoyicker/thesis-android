@@ -10,4 +10,5 @@
     <dimen name="provision_activity_margin">20dp</dimen>
     <dimen name="tag_group_title">18sp</dimen>
     <dimen name="tag_group_config_margin">10dp</dimen>
+    <dimen name="card_padding">10dp</dimen>
 </resources>

@@ -52,4 +52,5 @@ dependencies {
     compile 'org.ligi:floatlabel:0.2.0'
     compile 'com.github.gabrielemariotti.cards:cardslib-core:2.0.1'
     compile 'org.apache.commons:commons-lang3:3.0'
+    compile 'org.apmem.tools:layouts:1.6@aar'
 }

@@ -6,28 +6,29 @@
 
     <LinearLayout
         android:id="@+id/card_main_layout"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white">
+        android:background="@color/material_blue_500">
 
         <it.gmariotti.cardslib.library.view.component.CardHeaderView
-            style="@style/card.header_outer_layout"
+            style="@style/AppTheme.TagName"
             android:id="@+id/card_header_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/card_padding"/>
 
-        <FrameLayout
-            android:id="@+id/card_content_expand_layout"
-            style="@style/card.main_contentExpand"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_width="match_parent"
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            >
-        </FrameLayout>
+            android:scaleType="fitCenter"
+            android:background="@null"
+            android:contentDescription="@string/delete_tag"/>
     </LinearLayout>
 
     <it.gmariotti.cardslib.library.view.component.CardShadowView

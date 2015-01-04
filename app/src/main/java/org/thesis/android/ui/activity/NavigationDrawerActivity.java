@@ -8,20 +8,25 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.view.ViewGroup;
 
+import org.apmem.tools.layouts.FlowLayout;
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.ui.adapter.NavigationDrawerAdapter;
 import org.thesis.android.ui.fragment.MessageContainerFragment;
 import org.thesis.android.ui.fragment.NavigationDrawerFragment;
+import org.thesis.android.ui.util.TagView;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Stack;
 
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardExpand;
 import it.gmariotti.cardslib.library.internal.CardHeader;
-import it.gmariotti.cardslib.library.internal.ViewToClickToExpand;
 import it.gmariotti.cardslib.library.view.CardView;
 
 public class NavigationDrawerActivity extends ActionBarActivity implements
@@ -139,15 +144,27 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         header.setTitle(SQLiteDAO.getInstance().getTagGroups().get(groupIndex));
         header.setButtonExpandVisible(Boolean.TRUE);
         card.addCardHeader(header);
-        CardExpand expand = new CardExpand(mContext);
-        expand.setTitle("expanded area title");
-        card.addCardExpand(expand);
+
         CardView cardView = (CardView) findViewById(R.id.card_tag_group_configuration);
-        ViewToClickToExpand viewToClickToExpand =
-                ViewToClickToExpand.builder()
-                        .highlightView(Boolean.FALSE)
-                        .setupView(cardView);
-        card.setViewToClickToExpand(viewToClickToExpand);
+
+        CardExpand expand = new CardExpand(mContext, R.layout.dynamic_horizontal_flow) {
+            @Override
+            public void setupInnerViewElements(ViewGroup parent, View view) {
+                if (view == null) {
+                    return;
+                }
+
+                //TODO Add the real tags instead of the stub
+                final List<String> tags = Arrays.asList("tag1", "tag 2");
+
+                for (String x : tags)
+                    ((FlowLayout) view.findViewById(android.R.id.content)).addView(new TagView
+                            (mContext, x));
+            }
+
+        };
+
+        card.addCardExpand(expand);
 
         card.setOnCollapseAnimatorEndListener(new Card.OnCollapseAnimatorEndListener() {
             @Override
