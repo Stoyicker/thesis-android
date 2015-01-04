@@ -2,6 +2,8 @@ package org.thesis.android.dev;
 
 import android.util.Log;
 
+import org.thesis.android.BuildConfig;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -16,6 +18,7 @@ public class CLog {
     }
 
     public static void d(String tag, String msg) {
-        Log.d(tag, FORMATTER.format(new Date()) + ": " + msg);
+        if (BuildConfig.DEBUG)
+            Log.d(tag, FORMATTER.format(new Date()) + ": " + msg);
     }
 }
