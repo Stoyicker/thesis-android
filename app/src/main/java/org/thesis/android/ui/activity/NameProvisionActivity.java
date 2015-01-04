@@ -5,7 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -27,8 +31,43 @@ public class NameProvisionActivity extends ActionBarActivity {
 
         final Context context = CApplication.getInstance().getContext();
         final EditText nameField = (EditText) findViewById(R.id.name_field);
+        final View buttonMoveOnWrapper = findViewById(R.id.button_proceed_wrapper);
 
-        (findViewById(R.id.button_proceed)).setOnClickListener(new View
+        nameField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int
+                    start, int count, int after) {
+                //Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //Do nothing
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (buttonMoveOnWrapper.isShown() && TextUtils.isEmpty(s.toString())) {
+                    TranslateAnimation animate = new TranslateAnimation(0, 0, 0,
+                            buttonMoveOnWrapper.getHeight());
+                    animate.setDuration(context.getResources().getInteger(R.integer
+                            .floating_label_layout_duration_millis));
+                    animate.setFillAfter(Boolean.TRUE);
+                    buttonMoveOnWrapper.startAnimation(animate);
+                    buttonMoveOnWrapper.setVisibility(View.INVISIBLE);
+                } else if (!buttonMoveOnWrapper.isShown() && !TextUtils.isEmpty(s.toString())) {
+                    TranslateAnimation animate = new TranslateAnimation(0, 0,
+                            buttonMoveOnWrapper.getHeight(), 0);
+                    animate.setDuration(context.getResources().getInteger(R.integer
+                            .floating_label_layout_duration_millis));
+                    animate.setFillAfter(Boolean.TRUE);
+                    buttonMoveOnWrapper.startAnimation(animate);
+                    buttonMoveOnWrapper.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        findViewById(R.id.button_proceed).setOnClickListener(new View
                 .OnClickListener() {
             @Override
             public void onClick(View v) {

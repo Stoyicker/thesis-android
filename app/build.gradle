@@ -43,4 +43,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:recyclerview-v7:21.0.3'
     compile 'com.github.traex.rippleeffect:library:1.2.3'
+    compile 'org.ligi:floatlabel:0.2.0'
 }
