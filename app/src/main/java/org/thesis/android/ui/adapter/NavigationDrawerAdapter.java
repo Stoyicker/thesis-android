@@ -36,48 +36,13 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     public NavigationDrawerAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout
                 .list_item_navigation_drawer, viewGroup, Boolean.FALSE);
-        return new ViewHolder(v);
+        return new ViewHolder(v, this);
     }
 
     @Override
     public void onBindViewHolder(NavigationDrawerAdapter.ViewHolder viewHolder, final int i) {
         viewHolder.textView.setText(mData.get(i).getText());
         viewHolder.textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-
-        //TODO Correct this and put wherever it proceeds
-        viewHolder.itemView.setOnTouchListener(new View.OnTouchListener() {
-                                                   @Override
-                                                   public boolean onTouch(View v,
-                                                                          MotionEvent event) {
-
-                                                       switch (event.getAction()) {
-                                                           case MotionEvent.ACTION_DOWN:
-                                                               touchPosition(i);
-                                                               return Boolean.FALSE;
-                                                           case MotionEvent.ACTION_CANCEL:
-                                                               touchPosition(-1);
-                                                               return Boolean.FALSE;
-                                                           case MotionEvent.ACTION_MOVE:
-                                                               return Boolean.FALSE;
-                                                           case MotionEvent.ACTION_UP:
-                                                               touchPosition(-1);
-                                                               return Boolean.FALSE;
-                                                       }
-                                                       return Boolean.TRUE;
-                                                   }
-                                               }
-        );
-
-        //TODO Correct this and put wherever it proceeds
-        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                                                   @Override
-                                                   public void onClick(View v) {
-                                                       if (mNavigationDrawerCallbacks != null)
-                                                           mNavigationDrawerCallbacks
-                                                                   .onNavigationDrawerItemSelected(i);
-                                                   }
-                                               }
-        );
 
         viewHolder.textView.setCompoundDrawablesWithIntrinsicBounds(mData.get(i)
                 .getStandardDrawable(), null, null, null);
@@ -118,12 +83,42 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         return mData != null ? mData.size() : 0;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View
+            .OnClickListener, View.OnTouchListener {
         public TextView textView;
+        private NavigationDrawerAdapter mAdapter;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, NavigationDrawerAdapter adapter) {
             super(itemView);
+            mAdapter = adapter;
+            itemView.setOnClickListener(this);
+            itemView.setOnTouchListener(this);
             textView = (TextView) itemView.findViewById(android.R.id.text1);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (mAdapter.mNavigationDrawerCallbacks != null)
+                mAdapter.mNavigationDrawerCallbacks
+                        .onNavigationDrawerItemSelected(getPosition());
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    mAdapter.touchPosition(getPosition());
+                    return Boolean.FALSE;
+                case MotionEvent.ACTION_CANCEL:
+                    mAdapter.touchPosition(getPosition());
+                    return Boolean.FALSE;
+                case MotionEvent.ACTION_MOVE:
+                    return Boolean.FALSE;
+                case MotionEvent.ACTION_UP:
+                    mAdapter.touchPosition(getPosition());
+                    return Boolean.FALSE;
+            }
+            return Boolean.TRUE;
         }
     }
 
