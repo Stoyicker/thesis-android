@@ -7,10 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.support.annotation.NonNull;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.thesis.android.BuildConfig;
 import org.thesis.android.R;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -18,8 +18,10 @@ import java.util.Locale;
 public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
     private static final Object DB_LOCK = new Object();
-    private static final String NAME_TABLE_NAME = "NAMES_TABLE";
-    private static final String TABLE_KEY_NAME = "NAME";
+    private static final String NAME_TABLE_NAME = "NAMES_TABLE",
+            GROUPS_TABLE_NAME = "GROUPS_TABLE", UNGROUPED_TABLE_NAME = "UNGROUPED";
+    private static final String TABLE_KEY_NAME = "NAME", TABLE_KEY_GROUP_NAME = "GROUP_NAME",
+            TABLE_KEY_TAG_NAME = "TAG_NAME";
     private static SQLiteDAO mInstance;
 
     private SQLiteDAO(@NonNull Context _context) {
@@ -60,8 +62,23 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
                 TABLE_KEY_NAME + " TEXT PRIMARY KEY ON CONFLICT IGNORE"
                 + " )".toUpperCase(Locale.ENGLISH);
 
+        final String createGroupsTableCmd = "CREATE TABLE IF NOT EXISTS " + GROUPS_TABLE_NAME + "" +
+                " ( " +
+                TABLE_KEY_GROUP_NAME + " TEXT PRIMARY KEY ON CONFLICT IGNORE"
+                + " )".toUpperCase(Locale.ENGLISH);
+
+        final String createUngroupedCmd = "CREATE TABLE IF NOT EXISTS " + UNGROUPED_TABLE_NAME +
+                " ( " +
+                TABLE_KEY_TAG_NAME + " TEXT PRIMARY KEY ON CONFLICT IGNORE"
+                + " )".toUpperCase(Locale.ENGLISH);
+
         synchronized (DB_LOCK) {
             db.execSQL(createNameTableCmd);
+            db.execSQL(createGroupsTableCmd);
+            db.execSQL(createUngroupedCmd);
+            final ContentValues contentValues = new ContentValues();
+            contentValues.put(TABLE_KEY_GROUP_NAME, UNGROUPED_TABLE_NAME);
+            db.insert(GROUPS_TABLE_NAME, null, contentValues);
         }
     }
 
@@ -86,6 +103,11 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         return namesCursor.getString(namesCursor.getColumnIndex(TABLE_KEY_NAME));
     }
 
+    private String mapStorableToTagGroup(Cursor namesCursor) {
+        return WordUtils.capitalizeFully(namesCursor.getString(namesCursor.getColumnIndex
+                (TABLE_KEY_GROUP_NAME)));
+    }
+
     public List<String> getNames() {
         List<String> ret = new LinkedList<>();
 
@@ -106,12 +128,24 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         return ret;
     }
 
-    /**
-     * TODO getTagGroups
-     */
     public List<String> getTagGroups() {
-        return Arrays.asList("Tag group 1", "tag group 2", "group3",
-                "gröup with strange chåräctersñ", "reaaaaally looooooooooooooooong-named group",
-                "another group", "plus another one");
+        List<String> ret = new LinkedList<>();
+
+        SQLiteDatabase db = getReadableDatabase();
+        synchronized (DB_LOCK) {
+            db.beginTransaction();
+            Cursor allStorableGroups = db.query(GROUPS_TABLE_NAME, null, null, null, null, null,
+                    null);
+            if (allStorableGroups != null && allStorableGroups.moveToFirst()) {
+                do {
+                    ret.add(mapStorableToTagGroup(allStorableGroups));
+                } while (allStorableGroups.moveToNext());
+            }
+            if (allStorableGroups != null)
+                allStorableGroups.close();
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }
+        return ret;
     }
 }
