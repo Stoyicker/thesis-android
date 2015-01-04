@@ -75,7 +75,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Required to not to transfer the click to the view behind.
+                if (mIsNameBeingEdited)
+                    finishNameEdit(Boolean.FALSE);
             }
         });
         mDrawerList = (RecyclerView) view.findViewById(R.id.drawerList);
@@ -129,7 +130,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mNameField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mNameField.hasFocus())
+                if (!mIsNameBeingEdited)
                     mEditNameButton.performClick();
             }
         });
