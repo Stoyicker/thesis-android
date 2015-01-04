@@ -110,12 +110,12 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
                     mAdapter.touchPosition(getPosition());
                     return Boolean.FALSE;
                 case MotionEvent.ACTION_CANCEL:
-                    mAdapter.touchPosition(getPosition());
+                    mAdapter.touchPosition(-1);
                     return Boolean.FALSE;
                 case MotionEvent.ACTION_MOVE:
                     return Boolean.FALSE;
                 case MotionEvent.ACTION_UP:
-                    mAdapter.touchPosition(getPosition());
+                    mAdapter.touchPosition(-1);
                     return Boolean.FALSE;
             }
             return Boolean.TRUE;
