@@ -28,8 +28,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         mData = data;
     }
 
-    public void setNavigationDrawerCallbacks(INavigationDrawerCallback INavigationDrawerCallback) {
-        mNavigationDrawerCallbacks = INavigationDrawerCallback;
+    public void setNavigationDrawerCallbacks(INavigationDrawerCallback callback) {
+        mNavigationDrawerCallbacks = callback;
     }
 
     @Override
@@ -98,9 +98,16 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 
         @Override
         public void onClick(View v) {
-            if (mAdapter.mNavigationDrawerCallbacks != null)
-                mAdapter.mNavigationDrawerCallbacks
-                        .onNavigationDrawerItemSelected(getPosition());
+            final Integer pos = getPosition();
+            if (mAdapter.mNavigationDrawerCallbacks != null) {
+                if (mAdapter.getItemCount() > pos + 1) //Important that creating a new group is
+                    // the last option
+                    mAdapter.mNavigationDrawerCallbacks
+                            .onNavigationTagGroupSelected(pos);
+                else
+                    mAdapter.mNavigationDrawerCallbacks
+                            .onNewGroupCreationRequested();
+            }
         }
 
         @Override
@@ -141,6 +148,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     }
 
     public interface INavigationDrawerCallback {
-        void onNavigationDrawerItemSelected(int position);
+        void onNavigationTagGroupSelected(int position);
+
+        void onNewGroupCreationRequested();
     }
 }

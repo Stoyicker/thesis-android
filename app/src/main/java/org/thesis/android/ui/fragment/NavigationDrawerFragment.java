@@ -340,7 +340,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
             closeDrawer();
         }
         if (mCallbacks != null) {
-            mCallbacks.onNavigationDrawerItemSelected(position);
+            mCallbacks.onNavigationTagGroupSelected(position);
         }
         ((NavigationDrawerAdapter) mDrawerList.getAdapter()).selectPosition(position);
     }
@@ -366,8 +366,13 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
+    public void onNavigationTagGroupSelected(int position) {
         selectItem(position);
+    }
+
+    @Override
+    public void onNewGroupCreationRequested() {
+        //Do nothing
     }
 
     public Boolean requestNameEditCancel() {

@@ -37,11 +37,17 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
+    public void onNavigationTagGroupSelected(int position) {
         if (mNavigationDrawerFragment == null || mNavigationDrawerFragment.getPosition() ==
                 position) {
             return;
         }
+
+    }
+
+    @Override
+    public void onNewGroupCreationRequested() {
+        //TODO onNewGroupCreationRequested
     }
 
     @Override
