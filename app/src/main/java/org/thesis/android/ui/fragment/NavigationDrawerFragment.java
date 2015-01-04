@@ -13,10 +13,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -122,6 +126,46 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
             }
         });
 
+        mNameField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mNameField.hasFocus())
+                    mEditNameButton.performClick();
+            }
+        });
+
+        mNameField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (mEditNameButton.isShown() && TextUtils.isEmpty(s.toString())) {
+                    TranslateAnimation animate = new TranslateAnimation(0, mEditNameButton.getWidth
+                            (), 0, 0);
+                    animate.setDuration(mContext.getResources().getInteger(R.integer
+                            .floating_label_layout_duration_millis));
+                    mEditNameButton.startAnimation(animate);
+                    mEditNameButton.setVisibility(View.GONE);
+                } else if (!mEditNameButton.isShown() && !TextUtils.isEmpty(s.toString())) {
+                    TranslateAnimation animate = new TranslateAnimation(mEditNameButton.getWidth
+                            (), 0, 0, 0);
+                    animate.setDuration(mContext.getResources().getInteger(R.integer
+                            .floating_label_layout_duration_millis));
+                    animate.setFillAfter(Boolean.TRUE);
+                    mEditNameButton.startAnimation(animate);
+                    mEditNameButton.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
         final List<NavigationDrawerAdapter.NavigationItem> navigationItems = readMenuItems();
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(mContext, navigationItems);
         adapter.setNavigationDrawerCallbacks(this);
@@ -211,12 +255,22 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     private synchronized void finishNameEdit(Boolean success) {
         mNameField.setFocusable(Boolean.FALSE);
         mNameField.setFocusableInTouchMode(Boolean.FALSE);
+
         mIsNameBeingEdited = Boolean.FALSE;
         final InputMethodManager imm = (InputMethodManager) mContext
                 .getSystemService(
                         Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mNameField.getWindowToken(), 0);
         mNameField.clearFocus();
+        if (!mEditNameButton.isShown()) {
+            TranslateAnimation animate = new TranslateAnimation(mEditNameButton.getWidth
+                    (), 0, 0, 0);
+            animate.setDuration(mContext.getResources().getInteger(R.integer
+                    .floating_label_layout_duration_millis));
+            animate.setFillAfter(Boolean.TRUE);
+            mEditNameButton.startAnimation(animate);
+            mEditNameButton.setVisibility(View.VISIBLE);
+        }
         if (success) {
             final String name = mNameField.getText().toString();
             PreferenceAssistant.saveSharedString(mContext,
