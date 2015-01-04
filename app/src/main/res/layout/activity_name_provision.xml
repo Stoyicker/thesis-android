@@ -68,7 +68,7 @@
                 android:layout_width="@dimen/name_edit_button_ripple_side"
                 android:layout_height="@dimen/name_edit_button_ripple_side"
                 app:rv_rippleDuration="200"
-                app:rv_color="@color/ripple"
+                app:rv_color="@color/ripple_material_dark"
                 android:visibility="invisible"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true">
