@@ -8,20 +8,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.ViewGroup;
 
-import org.apmem.tools.layouts.FlowLayout;
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.ui.adapter.NavigationDrawerAdapter;
 import org.thesis.android.ui.fragment.MessageContainerFragment;
 import org.thesis.android.ui.fragment.NavigationDrawerFragment;
-import org.thesis.android.ui.util.TagView;
+import org.thesis.android.ui.util.TagCloudCardExpand;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Stack;
 
 import it.gmariotti.cardslib.library.internal.Card;
@@ -147,24 +142,8 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
 
         CardView cardView = (CardView) findViewById(R.id.card_tag_group_configuration);
 
-        CardExpand expand = new CardExpand(mContext, R.layout.dynamic_horizontal_flow) {
-            @Override
-            public void setupInnerViewElements(ViewGroup parent, View view) {
-                if (view == null) {
-                    return;
-                }
-
-                //TODO Add the real tags instead of the stub
-                final List<String> tags = Arrays.asList("tag1", "tag 2");
-
-                for (String x : tags)
-                    ((FlowLayout) view.findViewById(android.R.id.content)).addView(new TagView
-                            (mContext, x));
-            }
-
-        };
-
-        card.addCardExpand(expand);
+        CardExpand cardExpand = new TagCloudCardExpand(mContext);
+        card.addCardExpand(cardExpand);
 
         card.setOnCollapseAnimatorEndListener(new Card.OnCollapseAnimatorEndListener() {
             @Override

@@ -83,7 +83,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mDrawerList.setLayoutManager(layoutManager);
-        mDrawerList.setHasFixedSize(Boolean.TRUE);
+        mDrawerList.setHasFixedSize(Boolean.FALSE);
         mDrawerList.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
         mIsNameBeingEdited = Boolean.FALSE;

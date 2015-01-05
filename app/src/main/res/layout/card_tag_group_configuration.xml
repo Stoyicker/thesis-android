@@ -2,13 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+              android:layout_height="wrap_content"
+              android:animateLayoutChanges="true">
 
     <LinearLayout
         android:id="@+id/card_main_layout"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@android:color/white">
 
         <it.gmariotti.cardslib.library.view.component.CardHeaderView
@@ -25,9 +26,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-        </FrameLayout>
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <it.gmariotti.cardslib.library.view.component.CardShadowView

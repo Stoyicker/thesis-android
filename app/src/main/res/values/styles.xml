@@ -59,5 +59,17 @@
 
     <style name="AppTheme.TagName" parent="card.header_outer_layout">
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/tag_name_text</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="AppTheme.InformativeText">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/informative_text</item>
+        <item name="android:gravity">start</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:ellipsize">end</item>
     </style>
 </resources>

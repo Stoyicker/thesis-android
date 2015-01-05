@@ -67,5 +67,6 @@
         android:scrollbars="vertical"
         android:focusable="true"
         android:fillViewport="true"
+        android:overScrollMode="never"
         tools:ignore="UnusedAttribute"/>
 </LinearLayout>
