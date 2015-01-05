@@ -150,7 +150,8 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
 
         final CardView cardView = (CardView) findViewById(R.id.card_tag_group_configuration);
 
-        final CardExpand cardExpand = new TagCloudCardExpand(mContext, this, groupName);
+        final CardExpand cardExpand = new TagCloudCardExpand(mContext, this, groupName,
+                cardView.findViewById(R.id.card_content_expand_layout));
         card.addCardExpand(cardExpand);
 
         card.setOnCollapseAnimatorEndListener(new Card.OnCollapseAnimatorEndListener() {

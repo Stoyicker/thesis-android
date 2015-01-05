@@ -19,7 +19,8 @@ public class TagCloudCardExpand extends CardExpand implements TagCardView.ITagRe
     private final ITagRemovalListener mCallback;
     private FlowLayout mFlowLayout;
 
-    public TagCloudCardExpand(Context context, ITagRemovalListener _callback, String groupName) {
+    public TagCloudCardExpand(Context context, ITagRemovalListener _callback, String groupName,
+                              View expandView) {
         super(context, R.layout.card_tag_group_flow);
 
         mCallback = _callback;
@@ -30,19 +31,19 @@ public class TagCloudCardExpand extends CardExpand implements TagCardView.ITagRe
             mTagCardViews.add(new TagCardView(mContext, x, this));
         }
 
-    }
-
-    @Override
-    public void setupInnerViewElements(ViewGroup parent, View view) {
-        if (view == null) return;
-
-        view.setOnLongClickListener(new View.OnLongClickListener() {
+        expandView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 mFlowLayout.addView(new AddedTagCardView(mContext, TagCloudCardExpand.this));
                 return Boolean.TRUE;
             }
         });
+
+    }
+
+    @Override
+    public void setupInnerViewElements(ViewGroup parent, View view) {
+        if (view == null) return;
 
         mFlowLayout = (FlowLayout) view.findViewById(R.id.flow_layout);
 
