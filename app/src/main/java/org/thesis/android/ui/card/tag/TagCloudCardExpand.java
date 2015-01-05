@@ -39,6 +39,8 @@ public class TagCloudCardExpand extends CardExpand implements TagCardView.ITagRe
             }
         });
 
+        //TODO Point both listeners to the same method, which will be synchronized and will only
+        // work if there is no tag being created
     }
 
     @Override

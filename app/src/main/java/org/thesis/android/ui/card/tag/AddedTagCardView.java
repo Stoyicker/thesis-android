@@ -19,7 +19,7 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnLongC
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context
                 .LAYOUT_INFLATER_SERVICE);
 
-        final View v = mInflater.inflate(R.layout.custom_view_added_tag_card, this, Boolean.TRUE);
+        mInflater.inflate(R.layout.custom_view_added_tag_card, this, Boolean.TRUE);
 
         mCallback = _removalCallback;
 
@@ -28,11 +28,14 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnLongC
 
         setOnLongClickListener(this);
 
-        v.findViewById(R.id.tag_name).requestFocus();
+        //TODO On EditText focus lost, notify the (yet-to-do) listener which will dump the data
+        // to the database, disable both focusmodes from the EditText, forbid it from being editable
+        // and set to FALSE the (yet-to-do) global isBeingEdited field
     }
 
     @Override
     public boolean onLongClick(View v) {
+        //FIXME Only do this if the global field isBeingEdited is false
         v.setVisibility(View.GONE);
         if (mCallback != null && v instanceof AddedTagCardView)
             mCallback.onTagRemoved(this);
