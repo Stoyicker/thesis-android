@@ -15,6 +15,7 @@ import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.ui.adapter.NavigationDrawerAdapter;
 import org.thesis.android.ui.fragment.MessageContainerFragment;
 import org.thesis.android.ui.fragment.NavigationDrawerFragment;
+import org.thesis.android.ui.util.TagCardView;
 import org.thesis.android.ui.util.TagCloudCardExpand;
 
 import java.util.Stack;
@@ -25,7 +26,7 @@ import it.gmariotti.cardslib.library.internal.CardHeader;
 import it.gmariotti.cardslib.library.view.CardView;
 
 public class NavigationDrawerActivity extends ActionBarActivity implements
-        NavigationDrawerAdapter.INavigationDrawerCallback {
+        NavigationDrawerAdapter.INavigationDrawerCallback, TagCloudCardExpand.ITagRemovalListener {
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Context mContext;
@@ -129,6 +130,11 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         }
     }
 
+    @Override
+    public void onTagRemoved(TagCardView removedTagView) {
+        //TODO Remove tag on the database
+    }
+
     public interface IOnBackPressedListener {
         public Boolean onBackPressed();
     }
@@ -140,9 +146,9 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         header.setButtonExpandVisible(Boolean.TRUE);
         card.addCardHeader(header);
 
-        CardView cardView = (CardView) findViewById(R.id.card_tag_group_configuration);
+        final CardView cardView = (CardView) findViewById(R.id.card_tag_group_configuration);
 
-        CardExpand cardExpand = new TagCloudCardExpand(mContext);
+        final CardExpand cardExpand = new TagCloudCardExpand(mContext, this);
         card.addCardExpand(cardExpand);
 
         card.setOnCollapseAnimatorEndListener(new Card.OnCollapseAnimatorEndListener() {

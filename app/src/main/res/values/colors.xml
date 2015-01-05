@@ -12,5 +12,8 @@
 
     <color name="navigation_drawer_entry_background_selected">#FFFFEE</color>
     <color name="navigation_drawer_entry_background_hovered">#FFFFBB</color>
-    <color name="navigation_drawer_background">@android:color/white</color>
+    <color name="navigation_drawer_background">@android:color/transparent</color>
+
+    <!-- CardView -->
+    <color name="card_backgroundExpand">@android:color/white</color>
 </resources>

@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<org.apmem.tools.layouts.FlowLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:f="http://schemas.android.com/apk/tools"
+<org.thesis.android.ui.util.FlowLayout
     android:id="@+id/flow_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    f:weight_default="1.0"
-    f:layoutDirection="ltr"
-    android:gravity="start"/>
+    android:animateLayoutChanges="true"
+    android:gravity="start"
+    xmlns:android="http://schemas.android.com/apk/res/android"/>
