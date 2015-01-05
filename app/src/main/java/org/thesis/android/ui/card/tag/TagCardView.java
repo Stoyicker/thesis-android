@@ -1,4 +1,4 @@
-package org.thesis.android.ui.util;
+package org.thesis.android.ui.card.tag;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 import org.thesis.android.R;
 
 @SuppressLint("ViewConstructor") //They wouldn't be used anyway
-public class TagCardView extends CardView implements View.OnLongClickListener {
+public class TagCardView extends CardView implements ITagCard, View.OnLongClickListener {
 
     private ITagRemovalListener mCallback;
     private final String mTagName;
@@ -34,15 +34,16 @@ public class TagCardView extends CardView implements View.OnLongClickListener {
     public boolean onLongClick(View v) {
         v.setVisibility(View.GONE);
         if (mCallback != null && v instanceof TagCardView)
-            mCallback.onTagRemoved((TagCardView) v);
+            mCallback.onTagRemoved(this);
         return Boolean.TRUE;
     }
 
-    public String getTagName() {
+    @Override
+    public String getName() {
         return mTagName;
     }
 
     public interface ITagRemovalListener {
-        public void onTagRemoved(TagCardView removedTagView);
+        public void onTagRemoved(ITagCard tag);
     }
 }

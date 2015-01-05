@@ -13,10 +13,10 @@ import org.thesis.android.CApplication;
 import org.thesis.android.R;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.ui.adapter.NavigationDrawerAdapter;
+import org.thesis.android.ui.card.tag.ITagCard;
+import org.thesis.android.ui.card.tag.TagCloudCardExpand;
 import org.thesis.android.ui.fragment.MessageContainerFragment;
 import org.thesis.android.ui.fragment.NavigationDrawerFragment;
-import org.thesis.android.ui.util.TagCardView;
-import org.thesis.android.ui.util.TagCloudCardExpand;
 
 import java.util.Stack;
 
@@ -131,8 +131,9 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void onTagRemoved(TagCardView removedTagView) {
-        SQLiteDAO.getInstance().removeTagFromGroup(removedTagView.getTagName());
+    public void onTagRemoved(ITagCard removedTagView) {
+        SQLiteDAO.getInstance().removeTagFromGroup(removedTagView.getName(),
+                SQLiteDAO.getInstance().getTagGroups().get(mTagGroupIndexStack.peek()));
     }
 
     public interface IOnBackPressedListener {

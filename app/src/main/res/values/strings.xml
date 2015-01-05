@@ -11,4 +11,5 @@
     <string name="tag_settings">Tag settings</string>
     <string name="delete_tag">Delete tag</string>
     <string name="tag_removal_instructions">Long-press a tag to remove it from the group.</string>
+    <string name="insert_tag">Insert tag here…</string>
 </resources>
