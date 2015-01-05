@@ -19,7 +19,7 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnLongC
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context
                 .LAYOUT_INFLATER_SERVICE);
 
-        mInflater.inflate(R.layout.custom_view_added_tag_card, this, Boolean.TRUE);
+        final View v = mInflater.inflate(R.layout.custom_view_added_tag_card, this, Boolean.TRUE);
 
         mCallback = _removalCallback;
 
@@ -27,6 +27,8 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnLongC
                 .material_deep_purple_900));
 
         setOnLongClickListener(this);
+
+        v.findViewById(R.id.tag_name).requestFocus();
     }
 
     @Override

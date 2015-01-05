@@ -15,4 +15,5 @@
     <dimen name="tag_name_padding">5dp</dimen>
     <dimen name="informative_text">12sp</dimen>
     <dimen name="min_tag_conf_height">200dp</dimen>
+    <dimen name="min_tag_length">60dp</dimen>
 </resources>
