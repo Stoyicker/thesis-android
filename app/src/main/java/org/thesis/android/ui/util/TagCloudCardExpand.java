@@ -5,10 +5,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.thesis.android.R;
+import org.thesis.android.io.database.SQLiteDAO;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import it.gmariotti.cardslib.library.internal.CardExpand;
 
@@ -17,17 +17,13 @@ public class TagCloudCardExpand extends CardExpand implements TagCardView.ITagRe
     private final List<TagCardView> mTagCardViews = new LinkedList<>();
     private final ITagRemovalListener mCallback;
     private FlowLayout mFlowLayout;
-    private View mView;
 
-    public TagCloudCardExpand(Context context, ITagRemovalListener _callback) {
+    public TagCloudCardExpand(Context context, ITagRemovalListener _callback, String groupName) {
         super(context, R.layout.card_tag_group_flow);
 
         mCallback = _callback;
 
-        //TODO Retrieve the real, UNIQUE and FORMATTED tags
-        List<String> tags = new LinkedList<>();
-        for (int i = 0; i < 10; i++)
-            tags.add("tag " + new Random().nextFloat());
+        List<String> tags = SQLiteDAO.getInstance().getGroupTags(groupName);
 
         for (String x : tags) {
             mTagCardViews.add(new TagCardView(mContext, x, this));
@@ -39,9 +35,7 @@ public class TagCloudCardExpand extends CardExpand implements TagCardView.ITagRe
     public void setupInnerViewElements(ViewGroup parent, View view) {
         if (view == null) return;
 
-        mView = view;
-
-        mFlowLayout = (FlowLayout) mView.findViewById(R.id.flow_layout);
+        mFlowLayout = (FlowLayout) view.findViewById(R.id.flow_layout);
 
         mFlowLayout.setBackgroundColor(mContext.getResources().getColor(android.R.color
                 .holo_red_dark));

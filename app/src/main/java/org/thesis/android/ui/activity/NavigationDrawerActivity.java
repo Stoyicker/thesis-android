@@ -132,7 +132,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
 
     @Override
     public void onTagRemoved(TagCardView removedTagView) {
-        //TODO Remove tag on the database
+        SQLiteDAO.getInstance().removeTagFromGroup(removedTagView.getTagName());
     }
 
     public interface IOnBackPressedListener {
@@ -142,13 +142,14 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     private void setTagGroupConfigHeader(Integer groupIndex) {
         final Card card = new Card(mContext);
         final CardHeader header = new CardHeader(mContext);
-        header.setTitle(SQLiteDAO.getInstance().getTagGroups().get(groupIndex));
+        final String groupName = SQLiteDAO.getInstance().getTagGroups().get(groupIndex);
+        header.setTitle(groupName);
         header.setButtonExpandVisible(Boolean.TRUE);
         card.addCardHeader(header);
 
         final CardView cardView = (CardView) findViewById(R.id.card_tag_group_configuration);
 
-        final CardExpand cardExpand = new TagCloudCardExpand(mContext, this);
+        final CardExpand cardExpand = new TagCloudCardExpand(mContext, this, groupName);
         card.addCardExpand(cardExpand);
 
         card.setOnCollapseAnimatorEndListener(new Card.OnCollapseAnimatorEndListener() {

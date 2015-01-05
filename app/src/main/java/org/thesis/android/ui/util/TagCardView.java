@@ -13,6 +13,7 @@ import org.thesis.android.R;
 public class TagCardView extends CardView implements View.OnLongClickListener {
 
     private ITagRemovalListener mCallback;
+    private final String mTagName;
 
     public TagCardView(Context context, String tagName, ITagRemovalListener _callback) {
         super(context);
@@ -21,6 +22,7 @@ public class TagCardView extends CardView implements View.OnLongClickListener {
         View v = mInflater.inflate(R.layout.custom_view_tag_card, this, Boolean.TRUE);
         ((TextView) v.findViewById(R.id.tag_name)).setText(tagName);
         mCallback = _callback;
+        mTagName = tagName;
 
         super.setCardBackgroundColor(context.getResources().getColor(R.color
                 .material_purple_900));
@@ -34,6 +36,10 @@ public class TagCardView extends CardView implements View.OnLongClickListener {
         if (mCallback != null && v instanceof TagCardView)
             mCallback.onTagRemoved((TagCardView) v);
         return Boolean.TRUE;
+    }
+
+    public String getTagName() {
+        return mTagName;
     }
 
     public interface ITagRemovalListener {
