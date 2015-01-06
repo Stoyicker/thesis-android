@@ -1,12 +1,15 @@
 package org.thesis.android.ui.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
@@ -98,7 +101,46 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
 
     @Override
     public void onNewGroupCreationRequested() {
-        //TODO onNewGroupCreationRequested
+        showNewGroupDialog();
+    }
+
+    public NavigationDrawerActivity() {
+        super();
+    }
+
+    private void showNewGroupDialog() {
+        new MaterialDialog.Builder(mContext)
+                .title(R.string.new_tag_group_dialog_title)
+                .showListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+                        mNavigationDrawerFragment.closeDrawer();
+                    }
+                })
+                .customView(R.layout./*todo*/, Boolean.TRUE)
+                .positiveText(android.R.string.ok)
+                .negativeText(android.R.string.cancel)
+                .titleColor(R.color.material_purple_900)
+                .positiveColorRes(R.color.material_purple_900)
+                .negativeColorRes(R.color.material_purple_900)
+                .backgroundColor(android.R.color.white)
+                .autoDismiss(Boolean.FALSE)
+                .cancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        dialog.dismiss();
+                    }
+                })
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog materialDialog) {
+                        //TODO If the group is invalid, return before creating it
+                        //TODO Stuff if the group is valid
+                        materialDialog.dismiss();
+                    }
+                })
+                .build()
+                .show();
     }
 
     @Override
