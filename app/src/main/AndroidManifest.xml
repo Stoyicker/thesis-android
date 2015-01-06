@@ -11,7 +11,7 @@
             android:name=".ui.activity.InitialActivity"
             android:theme="@style/AppTheme.Transparent"
             android:launchMode="singleInstance"
-            android:screenOrientation="landscape">
+            android:screenOrientation="sensorLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -21,7 +21,7 @@
             android:name=".ui.activity.NameProvisionActivity"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.ClearBackground"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -30,7 +30,7 @@
         <activity
             android:name=".ui.activity.NavigationDrawerActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="landscape">
+            android:screenOrientation="sensorLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
             </intent-filter>
