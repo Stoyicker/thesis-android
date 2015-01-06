@@ -1,6 +1,7 @@
 package org.thesis.android.ui.util;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -26,7 +27,7 @@ public class BackPreImeAutoCompleteTextView extends AutoCompleteTextView {
     }
 
     @Override
-    public boolean onKeyPreIme(int keyCode, KeyEvent event) {
+    public boolean onKeyPreIme(int keyCode, @NonNull KeyEvent event) {
         if (mTask != null && keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == MotionEvent
                 .ACTION_UP) {
             this.post(mTask);

@@ -19,6 +19,7 @@ import android.widget.Toast;
 import org.apache.commons.lang3.text.WordUtils;
 import org.thesis.android.R;
 import org.thesis.android.io.database.SQLiteDAO;
+import org.thesis.android.ui.util.BackPreImeAutoCompleteTextView;
 
 import java.util.Locale;
 
@@ -78,6 +79,12 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnClick
         });
 
         mTagNameField.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        ((BackPreImeAutoCompleteTextView) mTagNameField).setOnBackPressedAdditionalTask(new Runnable() {
+            @Override
+            public void run() {
+                AddedTagCardView.this.cancelTagCreation();
+            }
+        });
         mTagNameField.post(new Runnable() {
 
             @Override
@@ -119,7 +126,7 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnClick
         imm.hideSoftInputFromWindow(mTagNameField.getWindowToken(), 0);
     }
 
-    void cancelCreation() {
+    void cancelTagCreation() {
         final InputMethodManager imm = (InputMethodManager) mContext
                 .getSystemService(
                         Context.INPUT_METHOD_SERVICE);
