@@ -85,13 +85,13 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
     private ContentValues mapNameToStorable(String name) {
         ContentValues ret = new ContentValues();
-        ret.put(TABLE_KEY_NAME, name.toLowerCase(Locale.ENGLISH));
+        ret.put(TABLE_KEY_NAME, name.toUpperCase(Locale.ENGLISH));
         return ret;
     }
 
     private ContentValues mapTagToStorable(String name) {
         ContentValues ret = new ContentValues();
-        ret.put(TABLE_KEY_TAG_NAME, name.toLowerCase(Locale.ENGLISH));
+        ret.put(TABLE_KEY_TAG_NAME, name.toUpperCase(Locale.ENGLISH));
         return ret;
     }
 
@@ -217,7 +217,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
             if (!groupName.toUpperCase(Locale.ENGLISH).contentEquals(UNGROUPED_TABLE_NAME))
                 ret = db.delete(UNGROUPED_TABLE_NAME, TABLE_KEY_TAG_NAME + " = '" +
                         tagName
-                                .toLowerCase(Locale.ENGLISH) + "'", null) > 0;
+                                .toUpperCase(Locale.ENGLISH) + "'", null) > 0;
             db.setTransactionSuccessful();
             db.endTransaction();
         }
@@ -225,21 +225,22 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
     }
 
     public Boolean isTagOrGroupNameValid(String name) {
-        final Pattern tagFormatPattern = Pattern.compile("[a-z0-9_]+");
+        final Pattern tagFormatPattern = Pattern.compile("[A-Z0-9_]+");
         final SQLiteDatabase db = getReadableDatabase();
 
-        if (!tagFormatPattern.matcher(name.toLowerCase(Locale.ENGLISH)).matches())
+        if (!tagFormatPattern.matcher(name.toUpperCase(Locale.ENGLISH)).matches())
             return Boolean.FALSE;
 
         synchronized (DB_LOCK) {
             db.beginTransaction();
             Cursor allTablesMatching = db.query("sqlite_master", null,
-                    "type = 'table' and name = '" + name.toUpperCase(Locale.ENGLISH) + "'", null,
+                    "type = 'table'", null,
                     null,
                     null,
                     null);
             if (allTablesMatching != null && allTablesMatching.getCount() > 0)
                 return Boolean.FALSE;
+            //TODO Fetch all tables and check if it exists already
             if (allTablesMatching != null)
                 allTablesMatching.close();
             db.setTransactionSuccessful();
