@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.thesis.android.R;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.ui.activity.NavigationDrawerActivity;
@@ -82,15 +83,22 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
 
     @Override
     public void onTagCreated(ITagCard tag) {
-    //No need to add the tag here
+        //No need to add the tag here
         mFlowLayout.addView((View) tag);
         recalculateFlowLayoutHeight();
     }
 
     @Override
     public void onTagAdded(ITagCard tag) {
+        mTagCardViews.remove(tag);
+        mFlowLayout.removeView((View) tag);
+        final TagCardView v = new TagCardView(mContext, WordUtils.capitalizeFully(tag.getName()),
+                this);
+        mTagCardViews.add(v);
         if (mCallback != null)
             mCallback.onTagAdded(tag);
+        mFlowLayout.addView(v);
+        recalculateFlowLayoutHeight();
     }
 
     @Override

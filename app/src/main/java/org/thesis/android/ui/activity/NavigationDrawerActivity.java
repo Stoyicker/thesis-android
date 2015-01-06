@@ -127,8 +127,8 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
 
         if (!consumed) {
             mTagGroupIndexStack.pop();
-            super.onBackPressed();
             setTagGroupConfigHeader(mTagGroupIndexStack.peek());
+            super.onBackPressed();
         }
     }
 

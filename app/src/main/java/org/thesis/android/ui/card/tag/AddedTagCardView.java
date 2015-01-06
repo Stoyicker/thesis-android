@@ -70,7 +70,7 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnClick
                             .getAction() == KeyEvent
                             .ACTION_DOWN &&
                             event.getKeyCode() == KeyEvent.KEYCODE_ENTER))) {
-                        createTag();
+                        saveTag();
                         return Boolean.TRUE;
                     }
                 }
@@ -104,7 +104,7 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnClick
             mCallback.onTagCreated(this);
     }
 
-    private synchronized void createTag() {
+    private synchronized void saveTag() {
         if (!isBeingBuilt()) return;
         final String lowerCaseFieldText = mTagNameField.getText().toString().toLowerCase(Locale
                 .ENGLISH);
@@ -113,17 +113,19 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnClick
                     Toast.LENGTH_LONG).show();
             return;
         }
-        setFocusable(Boolean.FALSE);
-        setFocusableInTouchMode(Boolean.FALSE);
-        setLongClickable(Boolean.FALSE);
         mTagNameField.setText(WordUtils.capitalizeFully(lowerCaseFieldText));
         mBeingBuilt = Boolean.FALSE;
-        mTagNameField.clearFocus();
-        mCallback.onTagAdded(this);
-        final InputMethodManager imm = (InputMethodManager) mContext
-                .getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mTagNameField.getWindowToken(), 0);
+        post(new Runnable() {
+            @Override
+            public void run() {
+                final InputMethodManager imm = (InputMethodManager) mContext
+                        .getSystemService(
+                                Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(mTagNameField.getWindowToken(), 0);
+                setVisibility(View.GONE);
+                mCallback.onTagAdded(AddedTagCardView.this);
+            }
+        });
     }
 
     void cancelTagCreation() {
