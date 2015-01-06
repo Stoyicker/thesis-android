@@ -113,13 +113,22 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnClick
         mBeingBuilt = Boolean.FALSE;
         mTagNameField.clearFocus();
         mCallback.onTagAdded(this);
-    }
-
-    private void forceDelete() {
         final InputMethodManager imm = (InputMethodManager) mContext
                 .getSystemService(
                         Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mTagNameField.getWindowToken(), 0);
+    }
+
+    void cancelCreation() {
+        final InputMethodManager imm = (InputMethodManager) mContext
+                .getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mTagNameField.getWindowToken(), 0);
+        if (mCallback != null)
+            mCallback.onTagCreationCancelled(this);
+    }
+
+    private void forceDelete() {
         setVisibility(View.GONE);
         if (mCallback != null)
             mCallback.onTagRemoved(this);

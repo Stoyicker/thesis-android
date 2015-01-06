@@ -55,7 +55,7 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
         if (viewToRemove == null)
             mTagCardViews.add(new AddedTagCardView(mContext, TagCloudCardExpand.this));
         else
-            onTagCreationCancelled(viewToRemove);
+            viewToRemove.cancelCreation();
     }
 
     @Override
@@ -125,7 +125,7 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
         if (viewToRemove == null)
             getParentCard().doToogleExpand(); //Close Expand
         else
-            onTagCreationCancelled(viewToRemove); //Discard the added tag
+            viewToRemove.cancelCreation(); //Discard the added tag
 
         return Boolean.TRUE;
     }
