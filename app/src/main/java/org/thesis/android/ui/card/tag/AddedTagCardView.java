@@ -64,7 +64,7 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnClick
         mTagNameField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (event != null || !isBeingBuilt()) {
+                if (isBeingBuilt()) {
                     if (actionId == EditorInfo.IME_ACTION_DONE || (event != null && event
                             .isShiftPressed() && (event
                             .getAction() == KeyEvent

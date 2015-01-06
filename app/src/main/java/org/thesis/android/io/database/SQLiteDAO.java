@@ -189,9 +189,9 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
         synchronized (DB_LOCK) {
             db.beginTransaction();
-            ret = db.delete(groupName.toUpperCase(Locale.ENGLISH), TABLE_KEY_TAG_NAME + " = " +
+            ret = db.delete(groupName.toUpperCase(Locale.ENGLISH), TABLE_KEY_TAG_NAME + " = '" +
                     tagName
-                            .toUpperCase(Locale.ENGLISH), null) > 0;
+                            .toUpperCase(Locale.ENGLISH) + "'", null) > 0;
             db.setTransactionSuccessful();
             db.endTransaction();
         }
@@ -201,7 +201,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
     public Boolean addTagToGroupAndRemoveFromUngrouped(String tagName, String groupName) {
         final SQLiteDatabase db = getWritableDatabase();
-        final Boolean ret;
+        Boolean ret = Boolean.FALSE;
 
         //Just in case
         final String createTagTable = "CREATE TABLE IF NOT EXISTS " + groupName.toUpperCase
@@ -214,9 +214,10 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
             db.beginTransaction();
             db.execSQL(createTagTable);
             db.insert(groupName.toUpperCase(Locale.ENGLISH), null, mapTagToStorable(tagName));
-            ret = db.delete(UNGROUPED_TABLE_NAME, TABLE_KEY_TAG_NAME + " = " +
-                    tagName
-                            .toUpperCase(Locale.ENGLISH), null) > 0;
+            if (!groupName.toLowerCase(Locale.ENGLISH).contentEquals(UNGROUPED_TABLE_NAME))
+                ret = db.delete(UNGROUPED_TABLE_NAME, TABLE_KEY_TAG_NAME + " = '" +
+                        tagName
+                                .toUpperCase(Locale.ENGLISH) + "'", null) > 0;
             db.setTransactionSuccessful();
             db.endTransaction();
         }
@@ -227,13 +228,15 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         final Pattern tagFormatPattern = Pattern.compile("[a-z0-9_]+");
         final SQLiteDatabase db = getReadableDatabase();
 
-        if (tagFormatPattern.matcher(name.toLowerCase(Locale.ENGLISH)).matches())
+        if (!tagFormatPattern.matcher(name.toLowerCase(Locale.ENGLISH)).matches())
             return Boolean.FALSE;
 
         synchronized (DB_LOCK) {
             db.beginTransaction();
             Cursor allTablesMatching = db.query("sqlite_master", null,
-                    "type = table and name = " + name.toUpperCase(Locale.ENGLISH), null, null, null,
+                    "type = 'table' and name = '" + name.toUpperCase(Locale.ENGLISH) + "'", null,
+                    null,
+                    null,
                     null);
             if (allTablesMatching != null && allTablesMatching.getCount() > 0)
                 return Boolean.FALSE;
