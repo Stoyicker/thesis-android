@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -135,21 +136,32 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                 .autoDismiss(Boolean.FALSE)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
-                    public void onPositive(MaterialDialog materialDialog) {
+                    public void onPositive(final MaterialDialog materialDialog) {
                         final EditText nameField = (EditText) materialDialog.getCustomView()
                                 .findViewById(R.id.name_field);
                         if (!SQLiteDAO.getInstance().isTagOrGroupNameValid(nameField.getText()
                                 .toString())) {
                             Toast.makeText(NavigationDrawerActivity.this.mContext,
                                     R.string.invalid_tag_group_name, Toast.LENGTH_LONG).show();
+                            return;
                         }
-                        //TODO Stuff if the group is valid
+                        //TODO Store the group
                         final InputMethodManager imm = (InputMethodManager)
                                 NavigationDrawerActivity.this.mContext.getSystemService(Service
                                         .INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromInputMethod(nameField.getWindowToken(), 0);
                         mNavigationDrawerFragment.closeDrawer();
-                        //TODO Request the drawer refresh now that it's closed
+                        //Workaround for RecyclerView bug (https://code.google
+                        // .com/p/android/issues/detail?id=77232)
+                        NavigationDrawerActivity.this.findViewById(android.R.id.content)
+                                .postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mNavigationDrawerFragment.requestAdapterRefresh(
+                                                ((CheckBox) materialDialog.getCustomView()
+                                                        .findViewById(R.id.browse_immediately)).isChecked());
+                                    }
+                                }, 100);
                         materialDialog.dismiss();
                     }
 

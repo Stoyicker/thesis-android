@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/material_purple_900</item>
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:windowBackground">@color/material_grey_300</item>
+        <item name="colorAccent">@color/material_purple_900</item>
     </style>
 
     <style name="AppTheme.ClearBackground" parent="AppTheme">
@@ -68,8 +69,16 @@
     <style name="AppTheme.InformativeText">
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/informative_text</item>
-        <item name="android:gravity">start</item>
+        <item name="android:gravity">left|center_horizontal</item>
         <item name="android:textStyle">normal</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="AppTheme.CheckBoxText">
+        <item name="android:textColor">@color/material_purple_900</item>
+        <item name="android:textSize">@dimen/supplementary_text</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:ellipsize">end</item>
     </style>
 </resources>

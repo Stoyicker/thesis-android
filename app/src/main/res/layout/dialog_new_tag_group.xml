@@ -22,4 +22,13 @@
             android:inputType="textNoSuggestions"
             android:background="@null"/>
     </org.ligi.floatlabel.FloatingLabelLayout>
+
+    <CheckBox
+        android:layout_marginTop="@dimen/new_tag_group_checkbox_top_padding"
+        android:id="@+id/browse_immediately"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/AppTheme.CheckBoxText"
+        android:text="@string/browse_immediately_to_tag_group"
+        android:checked="true"/>
 </LinearLayout>

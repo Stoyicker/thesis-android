@@ -16,4 +16,5 @@
     <string name="ungrouped_table_name">UNGROUPED</string>
     <string name="new_tag_group_dialog_title">Create tag group</string>
     <string name="new_tag_name_hint">Name</string>
+    <string name="browse_immediately_to_tag_group">Open straightaway</string>
 </resources>

@@ -53,7 +53,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private boolean mUserLearnedDrawer;
     private boolean mFromSavedInstanceState;
-    private int mCurrentSelectedPosition;
+    private int mCurrentlySelectedPosition;
     private ActionBarActivity mActivity;
     private Context mContext;
     private final Queue<Runnable> mWhenClosedTasks = new LinkedList<>();
@@ -61,6 +61,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     private ImageButton mEditNameButton;
     private Boolean mIsNameBeingEdited;
     private Boolean mNameEditSuccess;
+    private NavigationDrawerAdapter mAdapter;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -168,10 +169,10 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         });
 
         final List<NavigationDrawerAdapter.NavigationItem> navigationItems = readMenuItems();
-        NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(mContext, navigationItems);
-        adapter.setNavigationDrawerCallbacks(this);
-        mDrawerList.setAdapter(adapter);
-        selectItem(mCurrentSelectedPosition);
+        mAdapter = new NavigationDrawerAdapter(mContext, navigationItems);
+        mAdapter.setNavigationDrawerCallbacks(this);
+        mDrawerList.setAdapter(mAdapter);
+        selectItem(mCurrentlySelectedPosition);
         return view;
     }
 
@@ -190,7 +191,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mUserLearnedDrawer = PreferenceAssistant.readSharedBoolean(mActivity,
                 PreferenceAssistant.PREF_USER_LEARNED_DRAWER, Boolean.FALSE);
         if (savedInstanceState != null) {
-            mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
+            mCurrentlySelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = Boolean.TRUE;
         }
     }
@@ -335,7 +336,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     }
 
     public void selectItem(int position) {
-        mCurrentSelectedPosition = position;
+        mCurrentlySelectedPosition = position;
         if (mDrawerLayout != null) {
             closeDrawer();
         }
@@ -362,7 +363,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
+        outState.putInt(STATE_SELECTED_POSITION, mCurrentlySelectedPosition);
     }
 
     @Override
@@ -382,5 +383,12 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
             return Boolean.TRUE;
         }
         return Boolean.FALSE;
+    }
+
+    public void requestAdapterRefresh(Boolean selectNew) {
+        mAdapter.notifyDataSetChanged();
+        //Note the -2 in getItemCount(): 1 is to retrieve an index an another one is to skip the
+        //"new group" entry
+        selectItem(selectNew ? mAdapter.getItemCount() - 2 : mCurrentlySelectedPosition);
     }
 }

@@ -16,4 +16,5 @@
     <dimen name="informative_text">16sp</dimen>
     <dimen name="min_tag_conf_height">200dp</dimen>
     <dimen name="min_tag_length">60dp</dimen>
+    <dimen name="new_tag_group_checkbox_top_padding">20dp</dimen>
 </resources>
