@@ -9,11 +9,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.thesis.android.CApplication;
@@ -118,12 +122,33 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                 .title(R.string.new_tag_group_dialog_title)
                 .showListener(new DialogInterface.OnShowListener() {
                     @Override
-                    public void onShow(DialogInterface dialog) {
+                    public void onShow(final DialogInterface dialog) {
+                        final EditText nameField = (EditText) ((MaterialDialog) dialog)
+                                .getCustomView()
+                                .findViewById(R.id.name_field);
+                        nameField.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                        nameField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                            @Override
+                            public boolean onEditorAction(TextView v, int actionId,
+                                                          KeyEvent event) {
+                                if (actionId == EditorInfo.IME_ACTION_DONE || (event != null &&
+                                        event
+                                                .isShiftPressed() && (event
+                                        .getAction() == KeyEvent
+                                        .ACTION_DOWN &&
+                                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER))) {
+                                    ((MaterialDialog) dialog).getActionButton(DialogAction
+                                            .POSITIVE).performClick();
+                                    return Boolean.TRUE;
+                                }
+                                return Boolean.FALSE;
+                            }
+                        });
+
                         final InputMethodManager imm = (InputMethodManager)
                                 NavigationDrawerActivity.this.mContext.getSystemService(Service
                                         .INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(((MaterialDialog) dialog).getCustomView().findViewById
-                                (R.id.name_field), 0);
+                        imm.showSoftInput(nameField, 0);
                     }
                 })
                 .customView(R.layout.dialog_new_tag_group, Boolean.TRUE)
@@ -159,7 +184,8 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                                     public void run() {
                                         mNavigationDrawerFragment.requestAdapterRefresh(
                                                 ((CheckBox) materialDialog.getCustomView()
-                                                        .findViewById(R.id.browse_immediately)).isChecked());
+                                                        .findViewById(R.id.browse_immediately))
+                                                        .isChecked());
                                     }
                                 }, 100);
                         materialDialog.dismiss();
