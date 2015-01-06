@@ -247,20 +247,23 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
                     null,
                     null,
                     null);
-            if (allTablesMatching != null) {
-                if (allTablesMatching.getCount() > 0) {
-                    allTablesMatching.close();
-                    db.setTransactionSuccessful();
-                    db.endTransaction();
-                    return Boolean.FALSE;
-                }
+            if (allTablesMatching != null && allTablesMatching.moveToFirst()) {
                 do {
-                    if (mapSqliteMasterStorableToUpperCaseTagName(allTablesMatching)
-                            .contentEquals(upperCaseName)) {
-                        allTablesMatching.close();
-                        db.setTransactionSuccessful();
-                        db.endTransaction();
-                        return Boolean.FALSE;
+                    try {
+                        Cursor c = db.query(mapSqliteMasterStorableToUpperCaseTagName
+                                (allTablesMatching), null, TABLE_KEY_TAG_NAME + " = '" +
+                                upperCaseName + "'", null, null, null, null);
+                        if (c != null && c.getCount() > 0) {
+                            c.close();
+                            allTablesMatching.close();
+                            db.setTransactionSuccessful();
+                            db.endTransaction();
+                            return Boolean.FALSE;
+                        }
+                        if (c != null)
+                            c.close();
+                    } catch (SQLiteException ignored) {
+                        //A few tables do not store tags, so they will throw an exception
                     }
                 } while (allTablesMatching.moveToNext());
                 allTablesMatching.close();
