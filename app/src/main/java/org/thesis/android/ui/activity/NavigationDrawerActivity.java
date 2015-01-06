@@ -33,7 +33,6 @@ import java.util.Stack;
 
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardExpand;
-import it.gmariotti.cardslib.library.internal.CardHeader;
 import it.gmariotti.cardslib.library.view.CardView;
 
 public class NavigationDrawerActivity extends ActionBarActivity implements
@@ -259,10 +258,10 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         CardView cardView = (CardView) findViewById(R.id.card_tag_group_configuration);
         mTagCloudCard = new Card(mContext);
         final Boolean doINeedToAddTheHeader = mTagCloudCard.getCardHeader() == null;
-        final CardHeader header = doINeedToAddTheHeader ? new TagCloudCardHeader
-                (mContext) : mTagCloudCard.getCardHeader();
+        final TagCloudCardHeader header = doINeedToAddTheHeader ? new TagCloudCardHeader
+                (mContext) : (TagCloudCardHeader) mTagCloudCard.getCardHeader();
         final String groupName = SQLiteDAO.getInstance().getTagGroups().get(groupIndex);
-        header.setTitle(groupName);
+        header.setCustomTitle(groupName);
         if (doINeedToAddTheHeader) {
             header.setButtonExpandVisible(Boolean.TRUE);
             mTagCloudCard.addCardHeader(header);
@@ -292,8 +291,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         if (cardView.getCard() == null)
             cardView.setCard(mTagCloudCard);
         else
-            cardView.invalidate();
-        //FIXME The new tag name overlays the back one
+            cardView.replaceCard(mTagCloudCard);
         //TODO Longpress removes group if not selected, shows toast and returns if selected,
         // not longpressable "create new group" nor "uncategorized"
     }

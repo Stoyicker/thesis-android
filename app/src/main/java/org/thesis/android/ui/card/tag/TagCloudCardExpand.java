@@ -48,13 +48,6 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
         for (String x : tags) {
             mTagCardViews.add(new TagCardView(mContext, x, this));
         }
-
-        if (mFlowLayout != null) {
-            mFlowLayout.removeAllViews();
-            for (ITagCard v : mTagCardViews)
-                mFlowLayout.addView((View) v);
-        }
-        recalculateFlowLayoutHeight();
     }
 
     private synchronized void processClick() {
@@ -80,6 +73,8 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
         mScrollView = (ScrollView) parent;
 
         mFlowLayout = (FlowLayout) view.findViewById(R.id.flow_layout);
+
+        mFlowLayout.removeAllViews();
 
         mDummy = mFlowLayout.findViewById(R.id.focus_dummy);
 
