@@ -214,10 +214,10 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
             db.beginTransaction();
             db.execSQL(createTagTable);
             db.insert(groupName.toUpperCase(Locale.ENGLISH), null, mapTagToStorable(tagName));
-            if (!groupName.toLowerCase(Locale.ENGLISH).contentEquals(UNGROUPED_TABLE_NAME))
+            if (!groupName.toUpperCase(Locale.ENGLISH).contentEquals(UNGROUPED_TABLE_NAME))
                 ret = db.delete(UNGROUPED_TABLE_NAME, TABLE_KEY_TAG_NAME + " = '" +
                         tagName
-                                .toUpperCase(Locale.ENGLISH) + "'", null) > 0;
+                                .toLowerCase(Locale.ENGLISH) + "'", null) > 0;
             db.setTransactionSuccessful();
             db.endTransaction();
         }
