@@ -20,15 +20,18 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
     private static final Object DB_LOCK = new Object();
     private static final String NAME_TABLE_NAME = "NAMES_TABLE",
-            GROUPS_TABLE_NAME = "GROUPS_TABLE", UNGROUPED_TABLE_NAME = "UNGROUPED";
+            GROUPS_TABLE_NAME = "GROUPS_TABLE";
+    private final String UNGROUPED_TABLE_NAME;
     private static final String TABLE_KEY_NAME = "NAME", TABLE_KEY_GROUP_NAME = "GROUP_NAME",
             TABLE_KEY_TAG_NAME = "TAG_NAME";
+    private static final String SQLITE_MASTER_KEY_TABLE_NAME = "tbl_name";
     private static SQLiteDAO mInstance;
 
     private SQLiteDAO(@NonNull Context _context) {
         super(_context, String.format(Locale.ENGLISH, _context.getString(R.string
                         .database_name_template), _context.getString(R.string.app_name)), null,
                 BuildConfig.VERSION_CODE);
+        UNGROUPED_TABLE_NAME = _context.getString(R.string.ungrouped_table_name);
     }
 
     public static void setup(@NonNull Context _context) {
@@ -108,6 +111,11 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
     private String mapStorableToName(Cursor nameCursor) {
         return nameCursor.getString(nameCursor.getColumnIndex(TABLE_KEY_NAME));
+    }
+
+    private String mapSqliteMasterStorableToUpperCaseTagName(Cursor tagNameCursor) {
+        return tagNameCursor.getString(tagNameCursor.getColumnIndex
+                (SQLITE_MASTER_KEY_TABLE_NAME)).toLowerCase(Locale.ENGLISH);
     }
 
     private String mapStorableToTagGroup(Cursor tagGroupCursor) {
@@ -227,8 +235,9 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
     public Boolean isTagOrGroupNameValid(String name) {
         final Pattern tagFormatPattern = Pattern.compile("[A-Z0-9_]+");
         final SQLiteDatabase db = getReadableDatabase();
+        final String upperCaseName;
 
-        if (!tagFormatPattern.matcher(name.toUpperCase(Locale.ENGLISH)).matches())
+        if (!tagFormatPattern.matcher(upperCaseName = name.toUpperCase(Locale.ENGLISH)).matches())
             return Boolean.FALSE;
 
         synchronized (DB_LOCK) {
@@ -238,15 +247,27 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
                     null,
                     null,
                     null);
-            if (allTablesMatching != null && allTablesMatching.getCount() > 0)
-                return Boolean.FALSE;
-            //TODO Fetch all tables and check if it exists already
-            if (allTablesMatching != null)
+            if (allTablesMatching != null) {
+                if (allTablesMatching.getCount() > 0) {
+                    allTablesMatching.close();
+                    db.setTransactionSuccessful();
+                    db.endTransaction();
+                    return Boolean.FALSE;
+                }
+                do {
+                    if (mapSqliteMasterStorableToUpperCaseTagName(allTablesMatching)
+                            .contentEquals(upperCaseName)) {
+                        allTablesMatching.close();
+                        db.setTransactionSuccessful();
+                        db.endTransaction();
+                        return Boolean.FALSE;
+                    }
+                } while (allTablesMatching.moveToNext());
                 allTablesMatching.close();
+            }
             db.setTransactionSuccessful();
             db.endTransaction();
+            return Boolean.TRUE;
         }
-
-        return Boolean.TRUE;
     }
 }
