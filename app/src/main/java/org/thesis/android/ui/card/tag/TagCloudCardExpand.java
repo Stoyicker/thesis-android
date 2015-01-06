@@ -82,7 +82,7 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
 
     @Override
     public void onTagCreated(ITagCard tag) {
-        mTagCardViews.add(tag);
+    //No need to add the tag here
         mFlowLayout.addView((View) tag);
         recalculateFlowLayoutHeight();
     }
@@ -101,7 +101,6 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
         mFlowLayout.removeView((View) tag);
         recalculateFlowLayoutHeight();
     }
-
 
     @Override
     public void onTagCreationCancelled(ITagCard tag) {
