@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/tag_name_padding"
     android:maxLines="1"
-    android:ellipsize="end"
+    android:ellipsize="marquee"
     android:minWidth="@dimen/min_tag_length"
     android:longClickable="false"
     android:focusableInTouchMode="false"

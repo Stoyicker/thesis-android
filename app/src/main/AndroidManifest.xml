@@ -30,7 +30,8 @@
         <activity
             android:name=".ui.activity.NavigationDrawerActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="sensorLandscape">
+            android:screenOrientation="sensorLandscape"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
             </intent-filter>

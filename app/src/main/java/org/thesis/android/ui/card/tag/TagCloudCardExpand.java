@@ -1,8 +1,10 @@
 package org.thesis.android.ui.card.tag;
 
 import android.content.Context;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 
 import org.apache.commons.lang3.text.WordUtils;
 import org.thesis.android.R;
@@ -21,6 +23,7 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
     private final List<ITagCard> mTagCardViews = new LinkedList<>();
     private final ITagCard.ITagChangedListener mCallback;
     private FlowLayout mFlowLayout;
+    private ScrollView mScrollView;
 
     public TagCloudCardExpand(Context context, ITagCard.ITagChangedListener _callback,
                               String groupName,
@@ -63,12 +66,41 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
     public void setupInnerViewElements(ViewGroup parent, View view) {
         if (view == null) return;
 
+        mScrollView = (ScrollView) parent;
+
         mFlowLayout = (FlowLayout) view.findViewById(R.id.flow_layout);
 
-        mFlowLayout.setOnClickListener(new View.OnClickListener() {
+        mScrollView.setOnTouchListener(new View.OnTouchListener() {
+
+            public static final float CLICK_ACTION_THRESHOLD = 5;
+            private float startX;
+            private float startY;
+
             @Override
-            public void onClick(View v) {
-                TagCloudCardExpand.this.processClick();
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX = event.getX();
+                        startY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_UP: {
+                        float endX = event.getX();
+                        float endY = event.getY();
+                        if (isClick(startX, endX, startY, endY)) {
+                            TagCloudCardExpand.this.processClick();
+                            return Boolean.TRUE;
+                        }
+                        break;
+                    }
+                }
+                return Boolean.FALSE;
+            }
+
+            private boolean isClick(float startX, float endX, float startY, float endY) {
+                float differenceX = Math.abs(startX - endX);
+                float differenceY = Math.abs(startY - endY);
+                return !(differenceX > CLICK_ACTION_THRESHOLD || differenceY >
+                        CLICK_ACTION_THRESHOLD);
             }
         });
 
@@ -85,6 +117,7 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
     public void onTagCreated(ITagCard tag) {
         //No need to add the tag here
         mFlowLayout.addView((View) tag);
+        mScrollView.smoothScrollTo(0, mScrollView.getHeight());
         recalculateFlowLayoutHeight();
     }
 

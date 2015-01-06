@@ -19,9 +19,12 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/card_padding"/>
 
-        <FrameLayout
+        <ScrollView
             android:id="@+id/card_content_expand_layout"
             style="@style/card.main_contentExpand"
+            android:overScrollMode="ifContentScrolls"
+            android:scrollbars="none"
+            android:requiresFadingEdge="none"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
