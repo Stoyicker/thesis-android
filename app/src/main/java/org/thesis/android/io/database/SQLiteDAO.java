@@ -98,6 +98,13 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         return ret;
     }
 
+
+    private ContentValues mapGroupToStorable(String groupName) {
+        ContentValues ret = new ContentValues();
+        ret.put(TABLE_KEY_GROUP_NAME, groupName.toUpperCase(Locale.ENGLISH));
+        return ret;
+    }
+
     public void addUserName(String name) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues x = mapNameToStorable(name);
@@ -271,6 +278,23 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
             db.setTransactionSuccessful();
             db.endTransaction();
             return Boolean.TRUE;
+        }
+    }
+
+    public void addGroup(String groupName) {
+        final SQLiteDatabase db = getWritableDatabase();
+        final String createTagTable = "CREATE TABLE IF NOT EXISTS " + groupName.toUpperCase
+                (Locale.ENGLISH) +
+                " ( " +
+                TABLE_KEY_TAG_NAME + " TEXT PRIMARY KEY ON CONFLICT IGNORE"
+                + " )".toUpperCase(Locale.ENGLISH);
+
+        synchronized (DB_LOCK) {
+            db.beginTransaction();
+            db.execSQL(createTagTable);
+            db.insert(GROUPS_TABLE_NAME, null, mapGroupToStorable(groupName));
+            db.setTransactionSuccessful();
+            db.endTransaction();
         }
     }
 }

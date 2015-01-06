@@ -61,7 +61,6 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     private ImageButton mEditNameButton;
     private Boolean mIsNameBeingEdited;
     private Boolean mNameEditSuccess;
-    private NavigationDrawerAdapter mAdapter;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -169,9 +168,9 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         });
 
         final List<NavigationDrawerAdapter.NavigationItem> navigationItems = readMenuItems();
-        mAdapter = new NavigationDrawerAdapter(mContext, navigationItems);
-        mAdapter.setNavigationDrawerCallbacks(this);
-        mDrawerList.setAdapter(mAdapter);
+        NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(mContext, navigationItems);
+        adapter.setNavigationDrawerCallbacks(this);
+        mDrawerList.setAdapter(adapter);
         selectItem(mCurrentlySelectedPosition);
         return view;
     }
@@ -386,9 +385,12 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     }
 
     public void requestAdapterRefresh(Boolean selectNew) {
-        mAdapter.notifyDataSetChanged();
+        final List<NavigationDrawerAdapter.NavigationItem> navigationItems = readMenuItems();
+        NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(mContext, navigationItems);
+        adapter.setNavigationDrawerCallbacks(this);
+        mDrawerList.setAdapter(adapter);
         //Note the -2 in getItemCount(): 1 is to retrieve an index an another one is to skip the
         //"new group" entry
-        selectItem(selectNew ? mAdapter.getItemCount() - 2 : mCurrentlySelectedPosition);
+        selectItem(selectNew ? adapter.getItemCount() - 2 : mCurrentlySelectedPosition);
     }
 }

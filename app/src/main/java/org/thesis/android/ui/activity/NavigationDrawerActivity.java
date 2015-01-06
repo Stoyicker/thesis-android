@@ -164,13 +164,15 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                     public void onPositive(final MaterialDialog materialDialog) {
                         final EditText nameField = (EditText) materialDialog.getCustomView()
                                 .findViewById(R.id.name_field);
-                        if (!SQLiteDAO.getInstance().isTagOrGroupNameValid(nameField.getText()
+                        final String groupName;
+                        if (!SQLiteDAO.getInstance().isTagOrGroupNameValid(groupName = nameField
+                                .getText()
                                 .toString())) {
                             Toast.makeText(NavigationDrawerActivity.this.mContext,
                                     R.string.invalid_tag_group_name, Toast.LENGTH_LONG).show();
                             return;
                         }
-                        //TODO Store the group
+                        SQLiteDAO.getInstance().addGroup(groupName);
                         final InputMethodManager imm = (InputMethodManager)
                                 NavigationDrawerActivity.this.mContext.getSystemService(Service
                                         .INPUT_METHOD_SERVICE);
@@ -253,14 +255,14 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     }
 
     private void setTagGroupConfigHeader(Integer groupIndex) {
+
+        CardView cardView = (CardView) findViewById(R.id.card_tag_group_configuration);
         mTagCloudCard = new Card(mContext);
         final CardHeader header = new CardHeader(mContext);
         final String groupName = SQLiteDAO.getInstance().getTagGroups().get(groupIndex);
         header.setTitle(groupName);
         header.setButtonExpandVisible(Boolean.TRUE);
         mTagCloudCard.addCardHeader(header);
-
-        final CardView cardView = (CardView) findViewById(R.id.card_tag_group_configuration);
 
         final CardExpand cardExpand = new TagCloudCardExpand(mContext, this, groupName,
                 cardView.findViewById(R.id.card_content_expand_layout));
@@ -277,6 +279,9 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         });
 
         cardView.setCard(mTagCloudCard);
+        //FIXME The new tag name overlays the back one
+        //TODO Longpress removes group if not selected, shows toast and returns if selected,
+        // not longpressable "create new group" nor "uncategorized"
     }
 
     public interface IOnBackPressedListener {
