@@ -12,10 +12,10 @@ import org.thesis.android.R;
 @SuppressLint("ViewConstructor") //They wouldn't be used anyway
 public class TagCardView extends CardView implements ITagCard, View.OnClickListener {
 
-    private ITagRemovalListener mCallback;
+    private ITagChangedListener mCallback;
     private final String mTagName;
 
-    public TagCardView(Context context, String tagName, ITagRemovalListener _callback) {
+    public TagCardView(Context context, String tagName, ITagChangedListener _callback) {
         super(context);
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context
                 .LAYOUT_INFLATER_SERVICE);
@@ -40,9 +40,5 @@ public class TagCardView extends CardView implements ITagCard, View.OnClickListe
     @Override
     public String getName() {
         return mTagName;
-    }
-
-    public interface ITagRemovalListener {
-        public void onTagRemoved(ITagCard tag);
     }
 }

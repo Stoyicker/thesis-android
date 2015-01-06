@@ -26,11 +26,12 @@ import it.gmariotti.cardslib.library.internal.CardHeader;
 import it.gmariotti.cardslib.library.view.CardView;
 
 public class NavigationDrawerActivity extends ActionBarActivity implements
-        NavigationDrawerAdapter.INavigationDrawerCallback, TagCloudCardExpand.ITagRemovalListener {
+        NavigationDrawerAdapter.INavigationDrawerCallback, ITagCard.ITagChangedListener {
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Context mContext;
     private Stack<Integer> mTagGroupIndexStack;
+    private Card mTagCloudCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,27 +104,29 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
 
     @Override
     public void onBackPressed() {
-        Boolean handled = Boolean.FALSE;
+        Boolean consumed = Boolean.FALSE;
 
         if (mNavigationDrawerFragment.isDrawerOpen()) {
             if (!mNavigationDrawerFragment.requestNameEditCancel()) {
                 mNavigationDrawerFragment.closeDrawer();
             }
-            handled = Boolean.TRUE;
+            consumed = Boolean.TRUE;
         }
 
-        final FragmentManager fragmentManager = getSupportFragmentManager();
+        if (!consumed && mTagCloudCard != null)
+            consumed = ((IOnBackPressedListener) mTagCloudCard.getCardExpand()).onBackPressed();
 
-        if (!handled) {
-            for (int i = fragmentManager.getBackStackEntryCount() - 1; i >= 0 && !handled; i--) {
+        if (!consumed) {
+            final FragmentManager fragmentManager = getSupportFragmentManager();
+            for (int i = fragmentManager.getBackStackEntryCount() - 1; i >= 0 && !consumed; i--) {
                 Fragment thisFragment = fragmentManager.findFragmentByTag(fragmentManager
                         .getBackStackEntryAt(i).getName());
                 if (thisFragment instanceof IOnBackPressedListener)
-                    handled = ((IOnBackPressedListener) thisFragment).onBackPressed();
+                    consumed = ((IOnBackPressedListener) thisFragment).onBackPressed();
             }
         }
 
-        if (!handled) {
+        if (!consumed) {
             mTagGroupIndexStack.pop();
             super.onBackPressed();
             setTagGroupConfigHeader(mTagGroupIndexStack.peek());
@@ -131,43 +134,59 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void onTagRemoved(ITagCard removedTagView) {
-        SQLiteDAO.getInstance().removeTagFromGroup(removedTagView.getName(),
+    public void onTagCreated(ITagCard tag) {
+        //Unused
+    }
+
+    @Override
+    public void onTagAdded(ITagCard tag) {
+        SQLiteDAO.getInstance().addTagToGroupAndRemoveFromUngrouped(tag.getName(),
                 SQLiteDAO.getInstance().getTagGroups().get(mTagGroupIndexStack.peek()));
     }
 
-    public interface IOnBackPressedListener {
-        public Boolean onBackPressed();
+    @Override
+    public void onTagRemoved(ITagCard tag) {
+        SQLiteDAO.getInstance().removeTagFromGroup(tag.getName(),
+                SQLiteDAO.getInstance().getTagGroups().get(mTagGroupIndexStack.peek()));
+    }
+
+    @Override
+    public void onTagCreationCancelled(ITagCard tag) {
+        //Unused
     }
 
     private void setTagGroupConfigHeader(Integer groupIndex) {
-        final Card card = new Card(mContext);
+        mTagCloudCard = new Card(mContext);
         final CardHeader header = new CardHeader(mContext);
         final String groupName = SQLiteDAO.getInstance().getTagGroups().get(groupIndex);
         header.setTitle(groupName);
         header.setButtonExpandVisible(Boolean.TRUE);
-        card.addCardHeader(header);
+        mTagCloudCard.addCardHeader(header);
 
         final CardView cardView = (CardView) findViewById(R.id.card_tag_group_configuration);
 
         final CardExpand cardExpand = new TagCloudCardExpand(mContext, this, groupName,
                 cardView.findViewById(R.id.card_content_expand_layout));
-        card.addCardExpand(cardExpand);
+        mTagCloudCard.addCardExpand(cardExpand);
 
-        card.setOnCollapseAnimatorEndListener(new Card.OnCollapseAnimatorEndListener() {
+        mTagCloudCard.setOnCollapseAnimatorEndListener(new Card.OnCollapseAnimatorEndListener() {
             @Override
             public void onCollapseEnd(Card card) {
                 mNavigationDrawerFragment.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             }
         });
 
-        card.setOnExpandAnimatorStartListener(new Card.OnExpandAnimatorStartListener() {
+        mTagCloudCard.setOnExpandAnimatorStartListener(new Card.OnExpandAnimatorStartListener() {
             @Override
             public void onExpandStart(Card card) {
                 mNavigationDrawerFragment.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
         });
 
-        cardView.setCard(card);
+        cardView.setCard(mTagCloudCard);
+    }
+
+    public interface IOnBackPressedListener {
+        public Boolean onBackPressed();
     }
 }
