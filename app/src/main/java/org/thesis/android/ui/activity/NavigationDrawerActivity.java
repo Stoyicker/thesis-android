@@ -112,6 +112,11 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         showNewGroupDialog();
     }
 
+    @Override
+    public void onNavigationTagGroupRemovalRequested(Integer pos) {
+        //TODO Delete group
+    }
+
     public NavigationDrawerActivity() {
         super();
     }
@@ -254,7 +259,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     }
 
     private void setTagGroupConfigHeader(Integer groupIndex) {
-
+        //FIXME Restore the standard CardHeader, font so pretty *.*
         CardView cardView = (CardView) findViewById(R.id.card_tag_group_configuration);
         mTagCloudCard = new Card(mContext);
         final Boolean doINeedToAddTheHeader = mTagCloudCard.getCardHeader() == null;
@@ -292,8 +297,6 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
             cardView.setCard(mTagCloudCard);
         else
             cardView.replaceCard(mTagCloudCard);
-        //TODO Longpress removes group if not selected, shows toast and returns if selected,
-        // not longpressable "create new group" nor "uncategorized"
     }
 
     public interface IOnBackPressedListener {

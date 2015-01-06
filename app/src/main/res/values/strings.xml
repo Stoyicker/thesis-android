@@ -17,4 +17,6 @@
     <string name="new_tag_group_dialog_title">Create tag group</string>
     <string name="new_tag_name_hint">Name</string>
     <string name="browse_immediately_to_tag_group">Open straightaway</string>
+    <string name="error_unremovable_group">A tag group cannot be removed while working on it. Move to another group and try again.</string>
+    <string name="error_removal_protection">This group cannot be removed.</string>
 </resources>

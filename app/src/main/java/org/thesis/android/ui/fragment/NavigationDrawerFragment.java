@@ -25,6 +25,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
@@ -372,7 +373,25 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
     @Override
     public void onNewGroupCreationRequested() {
-        mCallbacks.onNewGroupCreationRequested();
+        if (mCallbacks != null)
+            mCallbacks.onNewGroupCreationRequested();
+    }
+
+    @Override
+    public void onNavigationTagGroupRemovalRequested(Integer pos) {
+        //0 is the index of the 'Ungrouped' category
+        if (pos == 0) {
+            Toast.makeText(mContext, R.string.error_removal_protection, Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (!pos.equals(((NavigationDrawerAdapter) mDrawerList.getAdapter())
+                .getSelectedPosition
+                        ())) {
+            if (mCallbacks != null)
+                mCallbacks.onNavigationTagGroupRemovalRequested(pos);
+        } else {
+            Toast.makeText(mContext, R.string.error_unremovable_group, Toast.LENGTH_LONG).show();
+        }
     }
 
     public Boolean requestNameEditCancel() {

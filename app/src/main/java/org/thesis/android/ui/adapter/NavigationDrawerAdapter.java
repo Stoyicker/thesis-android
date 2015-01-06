@@ -84,7 +84,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View
-            .OnClickListener, View.OnTouchListener {
+            .OnClickListener, View.OnTouchListener, View.OnLongClickListener {
         public TextView textView;
         private NavigationDrawerAdapter mAdapter;
 
@@ -92,6 +92,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
             super(itemView);
             mAdapter = adapter;
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
             itemView.setOnTouchListener(this);
             textView = (TextView) itemView.findViewById(android.R.id.text1);
         }
@@ -126,6 +127,17 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
             }
             return Boolean.TRUE;
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            final Integer pos = getPosition();
+            if (mAdapter.mNavigationDrawerCallbacks != null) {
+                if (mAdapter.getItemCount() - 1 != pos)
+                    mAdapter.mNavigationDrawerCallbacks
+                            .onNavigationTagGroupRemovalRequested(pos);
+            }
+            return Boolean.TRUE;
+        }
     }
 
     public static class NavigationItem {
@@ -150,5 +162,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         void onNavigationTagGroupSelected(int position);
 
         void onNewGroupCreationRequested();
+
+        void onNavigationTagGroupRemovalRequested(Integer pos);
     }
 }
