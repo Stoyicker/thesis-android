@@ -17,9 +17,9 @@ public class TagCardView extends CardView implements ITagCard, View.OnClickListe
 
     public TagCardView(Context context, String tagName, ITagChangedListener _callback) {
         super(context);
-        LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context
-                .LAYOUT_INFLATER_SERVICE);
-        View v = mInflater.inflate(R.layout.custom_view_tag_card, this, Boolean.TRUE);
+        View v = ((LayoutInflater) context.getSystemService(Context
+                .LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_view_tag_card, this,
+                Boolean.TRUE);
         ((TextView) v.findViewById(R.id.tag_name)).setText(tagName);
         mCallback = _callback;
         mTagName = tagName;

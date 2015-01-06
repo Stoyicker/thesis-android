@@ -24,6 +24,7 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
     private final ITagCard.ITagChangedListener mCallback;
     private FlowLayout mFlowLayout;
     private ScrollView mScrollView;
+    private View mDummy;
 
     public TagCloudCardExpand(Context context, ITagCard.ITagChangedListener _callback,
                               String groupName,
@@ -57,7 +58,7 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
             }
         }
         if (viewToRemove == null)
-            mTagCardViews.add(new AddedTagCardView(mContext, TagCloudCardExpand.this));
+            mTagCardViews.add(new AddedTagCardView(mContext, TagCloudCardExpand.this, mDummy));
         else
             viewToRemove.cancelTagCreation();
     }
@@ -69,6 +70,8 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
         mScrollView = (ScrollView) parent;
 
         mFlowLayout = (FlowLayout) view.findViewById(R.id.flow_layout);
+
+        mDummy = mFlowLayout.findViewById(R.id.focus_dummy);
 
         mScrollView.setOnTouchListener(new View.OnTouchListener() {
 

@@ -26,6 +26,7 @@ import java.util.Locale;
 @SuppressLint("ViewConstructor") //They wouldn't be used anyway
 public class AddedTagCardView extends CardView implements ITagCard, View.OnClickListener {
 
+    private final View mDummy;
     private ITagChangedListener mCallback;
     private final Context mContext;
     private final EditText mTagNameField;
@@ -42,20 +43,20 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnClick
         }
     };
 
-    public AddedTagCardView(Context context, ITagChangedListener _callback) {
+    public AddedTagCardView(Context context, ITagChangedListener _callback,
+                            View _dummyFocusGatherer) {
         super(context);
 
         mContext = context;
 
-        LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context
-                .LAYOUT_INFLATER_SERVICE);
-
-        View v = mInflater.inflate(R.layout.custom_view_added_tag_card, this);
-
+        View v = ((LayoutInflater) context.getSystemService(Context
+                .LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_view_added_tag_card, this);
         mCallback = _callback;
 
         super.setCardBackgroundColor(context.getResources().getColor(R.color
                 .material_deep_purple_900));
+
+        mDummy = _dummyFocusGatherer;
 
         setOnClickListener(this);
 
@@ -123,7 +124,9 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnClick
                                 Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(mTagNameField.getWindowToken(), 0);
                 setVisibility(View.GONE);
-                mCallback.onTagAdded(AddedTagCardView.this);
+                mDummy.requestFocus();
+                if (mCallback != null)
+                    mCallback.onTagAdded(AddedTagCardView.this);
             }
         });
     }
@@ -133,6 +136,7 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnClick
                 .getSystemService(
                         Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mTagNameField.getWindowToken(), 0);
+        mDummy.requestFocus();
         if (mCallback != null)
             mCallback.onTagCreationCancelled(this);
     }
