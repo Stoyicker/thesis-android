@@ -136,4 +136,19 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
 
         return Boolean.TRUE;
     }
+
+    public void cancelEdits() {
+        if (!getParentCard().isExpanded()) return;
+        AddedTagCardView viewToRemove = null;
+        for (ITagCard c : mTagCardViews) {
+            if (!(c instanceof AddedTagCardView)) continue;
+            final AddedTagCardView castedC = (AddedTagCardView) c;
+            if (castedC.isBeingBuilt()) {
+                viewToRemove = castedC;
+                break;
+            }
+        }
+        if (viewToRemove != null)
+            viewToRemove.cancelTagCreation(); //Discard the added tag
+    }
 }

@@ -168,6 +168,16 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                 cardView.findViewById(R.id.card_content_expand_layout));
         mTagCloudCard.addCardExpand(cardExpand);
 
+        mTagCloudCard.setOnCollapseAnimatorStartListener(new Card.OnCollapseAnimatorStartListener
+                () {
+            @Override
+            public void onCollapseStart(Card card) {
+                final TagCloudCardExpand tagCloudCardExpand = (TagCloudCardExpand) mTagCloudCard
+                        .getCardExpand();
+                tagCloudCardExpand.cancelEdits();
+            }
+        });
+
         cardView.setCard(mTagCloudCard);
     }
 
