@@ -12,6 +12,8 @@
     <string name="delete_tag">Delete tag</string>
     <string name="tag_removal_instructions">Long-press a tag to remove it from the group.</string>
     <string name="invalid_tag_name">Invalid tag name. Tag names are unique (also among group names), case-insensitive and contain only letters, numbers and underscores.</string>
+    <string name="invalid_tag_group_name">Invalid tag group name. Tag names are unique (also among tag names), case-insensitive and contain only letters, numbers and underscores.</string>
     <string name="ungrouped_table_name">UNGROUPED</string>
     <string name="new_tag_group_dialog_title">Create tag group</string>
+    <string name="new_tag_name_hint">Name</string>
 </resources>

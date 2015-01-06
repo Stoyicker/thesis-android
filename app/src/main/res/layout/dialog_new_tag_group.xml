@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:fll="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <org.ligi.floatlabel.FloatingLabelLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        fll:floatLabelTrigger="text"
+        android:gravity="center"
+        fll:floatLabelTextAppearance="@style/TextAppearance.FLL.FloatLabel">
+
+        <EditText
+            android:id="@+id/name_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/new_tag_name_hint"
+            style="@style/AppTheme.InformativeText"
+            android:gravity="center"
+            android:inputType="textNoSuggestions"
+            android:background="@null"/>
+    </org.ligi.floatlabel.FloatingLabelLayout>
 </LinearLayout>

@@ -1,5 +1,6 @@
 package org.thesis.android.ui.activity;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -8,6 +9,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -114,7 +118,11 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                 .showListener(new DialogInterface.OnShowListener() {
                     @Override
                     public void onShow(DialogInterface dialog) {
-                        mNavigationDrawerFragment.closeDrawer();
+                        final InputMethodManager imm = (InputMethodManager)
+                                NavigationDrawerActivity.this.mContext.getSystemService(Service
+                                        .INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(((MaterialDialog) dialog).getCustomView().findViewById
+                                (R.id.name_field), 0);
                     }
                 })
                 .customView(R.layout.dialog_new_tag_group, Boolean.TRUE)
@@ -125,17 +133,28 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                 .negativeColorRes(R.color.material_purple_900)
                 .backgroundColor(android.R.color.white)
                 .autoDismiss(Boolean.FALSE)
-                .cancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        dialog.dismiss();
-                    }
-                })
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
-                        //TODO If the group is invalid, return before creating it
+                        final EditText nameField = (EditText) materialDialog.getCustomView()
+                                .findViewById(R.id.name_field);
+                        if (!SQLiteDAO.getInstance().isTagOrGroupNameValid(nameField.getText()
+                                .toString())) {
+                            Toast.makeText(NavigationDrawerActivity.this.mContext,
+                                    R.string.invalid_tag_group_name, Toast.LENGTH_LONG).show();
+                        }
                         //TODO Stuff if the group is valid
+                        final InputMethodManager imm = (InputMethodManager)
+                                NavigationDrawerActivity.this.mContext.getSystemService(Service
+                                        .INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromInputMethod(nameField.getWindowToken(), 0);
+                        mNavigationDrawerFragment.closeDrawer();
+                        //TODO Request the drawer refresh now that it's closed
+                        materialDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog materialDialog) {
                         materialDialog.dismiss();
                     }
                 })

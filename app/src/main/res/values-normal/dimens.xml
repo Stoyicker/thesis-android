@@ -13,7 +13,7 @@
     <dimen name="card_padding">10dp</dimen>
     <dimen name="tag_name_text">16sp</dimen>
     <dimen name="tag_name_padding">5dp</dimen>
-    <dimen name="informative_text">12sp</dimen>
+    <dimen name="informative_text">16sp</dimen>
     <dimen name="min_tag_conf_height">200dp</dimen>
     <dimen name="min_tag_length">60dp</dimen>
 </resources>
