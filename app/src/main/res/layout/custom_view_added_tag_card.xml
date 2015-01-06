@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.thesis.android.ui.util.AutoResizeEditText
+<org.thesis.android.ui.util.AutoFitEditText
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:inputType="textNoSuggestions"
     android:background="@null"

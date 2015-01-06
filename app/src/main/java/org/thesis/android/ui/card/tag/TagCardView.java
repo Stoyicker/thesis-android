@@ -10,7 +10,7 @@ import android.widget.TextView;
 import org.thesis.android.R;
 
 @SuppressLint("ViewConstructor") //They wouldn't be used anyway
-public class TagCardView extends CardView implements ITagCard, View.OnLongClickListener {
+public class TagCardView extends CardView implements ITagCard, View.OnClickListener {
 
     private ITagRemovalListener mCallback;
     private final String mTagName;
@@ -27,15 +27,14 @@ public class TagCardView extends CardView implements ITagCard, View.OnLongClickL
         super.setCardBackgroundColor(context.getResources().getColor(R.color
                 .material_purple_900));
 
-        setOnLongClickListener(this);
+        setOnClickListener(this);
     }
 
     @Override
-    public boolean onLongClick(View v) {
+    public void onClick(View v) {
         v.setVisibility(View.GONE);
         if (mCallback != null && v instanceof TagCardView)
             mCallback.onTagRemoved(this);
-        return Boolean.TRUE;
     }
 
     @Override

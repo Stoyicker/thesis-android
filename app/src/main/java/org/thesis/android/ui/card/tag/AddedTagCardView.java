@@ -9,7 +9,7 @@ import android.view.View;
 import org.thesis.android.R;
 
 @SuppressLint("ViewConstructor") //They wouldn't be used anyway
-public class AddedTagCardView extends CardView implements ITagCard, View.OnLongClickListener {
+public class AddedTagCardView extends CardView implements ITagCard, View.OnClickListener {
 
     private TagCardView.ITagRemovalListener mCallback;
     private String mTagName = null;
@@ -26,7 +26,7 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnLongC
         super.setCardBackgroundColor(context.getResources().getColor(R.color
                 .material_deep_purple_900));
 
-        setOnLongClickListener(this);
+        setOnClickListener(this);
 
         //TODO On EditText focus lost, notify the (yet-to-do) listener which will dump the data
         // to the database, disable both focusmodes from the EditText, forbid it from being editable
@@ -34,12 +34,11 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnLongC
     }
 
     @Override
-    public boolean onLongClick(View v) {
+    public void onClick(View v) {
         //FIXME Only do this if the global field isBeingEdited is false
         v.setVisibility(View.GONE);
         if (mCallback != null && v instanceof AddedTagCardView)
             mCallback.onTagRemoved(this);
-        return Boolean.TRUE;
     }
 
     @Override

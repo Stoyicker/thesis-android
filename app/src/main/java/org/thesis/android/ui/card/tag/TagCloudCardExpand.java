@@ -31,11 +31,10 @@ public class TagCloudCardExpand extends CardExpand implements TagCardView.ITagRe
             mTagCardViews.add(new TagCardView(mContext, x, this));
         }
 
-        expandView.setOnLongClickListener(new View.OnLongClickListener() {
+        expandView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
+            public void onClick(View v) {
                 mFlowLayout.addView(new AddedTagCardView(mContext, TagCloudCardExpand.this));
-                return Boolean.TRUE;
             }
         });
 
@@ -49,11 +48,10 @@ public class TagCloudCardExpand extends CardExpand implements TagCardView.ITagRe
 
         mFlowLayout = (FlowLayout) view.findViewById(R.id.flow_layout);
 
-        mFlowLayout.setOnLongClickListener(new View.OnLongClickListener() {
+        mFlowLayout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
+            public void onClick(View v) {
                 mFlowLayout.addView(new AddedTagCardView(mContext, TagCloudCardExpand.this));
-                return Boolean.TRUE;
             }
         });
 
