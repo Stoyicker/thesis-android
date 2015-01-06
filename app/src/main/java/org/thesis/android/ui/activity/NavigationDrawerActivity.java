@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -46,9 +45,6 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         mNavigationDrawerFragment = (NavigationDrawerFragment) supportFragmentManager
                 .findFragmentById(R.id.navigation_drawer_fragment);
 
-        final ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(Boolean.TRUE);
-
         mContext = CApplication.getInstance().getContext();
 
         mNavigationDrawerFragment.setup(R.id.navigation_drawer_fragment,
@@ -83,6 +79,9 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                 position) {
             return;
         }
+
+        if (mTagCloudCard != null && mTagCloudCard.isExpanded())
+            mTagCloudCard.doToogleExpand();
 
         final Fragment target = configureMessageContainer(position);
         runOnUiThread(new Runnable() {
@@ -168,20 +167,6 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         final CardExpand cardExpand = new TagCloudCardExpand(mContext, this, groupName,
                 cardView.findViewById(R.id.card_content_expand_layout));
         mTagCloudCard.addCardExpand(cardExpand);
-
-        mTagCloudCard.setOnCollapseAnimatorEndListener(new Card.OnCollapseAnimatorEndListener() {
-            @Override
-            public void onCollapseEnd(Card card) {
-                mNavigationDrawerFragment.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            }
-        });
-
-        mTagCloudCard.setOnExpandAnimatorStartListener(new Card.OnExpandAnimatorStartListener() {
-            @Override
-            public void onExpandStart(Card card) {
-                mNavigationDrawerFragment.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            }
-        });
 
         cardView.setCard(mTagCloudCard);
     }
