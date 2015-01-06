@@ -100,8 +100,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         public void onClick(View v) {
             final Integer pos = getPosition();
             if (mAdapter.mNavigationDrawerCallbacks != null) {
-                if (mAdapter.getItemCount() > pos + 1) //Important that creating a new group is
-                    // the last option
+                if (mAdapter.getItemCount() - 1 != pos)
                     mAdapter.mNavigationDrawerCallbacks
                             .onNavigationTagGroupSelected(pos);
                 else

@@ -109,7 +109,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     }
 
     private void showNewGroupDialog() {
-        new MaterialDialog.Builder(mContext)
+        new MaterialDialog.Builder(this)
                 .title(R.string.new_tag_group_dialog_title)
                 .showListener(new DialogInterface.OnShowListener() {
                     @Override
@@ -117,7 +117,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                         mNavigationDrawerFragment.closeDrawer();
                     }
                 })
-                .customView(R.layout./*todo*/, Boolean.TRUE)
+                .customView(R.layout.dialog_new_tag_group, Boolean.TRUE)
                 .positiveText(android.R.string.ok)
                 .negativeText(android.R.string.cancel)
                 .titleColor(R.color.material_purple_900)
@@ -139,7 +139,6 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                         materialDialog.dismiss();
                     }
                 })
-                .build()
                 .show();
     }
 

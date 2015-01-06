@@ -372,7 +372,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
     @Override
     public void onNewGroupCreationRequested() {
-        //Do nothing
+        mCallbacks.onNewGroupCreationRequested();
     }
 
     public Boolean requestNameEditCancel() {
