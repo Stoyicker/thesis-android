@@ -27,17 +27,10 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
     private View mDummy;
 
     public TagCloudCardExpand(Context context, ITagCard.ITagChangedListener _callback,
-                              String groupName,
                               View expandView) {
         super(context, R.layout.card_tag_group_flow);
 
         mCallback = _callback;
-
-        List<String> tags = SQLiteDAO.getInstance().getGroupTags(groupName);
-
-        for (String x : tags) {
-            mTagCardViews.add(new TagCardView(mContext, x, this));
-        }
 
         expandView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,6 +38,23 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
                 TagCloudCardExpand.this.processClick();
             }
         });
+    }
+
+    public void setTagGroupAndRefreshViews(String groupName) {
+        final List<String> tags = SQLiteDAO.getInstance().getGroupTags(groupName);
+
+        mTagCardViews.clear();
+
+        for (String x : tags) {
+            mTagCardViews.add(new TagCardView(mContext, x, this));
+        }
+
+        if (mFlowLayout != null) {
+            mFlowLayout.removeAllViews();
+            for (ITagCard v : mTagCardViews)
+                mFlowLayout.addView((View) v);
+        }
+        recalculateFlowLayoutHeight();
     }
 
     private synchronized void processClick() {
@@ -113,7 +123,8 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
     }
 
     private void recalculateFlowLayoutHeight() {
-        mFlowLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        if (mFlowLayout != null)
+            mFlowLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
     }
 
     @Override

@@ -258,27 +258,41 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
 
         CardView cardView = (CardView) findViewById(R.id.card_tag_group_configuration);
         mTagCloudCard = new Card(mContext);
-        final CardHeader header = new CardHeader(mContext);
+        final Boolean doINeedToAddTheHeader = mTagCloudCard.getCardHeader() == null;
+        final CardHeader header = doINeedToAddTheHeader ? new TagCloudCardHeader
+                (mContext) : mTagCloudCard.getCardHeader();
         final String groupName = SQLiteDAO.getInstance().getTagGroups().get(groupIndex);
         header.setTitle(groupName);
-        header.setButtonExpandVisible(Boolean.TRUE);
-        mTagCloudCard.addCardHeader(header);
+        if (doINeedToAddTheHeader) {
+            header.setButtonExpandVisible(Boolean.TRUE);
+            mTagCloudCard.addCardHeader(header);
+        }
 
-        final CardExpand cardExpand = new TagCloudCardExpand(mContext, this, groupName,
-                cardView.findViewById(R.id.card_content_expand_layout));
-        mTagCloudCard.addCardExpand(cardExpand);
+        final Boolean doINeedToAddTheExpand = mTagCloudCard.getCardExpand() == null;
+        CardExpand cardExpand = doINeedToAddTheExpand ? new TagCloudCardExpand(mContext, this,
+                cardView.findViewById(R.id.card_content_expand_layout)) : mTagCloudCard
+                .getCardExpand();
+        ((TagCloudCardExpand) cardExpand).setTagGroupAndRefreshViews(groupName);
+        if (doINeedToAddTheExpand)
+            mTagCloudCard.addCardExpand(cardExpand);
 
-        mTagCloudCard.setOnCollapseAnimatorStartListener(new Card.OnCollapseAnimatorStartListener
-                () {
-            @Override
-            public void onCollapseStart(Card card) {
-                final TagCloudCardExpand tagCloudCardExpand = (TagCloudCardExpand) mTagCloudCard
-                        .getCardExpand();
-                tagCloudCardExpand.cancelEdits();
-            }
-        });
 
-        cardView.setCard(mTagCloudCard);
+        if (mTagCloudCard.getOnCollapseAnimatorStartListener() == null)
+            mTagCloudCard.setOnCollapseAnimatorStartListener(new Card
+                    .OnCollapseAnimatorStartListener
+                    () {
+                @Override
+                public void onCollapseStart(Card card) {
+                    final TagCloudCardExpand tagCloudCardExpand = (TagCloudCardExpand) mTagCloudCard
+                            .getCardExpand();
+                    tagCloudCardExpand.cancelEdits();
+                }
+            });
+
+        if (cardView.getCard() == null)
+            cardView.setCard(mTagCloudCard);
+        else
+            cardView.invalidate();
         //FIXME The new tag name overlays the back one
         //TODO Longpress removes group if not selected, shows toast and returns if selected,
         // not longpressable "create new group" nor "uncategorized"
