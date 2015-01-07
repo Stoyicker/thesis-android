@@ -90,14 +90,21 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnClick
 
             @Override
             public void run() {
+
+                final MotionEvent motionEvent1, motionEvent2;
+
                 mTagNameField.requestFocusFromTouch();
-                mTagNameField.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(),
+                mTagNameField.dispatchTouchEvent(motionEvent1 = MotionEvent.obtain(SystemClock
+                                .uptimeMillis(),
                         SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN,
                         mTagNameField.getWidth(),
                         mTagNameField.getHeight(), 0));
-                mTagNameField.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(),
+                motionEvent1.recycle();
+                mTagNameField.dispatchTouchEvent(motionEvent2 = MotionEvent.obtain(SystemClock
+                                .uptimeMillis(),
                         SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, mTagNameField.getWidth(),
                         mTagNameField.getHeight(), 0));
+                motionEvent2.recycle();
             }
         });
 

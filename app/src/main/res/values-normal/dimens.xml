@@ -18,5 +18,4 @@
     <dimen name="min_tag_length">60dp</dimen>
     <dimen name="new_tag_group_checkbox_top_padding">20dp</dimen>
     <dimen name="supplementary_text">14sp</dimen>
-    <dimen name="tag_group_name">22sp</dimen>
 </resources>
