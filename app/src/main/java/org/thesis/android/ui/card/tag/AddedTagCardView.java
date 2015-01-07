@@ -19,7 +19,7 @@ import android.widget.Toast;
 import org.apache.commons.lang3.text.WordUtils;
 import org.thesis.android.R;
 import org.thesis.android.io.database.SQLiteDAO;
-import org.thesis.android.ui.util.BackPreImeAutoCompleteTextView;
+import org.thesis.android.ui.component.BackPreImeAutoCompleteTextView;
 
 import java.util.Locale;
 

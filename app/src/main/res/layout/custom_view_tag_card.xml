@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.thesis.android.ui.util.AutoFitTextView
+<org.thesis.android.ui.component.AutoFitTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/tag_name"
     android:layout_width="wrap_content"

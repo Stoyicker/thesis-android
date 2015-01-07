@@ -1,4 +1,4 @@
-package org.thesis.android.ui.util;
+package org.thesis.android.ui.component;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -12,8 +12,9 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.SparseIntArray;
 import android.util.TypedValue;
+import android.widget.TextView;
 
-public class AutoFitPreImeEditText extends BackPreImeAutoCompleteTextView {
+public class AutoFitTextView extends TextView {
     private static final int NO_LINE_LIMIT = -1;
     private final RectF _availableSpaceRect = new RectF();
     private final SparseIntArray _textCachedSizes = new SparseIntArray();
@@ -41,16 +42,16 @@ public class AutoFitPreImeEditText extends BackPreImeAutoCompleteTextView {
         public int onTestSize(int suggestedSize, RectF availableSpace);
     }
 
-    public AutoFitPreImeEditText(final Context context) {
+    public AutoFitTextView(final Context context) {
         this(context, null, 0);
     }
 
-    public AutoFitPreImeEditText(final Context context, final AttributeSet attrs) {
+    public AutoFitTextView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AutoFitPreImeEditText(final Context context, final AttributeSet attrs,
-                                 final int defStyle) {
+    public AutoFitTextView(final Context context, final AttributeSet attrs,
+                           final int defStyle) {
         super(context, attrs, defStyle);
         // using the minimal recommended font size
         _minTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,

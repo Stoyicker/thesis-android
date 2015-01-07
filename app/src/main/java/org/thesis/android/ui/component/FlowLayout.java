@@ -1,4 +1,4 @@
-package org.thesis.android.ui.util;
+package org.thesis.android.ui.component;
 
 import android.content.Context;
 import android.util.AttributeSet;

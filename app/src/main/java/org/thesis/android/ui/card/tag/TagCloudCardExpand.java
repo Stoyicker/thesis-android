@@ -10,7 +10,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.thesis.android.R;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.ui.activity.NavigationDrawerActivity;
-import org.thesis.android.ui.util.FlowLayout;
+import org.thesis.android.ui.component.FlowLayout;
 
 import java.util.LinkedList;
 import java.util.List;

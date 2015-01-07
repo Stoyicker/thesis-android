@@ -23,7 +23,7 @@
         android:paddingLeft="@dimen/navigation_drawer_entry_standard_margin"
         android:paddingRight="@dimen/navigation_drawer_entry_standard_margin">
 
-        <org.thesis.android.ui.util.BackPreImeAutoCompleteTextView
+        <org.thesis.android.ui.component.BackPreImeAutoCompleteTextView
             android:id="@+id/name_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

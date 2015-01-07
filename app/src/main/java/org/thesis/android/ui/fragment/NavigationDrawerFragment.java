@@ -32,7 +32,7 @@ import org.thesis.android.R;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.io.prefs.PreferenceAssistant;
 import org.thesis.android.ui.adapter.NavigationDrawerAdapter;
-import org.thesis.android.ui.util.BackPreImeAutoCompleteTextView;
+import org.thesis.android.ui.component.BackPreImeAutoCompleteTextView;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
