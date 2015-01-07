@@ -135,7 +135,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     private void goToEntry(final Integer position) {
 
         final Fragment target = configureMessageContainer(position);
-        runOnUiThread(new Runnable() {
+        findViewById(android.R.id.content).post(new Runnable() {
             @Override
             public void run() {
                 getSupportFragmentManager().beginTransaction().replace(R.id

@@ -12,6 +12,8 @@ public class MessageCompositionActivity extends ActionBarActivity {
 
     public static final String EXTRA_TAG = "EXTRA_TAG";
 
+    //TODO If I'm coming with a tag already, set start expanded and 2 bounces
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
