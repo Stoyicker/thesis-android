@@ -74,7 +74,6 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
 
         setTagGroupConfigHeader(mTagGroupIndexStack.peek());
 
-
         toolbar.findViewById(R.id.action_compose).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,8 +94,8 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                 MessageCompositionActivity.class);
         if (!TextUtils.isEmpty(tag))
             homeIntent.putExtra(MessageCompositionActivity.EXTRA_TAG, tag);
-        finish();
         startActivity(homeIntent);
+        overridePendingTransition(R.anim.move_in_from_bottom, R.anim.move_out_to_bottom);
     }
 
     private void showInitialFragment() {
@@ -307,7 +306,8 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
 
         if (!consumed) {
             mTagGroupIndexStack.pop();
-            setTagGroupConfigHeader(mTagGroupIndexStack.peek());
+            if (!mTagGroupIndexStack.isEmpty())
+                setTagGroupConfigHeader(mTagGroupIndexStack.peek());
             super.onBackPressed();
         }
     }

@@ -88,6 +88,7 @@ public class NameProvisionActivity extends ActionBarActivity {
                                 NavigationDrawerActivity.class);
                         finish();
                         startActivity(homeIntent);
+                        overridePendingTransition(R.anim.move_in_from_bottom, R.anim.move_out_to_bottom);
                     }
                 }, 200);
             }

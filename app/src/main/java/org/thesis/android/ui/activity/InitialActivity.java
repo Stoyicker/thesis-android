@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
 import org.thesis.android.CApplication;
+import org.thesis.android.R;
 import org.thesis.android.dev.CLog;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.io.file.FileOperations;
@@ -38,6 +39,7 @@ public class InitialActivity extends ActionBarActivity {
         final Intent homeIntent = new Intent(context, c);
         finish();
         startActivity(homeIntent);
+        overridePendingTransition(R.anim.move_in_from_bottom, R.anim.move_out_to_bottom);
     }
 
     private void flushCacheIfNecessary(Context context) {

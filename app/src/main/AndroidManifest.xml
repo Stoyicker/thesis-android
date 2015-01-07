@@ -40,11 +40,13 @@
             android:name=".ui.activity.MessageCompositionActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="sensorLandscape"
-            android:windowSoftInputMode="adjustPan"
-            android:parentActivityName=".ui.activity.NavigationDrawerActivity">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activity.NavigationDrawerActivity"/>
         </activity>
     </application>
 </manifest>
