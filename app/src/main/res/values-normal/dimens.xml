@@ -18,4 +18,6 @@
     <dimen name="min_tag_length">60dp</dimen>
     <dimen name="new_tag_group_checkbox_top_padding">20dp</dimen>
     <dimen name="supplementary_text">14sp</dimen>
+    <dimen name="new_message_button_ripple_side">20dp</dimen>
+    <dimen name="compose_button_horizontal_margin">20dp</dimen>
 </resources>

@@ -3,8 +3,9 @@
     <issue id="IconLocation">
         <ignore path="src/main/res/drawable/logo_ericsson.png"/>
     </issue>
-    <!--No time to care about this-->
+    <!--No time to care about these-->
     <issue id="RtlEnabled" severity="ignore"/>
+    <issue id="IconDipSize" severity="ignore"/>
     <issue id="UnusedResources">
         <!--Used through reflection-->
         <ignore path="src/main/res/drawable-*/drawable_section0.png"/>
