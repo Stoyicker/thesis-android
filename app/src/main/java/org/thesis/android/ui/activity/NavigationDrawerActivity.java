@@ -36,6 +36,7 @@ import java.util.Stack;
 
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardExpand;
+import it.gmariotti.cardslib.library.internal.CardHeader;
 import it.gmariotti.cardslib.library.view.CardView;
 
 public class NavigationDrawerActivity extends ActionBarActivity implements
@@ -296,14 +297,13 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     }
 
     private void setTagGroupConfigHeader(Integer groupIndex) {
-        //FIXME Restore the standard CardHeader, font so pretty *.*
         CardView cardView = (CardView) findViewById(R.id.card_tag_group_configuration);
         mTagCloudCard = new Card(mContext);
         final Boolean doINeedToAddTheHeader = mTagCloudCard.getCardHeader() == null;
-        final TagCloudCardHeader header = doINeedToAddTheHeader ? new TagCloudCardHeader
-                (mContext) : (TagCloudCardHeader) mTagCloudCard.getCardHeader();
+        final CardHeader header = doINeedToAddTheHeader ? new CardHeader(mContext) :
+                mTagCloudCard.getCardHeader();
         final String groupName = SQLiteDAO.getInstance().getTagGroups().get(groupIndex);
-        header.setCustomTitle(groupName);
+        header.setTitle(groupName);
         if (doINeedToAddTheHeader) {
             header.setButtonExpandVisible(Boolean.TRUE);
             mTagCloudCard.addCardHeader(header);
