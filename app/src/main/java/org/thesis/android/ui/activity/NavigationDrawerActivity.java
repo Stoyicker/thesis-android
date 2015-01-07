@@ -94,9 +94,20 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                 position) {
             return;
         }
-
-        if (mTagCloudCard != null && mTagCloudCard.isExpanded())
+        if (mTagCloudCard != null && mTagCloudCard.isExpanded()) {
+            mTagCloudCard.setOnCollapseAnimatorEndListener(new Card.OnCollapseAnimatorEndListener
+                    () {
+                @Override
+                public void onCollapseEnd(Card card) {
+                    goToEntry(position);
+                }
+            });
             mTagCloudCard.doToogleExpand();
+        } else
+            goToEntry(position);
+    }
+
+    private void goToEntry(final Integer position) {
 
         final Fragment target = configureMessageContainer(position);
         runOnUiThread(new Runnable() {
