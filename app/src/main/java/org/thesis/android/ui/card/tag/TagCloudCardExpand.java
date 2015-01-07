@@ -24,13 +24,18 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
     private final ITagCard.ITagChangedListener mCallback;
     private FlowLayout mFlowLayout;
     private ScrollView mScrollView;
-    private View mDummy;
+    private final View mDummy;
 
     public TagCloudCardExpand(Context context, ITagCard.ITagChangedListener _callback,
                               View expandView) {
         super(context, R.layout.card_tag_group_flow);
 
         mCallback = _callback;
+
+        mDummy = expandView;
+
+        mDummy.setFocusable(Boolean.TRUE);
+        mDummy.setFocusableInTouchMode(Boolean.TRUE);
 
         expandView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,8 +80,6 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
         mFlowLayout = (FlowLayout) view.findViewById(R.id.flow_layout);
 
         mFlowLayout.removeAllViews();
-
-        mDummy = mFlowLayout.findViewById(R.id.focus_dummy);
 
         mScrollView.setOnTouchListener(new View.OnTouchListener() {
 
