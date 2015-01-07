@@ -176,7 +176,8 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                 .showListener(new DialogInterface.OnShowListener() {
                     @Override
                     public void onShow(final DialogInterface dialog) {
-                        final EditText nameField = (EditText) ((MaterialDialog) dialog)
+                        final EditText nameField = (EditText) (
+                                (MaterialDialog) dialog)
                                 .getCustomView()
                                 .findViewById(R.id.name_field);
                         nameField.setImeOptions(EditorInfo.IME_ACTION_DONE);
