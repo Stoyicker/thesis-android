@@ -89,7 +89,7 @@ public class NameProvisionActivity extends ActionBarActivity {
                         finish();
                         startActivity(homeIntent);
                     }
-                }, 400);
+                }, 200);
             }
         });
     }

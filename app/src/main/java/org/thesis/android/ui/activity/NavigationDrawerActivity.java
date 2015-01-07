@@ -3,13 +3,16 @@ package org.thesis.android.ui.activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
@@ -70,7 +73,30 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         mTagGroupIndexStack.push(0);
 
         setTagGroupConfigHeader(mTagGroupIndexStack.peek());
+
+
+        toolbar.findViewById(R.id.action_compose).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        launchMessageCompositionActivity(null);
+                    }
+                }, 200);
+            }
+        });
+
         showInitialFragment();
+    }
+
+    private void launchMessageCompositionActivity(String tag) {
+        final Intent homeIntent = new Intent(mContext,
+                MessageCompositionActivity.class);
+        if (!TextUtils.isEmpty(tag))
+            homeIntent.putExtra(MessageCompositionActivity.EXTRA_TAG, tag);
+        finish();
+        startActivity(homeIntent);
     }
 
     private void showInitialFragment() {
