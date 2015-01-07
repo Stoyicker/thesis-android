@@ -19,4 +19,6 @@
     <string name="browse_immediately_to_tag_group">Open straightaway</string>
     <string name="error_unremovable_group">A tag group cannot be removed while working on it. Move to another group and try again.</string>
     <string name="error_removal_protection">This group cannot be removed.</string>
+    <string name="error_group_deletion_unknown">An unexpected error occured that prevented the group from being deleted.</string>
+    <string name="group_deletion_successful">Group deleted.</string>
 </resources>

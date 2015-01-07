@@ -297,4 +297,20 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
             db.endTransaction();
         }
     }
+
+    public Boolean removeGroup(String groupName) {
+        final SQLiteDatabase db = getWritableDatabase();
+        final Boolean ret;
+
+        synchronized (DB_LOCK) {
+            db.beginTransaction();
+            ret = db.delete(GROUPS_TABLE_NAME, TABLE_KEY_GROUP_NAME + " = '" +
+                    groupName
+                            .toUpperCase(Locale.ENGLISH) + "'", null) > 0;
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }
+
+        return ret;
+    }
 }

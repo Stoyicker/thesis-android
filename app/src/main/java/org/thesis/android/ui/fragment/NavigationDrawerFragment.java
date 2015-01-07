@@ -412,4 +412,13 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         //"new group" entry
         selectItem(selectNew ? adapter.getItemCount() - 2 : mCurrentlySelectedPosition);
     }
+
+    public void requestAdapterRefresh(Integer removedIndex) {
+        final List<NavigationDrawerAdapter.NavigationItem> navigationItems = readMenuItems();
+        NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(mContext, navigationItems);
+        adapter.setNavigationDrawerCallbacks(this);
+        mDrawerList.setAdapter(adapter);
+        selectItem(mCurrentlySelectedPosition > removedIndex ? mCurrentlySelectedPosition - 1 :
+                mCurrentlySelectedPosition);
+    }
 }

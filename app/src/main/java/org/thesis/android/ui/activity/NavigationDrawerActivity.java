@@ -29,6 +29,9 @@ import org.thesis.android.ui.card.tag.TagCloudCardExpand;
 import org.thesis.android.ui.fragment.MessageContainerFragment;
 import org.thesis.android.ui.fragment.NavigationDrawerFragment;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Stack;
 
 import it.gmariotti.cardslib.library.internal.Card;
@@ -113,8 +116,42 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void onNavigationTagGroupRemovalRequested(Integer pos) {
-        //TODO Delete group
+    public void onNavigationTagGroupRemovalRequested(final Integer pos) {
+        mNavigationDrawerFragment.closeDrawer(new Runnable() {
+            @Override
+            public void run() {
+                final Integer r;
+                if (SQLiteDAO.getInstance().removeGroup(SQLiteDAO.getInstance().getTagGroups().get
+                        (pos))) {
+                    r = R.string.group_deletion_successful;
+                } else {
+                    r = R.string.error_group_deletion_unknown;
+                }
+                Toast.makeText(mContext, r, Toast.LENGTH_SHORT).show();
+            }
+        }, new Runnable() {
+            @Override
+            public void run() {
+                mNavigationDrawerFragment.requestAdapterRefresh(pos);
+                fixTagGroupIndexStackAfterRemovalOfIndex(pos);
+            }
+        });
+    }
+
+    private void fixTagGroupIndexStackAfterRemovalOfIndex(Integer removedPos) {
+        final List<Integer> elems = new LinkedList<>();
+        while (!mTagGroupIndexStack.empty()) {
+            final Integer thisElement = mTagGroupIndexStack.pop();
+            if (removedPos < thisElement) {
+                elems.add(thisElement);
+            } else if (removedPos > thisElement)
+                elems.add(thisElement - 1);
+        }
+
+        Collections.reverse(elems);
+
+        for (Integer i : elems)
+            mTagGroupIndexStack.push(i);
     }
 
     public NavigationDrawerActivity() {
