@@ -20,4 +20,6 @@
     <dimen name="supplementary_text">14sp</dimen>
     <dimen name="new_message_button_ripple_side">20dp</dimen>
     <dimen name="compose_button_horizontal_margin">20dp</dimen>
+    <dimen name="new_message_destination_tag_set_unexpanded_height">70dp</dimen>
+    <dimen name="compose_message_body_parallax_offset">70dp</dimen>
 </resources>

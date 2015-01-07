@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:expandablepanel="http://schemas.android.com/apk/res-auto"
               android:id="@+id/navigation_drawer"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
@@ -13,32 +12,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <com.jorgecastilloprz.expandablepanel.ExpandablePanelView
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        expandablepanel:completionPercent="0.8"
-        expandablepanel:completeExpandAnimationSpeed="150"
-        expandablepanel:completeShrinkAnimationSpeed="200">
+        android:gravity="bottom"
+        android:background="@android:color/white"
+        sothree:paralaxOffset="@dimen/compose_message_body_parallax_offset"
+        sothree:panelHeight="@dimen/new_message_destination_tag_set_unexpanded_height"
+        sothree:shadowHeight="@dimen/sliding_tag_panel_shadow">
 
-
-        <org.thesis.android.ui.component.FlowLayout
-            android:id="@+id/flow_layout"
+        <ImageView
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@android:color/black"
+            android:src="@drawable/ic_launcher"
+            android:layout_height="match_parent"/>
+
+        <ImageView
+            android:id="@+id/tag_container"
+            android:src="@drawable/ic_check"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
             android:orientation="horizontal"
             android:animateLayoutChanges="true"
             android:gravity="start"
             android:focusable="true"
             android:focusableInTouchMode="true"/>
 
-        <TextView
-            android:layout_below="@id/flow_layout"
-            android:id="@+id/message_content"
-            android:background="@null"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"/>
-
-    </com.jorgecastilloprz.expandablepanel.ExpandablePanelView>
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 </LinearLayout>
