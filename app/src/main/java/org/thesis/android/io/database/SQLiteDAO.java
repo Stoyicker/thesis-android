@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import org.apache.commons.lang3.text.WordUtils;
 import org.thesis.android.BuildConfig;
@@ -240,6 +241,9 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
     }
 
     public Boolean isTagOrGroupNameValid(String name) {
+        if (TextUtils.isEmpty(name))
+            return Boolean.FALSE;
+
         final Pattern tagFormatPattern = Pattern.compile("[A-Z0-9_]+");
         final SQLiteDatabase db = getReadableDatabase();
         final String upperCaseName;
