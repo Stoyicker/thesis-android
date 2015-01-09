@@ -24,13 +24,14 @@
         <ImageView
             android:layout_width="match_parent"
             android:src="@drawable/ic_launcher"
+            android:background="@android:color/black"
             android:layout_height="match_parent"/>
 
         <org.thesis.android.ui.component.FlowLayout
             android:id="@+id/tag_container"
             android:layout_width="match_parent"
             android:clickable="true"
-            android:layout_height="@dimen/tag_field_message_composition"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
             android:animateLayoutChanges="true"
             android:gravity="start"

@@ -8,12 +8,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
-import org.thesis.android.dev.CLog;
 import org.thesis.android.ui.card.tag.AddedTagCardView;
+import org.thesis.android.ui.component.FlowLayout;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.List;
 public class MessageCompositionActivity extends ActionBarActivity {
 
     public static final String EXTRA_TAG = "EXTRA_TAG";
-    private ViewGroup mFlowLayout;
+    private FlowLayout mFlowLayout;
     private Context mContext;
     private final List<AddedTagCardView> tags = new LinkedList<>();
 
@@ -39,15 +38,14 @@ public class MessageCompositionActivity extends ActionBarActivity {
 
         mContext = CApplication.getInstance().getContext();
 
-        mFlowLayout = (ViewGroup) findViewById(R.id.tag_container);
+        mFlowLayout = (FlowLayout) findViewById(R.id.tag_container);
         mFlowLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                CLog.d("debug", "onTouch");
-                final AddedTagCardView tag;
-                mFlowLayout.addView(tag = new AddedTagCardView(mContext,
-                        null, findViewById(android.R.id.content)));
-                tags.add(tag);
+//                final AddedTagCardView tag;
+//                mFlowLayout.addView(tag = new AddedTagCardView(mContext,
+//                        null, findViewById(android.R.id.content)));
+//                tags.add(tag);
                 return Boolean.FALSE;
             }
         });

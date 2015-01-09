@@ -60,7 +60,7 @@ public class FlowLayout extends ViewGroup {
             childLeft += childWidth + paddingHorizontal;
         }
         wantedHeight += childTop + lineHeight + getPaddingBottom();
-        mCalculatedHeight = wantedHeight;
+        mCalculatedHeight = resolveSize(wantedHeight, heightMeasureSpec);
         setMeasuredDimension(myWidth, mCalculatedHeight);
     }
 
