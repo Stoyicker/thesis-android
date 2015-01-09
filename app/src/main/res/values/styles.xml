@@ -81,4 +81,10 @@
         <item name="android:textStyle">bold</item>
         <item name="android:ellipsize">end</item>
     </style>
+
+    <style name="AppTheme.TextButton">
+        <item name="android:textStyle">bold</item>
+        <item name="android:color">@android:color/white</item>
+        <item name="android:textSize">@dimen/text_button</item>
+    </style>
 </resources>

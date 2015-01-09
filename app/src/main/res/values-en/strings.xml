@@ -16,5 +16,6 @@
     <string name="error_removal_protection">This group cannot be removed.</string>
     <string name="error_group_deletion_unknown">An unexpected error occurred that prevented the group from being deleted.</string>
     <string name="group_deletion_successful">Group deleted.</string>
-    <string name="compose">Compose</string>
+    <string name="action_compose">COMPOSE</string>
+    <string name="action_send">SEND</string>
 </resources>

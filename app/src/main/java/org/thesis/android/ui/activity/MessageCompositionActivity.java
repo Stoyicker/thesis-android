@@ -18,7 +18,7 @@ public class MessageCompositionActivity extends ActionBarActivity {
         setContentView(R.layout.activity_message_composition);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
-        toolbar.setTitle(R.string.compose);
+        toolbar.setTitle(R.string.action_compose);
 
         setSupportActionBar(toolbar);
 

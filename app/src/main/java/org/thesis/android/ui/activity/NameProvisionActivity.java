@@ -77,7 +77,7 @@ public class NameProvisionActivity extends ActionBarActivity {
                 SQLiteDAO.getInstance().addUserName(name);
                 PreferenceAssistant.saveSharedBoolean(context,
                         PreferenceAssistant.PREF_USER_HAS_SET_NAME, Boolean.TRUE);
-                v.postDelayed(new Runnable() {
+                v.post(new Runnable() {
                     @Override
                     public void run() {
                         final InputMethodManager imm = (InputMethodManager) context
@@ -88,9 +88,10 @@ public class NameProvisionActivity extends ActionBarActivity {
                                 NavigationDrawerActivity.class);
                         finish();
                         startActivity(homeIntent);
-                        overridePendingTransition(R.anim.move_in_from_bottom, R.anim.move_out_to_bottom);
+                        overridePendingTransition(R.anim.move_in_from_bottom,
+                                R.anim.move_out_to_bottom);
                     }
-                }, 200);
+                });
             }
         });
     }

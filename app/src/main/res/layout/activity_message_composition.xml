@@ -8,7 +8,7 @@
 
     <include
         android:id="@+id/toolbar_actionbar"
-        layout="@layout/include_toolbar_default"
+        layout="@layout/include_toolbar_message_composition"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -28,11 +28,10 @@
             android:src="@drawable/ic_launcher"
             android:layout_height="match_parent"/>
 
-        <ImageView
+        <org.thesis.android.ui.component.FlowLayout
             android:id="@+id/tag_container"
-            android:src="@drawable/ic_check"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="@dimen/tag_field_message_composition"
             android:orientation="horizontal"
             android:animateLayoutChanges="true"
             android:gravity="start"

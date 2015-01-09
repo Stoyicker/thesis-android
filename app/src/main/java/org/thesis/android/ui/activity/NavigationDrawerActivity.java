@@ -260,7 +260,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                         //Workaround for RecyclerView bug (https://code.google
                         // .com/p/android/issues/detail?id=77232)
                         NavigationDrawerActivity.this.findViewById(android.R.id.content)
-                                .postDelayed(new Runnable() {
+                                .post(new Runnable() {
                                     @Override
                                     public void run() {
                                         mNavigationDrawerFragment.requestAdapterRefresh(
@@ -268,7 +268,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                                                         .findViewById(R.id.browse_immediately))
                                                         .isChecked());
                                     }
-                                }, 100);
+                                });
                         materialDialog.dismiss();
                     }
 
