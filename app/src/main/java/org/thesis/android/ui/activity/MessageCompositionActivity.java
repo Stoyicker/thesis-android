@@ -31,7 +31,6 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
     private Context mContext;
     private SlidingUpPanelLayout mSlidingPaneLayout;
 
-    //FIXME Adding a tag doesn't actually create it
     //TODO Does it actually scroll? If it doesn't, consider the recalculateFlowLayoutHeight-way
     // in TagCloudCardExpand
 
