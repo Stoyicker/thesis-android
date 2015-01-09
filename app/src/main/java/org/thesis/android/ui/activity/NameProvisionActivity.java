@@ -31,7 +31,7 @@ public class NameProvisionActivity extends ActionBarActivity {
 
         final Context context = CApplication.getInstance().getContext();
         final EditText nameField = (EditText) findViewById(R.id.name_field);
-        final View buttonMoveOnWrapper = findViewById(R.id.button_proceed_wrapper);
+        final View buttonProceed = findViewById(R.id.button_proceed);
 
         nameField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -47,22 +47,22 @@ public class NameProvisionActivity extends ActionBarActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (buttonMoveOnWrapper.isShown() && TextUtils.isEmpty(s.toString())) {
+                if (buttonProceed.isShown() && TextUtils.isEmpty(s.toString())) {
                     TranslateAnimation animate = new TranslateAnimation(0, 0, 0,
-                            buttonMoveOnWrapper.getHeight());
+                            buttonProceed.getHeight());
                     animate.setDuration(context.getResources().getInteger(R.integer
                             .floating_label_layout_duration_millis));
                     animate.setFillAfter(Boolean.TRUE);
-                    buttonMoveOnWrapper.startAnimation(animate);
-                    buttonMoveOnWrapper.setVisibility(View.INVISIBLE);
-                } else if (!buttonMoveOnWrapper.isShown() && !TextUtils.isEmpty(s.toString())) {
+                    buttonProceed.startAnimation(animate);
+                    buttonProceed.setVisibility(View.INVISIBLE);
+                } else if (!buttonProceed.isShown() && !TextUtils.isEmpty(s.toString())) {
                     TranslateAnimation animate = new TranslateAnimation(0, 0,
-                            buttonMoveOnWrapper.getHeight(), 0);
+                            buttonProceed.getHeight(), 0);
                     animate.setDuration(context.getResources().getInteger(R.integer
                             .floating_label_layout_duration_millis));
                     animate.setFillAfter(Boolean.TRUE);
-                    buttonMoveOnWrapper.startAnimation(animate);
-                    buttonMoveOnWrapper.setVisibility(View.VISIBLE);
+                    buttonProceed.startAnimation(animate);
+                    buttonProceed.setVisibility(View.VISIBLE);
                 }
             }
         });

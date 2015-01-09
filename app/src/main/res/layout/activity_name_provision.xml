@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:fll="http://schemas.android.com/apk/res-auto"
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -63,26 +62,14 @@
                     android:background="@null"/>
             </org.ligi.floatlabel.FloatingLabelLayout>
 
-            <com.andexert.library.RippleView
-                android:id="@+id/button_proceed_wrapper"
-                android:layout_width="@dimen/name_edit_button_ripple_side"
-                android:layout_height="@dimen/name_edit_button_ripple_side"
-                app:rv_rippleDuration="200"
-                app:rv_color="@color/ripple_material_dark"
-                app:rv_centered="true"
-                android:visibility="invisible"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true">
-
-                <ImageButton
-                    android:id="@+id/button_proceed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_check"
-                    android:background="@null"
-                    android:contentDescription="@string/edit"
-                    android:hapticFeedbackEnabled="true"/>
-            </com.andexert.library.RippleView>
+            <ImageButton
+                android:id="@+id/button_proceed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_check"
+                android:background="@null"
+                android:contentDescription="@string/edit"
+                android:hapticFeedbackEnabled="true"/>
         </RelativeLayout>
     </LinearLayout>
 </ScrollView>

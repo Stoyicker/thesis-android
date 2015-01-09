@@ -110,7 +110,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mEditNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mNameField.postDelayed(new Runnable() {
+                mNameField.post(new Runnable() {
                     @Override
                     public void run() {
                         final Integer newDrawableId;
@@ -127,7 +127,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
                         mEditNameButton.setImageDrawable(NavigationDrawerFragment.this.mContext
                                 .getResources().getDrawable(newDrawableId));
                     }
-                }, 400);
+                });
             }
         });
 

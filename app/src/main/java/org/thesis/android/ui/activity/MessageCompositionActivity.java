@@ -1,16 +1,29 @@
 package org.thesis.android.ui.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 
+import org.thesis.android.CApplication;
 import org.thesis.android.R;
+import org.thesis.android.dev.CLog;
+import org.thesis.android.ui.card.tag.AddedTagCardView;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class MessageCompositionActivity extends ActionBarActivity {
 
     public static final String EXTRA_TAG = "EXTRA_TAG";
+    private ViewGroup mFlowLayout;
+    private Context mContext;
+    private final List<AddedTagCardView> tags = new LinkedList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +36,21 @@ public class MessageCompositionActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(Boolean.TRUE);
+
+        mContext = CApplication.getInstance().getContext();
+
+        mFlowLayout = (ViewGroup) findViewById(R.id.tag_container);
+        mFlowLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                CLog.d("debug", "onTouch");
+                final AddedTagCardView tag;
+                mFlowLayout.addView(tag = new AddedTagCardView(mContext,
+                        null, findViewById(android.R.id.content)));
+                tags.add(tag);
+                return Boolean.FALSE;
+            }
+        });
     }
 
     private void requestActivityReturn() {

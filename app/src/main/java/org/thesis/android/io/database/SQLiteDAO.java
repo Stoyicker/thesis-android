@@ -118,7 +118,8 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
     }
 
     private String mapStorableToName(Cursor nameCursor) {
-        return nameCursor.getString(nameCursor.getColumnIndex(TABLE_KEY_NAME));
+        return WordUtils.capitalizeFully(nameCursor.getString(nameCursor.getColumnIndex
+                (TABLE_KEY_NAME)));
     }
 
     private String mapSqliteMasterStorableToUpperCaseTagName(Cursor tagNameCursor) {

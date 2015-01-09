@@ -14,9 +14,7 @@
 
         <include
             android:id="@+id/toolbar_actionbar"
-            layout="@layout/include_toolbar_main"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            layout="@layout/include_toolbar_main"/>
 
         <it.gmariotti.cardslib.library.view.CardView
             android:id="@+id/card_tag_group_configuration"

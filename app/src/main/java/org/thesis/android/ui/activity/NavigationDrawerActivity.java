@@ -77,12 +77,12 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         toolbar.findViewById(R.id.action_compose).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.postDelayed(new Runnable() {
+                v.post(new Runnable() {
                     @Override
                     public void run() {
                         launchMessageCompositionActivity(null);
                     }
-                }, 200);
+                });
             }
         });
 
