@@ -127,7 +127,6 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
 
     @Override
     public void onTagCreated(ITagCard tag) {
-        //No need to add the tag here
         mFlowLayout.addView((View) tag);
         mScrollView.smoothScrollTo(0, mScrollView.getHeight());
         recalculateFlowLayoutHeight();

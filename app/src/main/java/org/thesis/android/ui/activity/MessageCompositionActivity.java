@@ -9,20 +9,33 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
+import org.apache.commons.lang3.text.WordUtils;
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
 import org.thesis.android.ui.card.tag.AddedTagCardView;
+import org.thesis.android.ui.card.tag.ITagCard;
+import org.thesis.android.ui.card.tag.TagCardView;
 import org.thesis.android.ui.component.FlowLayout;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class MessageCompositionActivity extends ActionBarActivity {
+public class MessageCompositionActivity extends ActionBarActivity implements ITagCard
+        .ITagChangedListener {
 
     public static final String EXTRA_TAG = "EXTRA_TAG";
+    private final List<ITagCard> mTags = new LinkedList<>();
     private FlowLayout mFlowLayout;
     private Context mContext;
-    private final List<AddedTagCardView> tags = new LinkedList<>();
+    private SlidingUpPanelLayout mSlidingPaneLayout;
+
+    //FIXME Adding a tag doesn't actually create it
+    //FIXME Cancelling a tag (with back) doesn't allow for more tags to be added
+    //FIXME Cancelling a tag (clicking outside) has a really weird behaviour
+    //TODO Does it actually scroll? If it doesn't, consider the recalculateFlowLayoutHeight-way
+    // in TagCloudCardExpand
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,17 +51,105 @@ public class MessageCompositionActivity extends ActionBarActivity {
 
         mContext = CApplication.getInstance().getContext();
 
-        mFlowLayout = (FlowLayout) findViewById(R.id.tag_container);
-        mFlowLayout.setOnTouchListener(new View.OnTouchListener() {
+        toolbar.findViewById(R.id.action_send).setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-//                final AddedTagCardView tag;
-//                mFlowLayout.addView(tag = new AddedTagCardView(mContext,
-//                        null, findViewById(android.R.id.content)));
-//                tags.add(tag);
-                return Boolean.FALSE;
+            public void onClick(View v) {
+                v.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        tryToSendCurrentMessage();
+                    }
+                });
             }
         });
+
+        mSlidingPaneLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        mFlowLayout = (FlowLayout) mSlidingPaneLayout.findViewById(R.id.tag_container);
+
+        mFlowLayout.setOnTouchListener(new View.OnTouchListener() {
+
+            public static final float CLICK_ACTION_THRESHOLD = 5;
+            private float startX;
+            private float startY;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX = event.getX();
+                        startY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_UP: {
+                        float endX = event.getX();
+                        float endY = event.getY();
+                        if (isClick(startX, endX, startY, endY) && mSlidingPaneLayout
+                                .isPanelExpanded()) {
+                            for (ITagCard c : mTags) {
+                                if (!(c instanceof AddedTagCardView)) continue;
+                                final AddedTagCardView castedC = (AddedTagCardView) c;
+                                if (castedC.isBeingBuilt()) {
+                                    ((AddedTagCardView) c).cancelTagCreation();
+                                    return Boolean.TRUE;
+                                }
+                            }
+                            final AddedTagCardView tag;
+                            mFlowLayout.addView(tag = new AddedTagCardView(mContext,
+                                    null, findViewById(android.R.id.content)));
+                            mTags.add(tag);
+                            return Boolean.TRUE;
+                        }
+                        break;
+                    }
+                }
+                return Boolean.FALSE;
+            }
+
+            private boolean isClick(float startX, float endX, float startY, float endY) {
+                float differenceX = Math.abs(startX - endX);
+                float differenceY = Math.abs(startY - endY);
+                return !(differenceX > CLICK_ACTION_THRESHOLD || differenceY >
+                        CLICK_ACTION_THRESHOLD);
+            }
+        });
+    }
+
+    @Override
+    public void onTagCreated(ITagCard tag) {
+        //Do nothing, it as already added to both
+    }
+
+    @Override
+    public void onTagAdded(ITagCard tag) {
+        mTags.remove(tag);
+        mFlowLayout.removeView((View) tag);
+        final TagCardView v = new TagCardView(mContext, WordUtils.capitalizeFully(tag.getName()),
+                this);
+        mTags.add(v);
+        mFlowLayout.addView(v);
+    }
+
+    @Override
+    public void onTagRemoved(ITagCard tag) {
+        mTags.remove(tag);
+        mFlowLayout.removeView((View) tag);
+    }
+
+    @Override
+    public void onTagCreationCancelled(ITagCard tag) {
+        mTags.remove(tag);
+        mFlowLayout.removeView((View) tag);
+    }
+
+    private void tryToSendCurrentMessage() {
+        //TODO tryToSendCurrentMessage
+        //Parse the list of children of the flowlayout, extracting the tags with instanceof
+        //If there are no tags, toast and return
+        //Parse the message body
+        //If the message body is empty and there are no attachments, return
+        //If the message body contains "attach" but there are no attachments show confirmatory
+        // dialog
+        //If here, send. To send, just use an asynctask (will it hold if the app is minimized?
+        // and closed?)
     }
 
     private void requestActivityReturn() {
@@ -64,5 +165,32 @@ public class MessageCompositionActivity extends ActionBarActivity {
                 return Boolean.TRUE;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Boolean consumed = Boolean.FALSE;
+
+        AddedTagCardView viewToRemove = null;
+        for (ITagCard c : mTags) {
+            if (!(c instanceof AddedTagCardView)) continue;
+            final AddedTagCardView castedC = (AddedTagCardView) c;
+            if (castedC.isBeingBuilt()) {
+                viewToRemove = castedC;
+                break;
+            }
+        }
+        if (viewToRemove == null) {
+            if (mSlidingPaneLayout.isPanelExpanded()) {
+                mSlidingPaneLayout.collapsePanel();
+                consumed = Boolean.TRUE;
+            }
+        } else {
+            viewToRemove.cancelTagCreation(); //Discard the added tag
+            consumed = Boolean.TRUE;
+        }
+
+        if (!consumed)
+            super.onBackPressed();
     }
 }

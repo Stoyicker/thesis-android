@@ -138,11 +138,12 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnClick
         });
     }
 
-    void cancelTagCreation() {
+    public void cancelTagCreation() {
         final InputMethodManager imm = (InputMethodManager) mContext
                 .getSystemService(
                         Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mTagNameField.getWindowToken(), 0);
+        setVisibility(View.GONE);
         mDummy.requestFocus();
         if (mCallback != null)
             mCallback.onTagCreationCancelled(this);
