@@ -16,15 +16,18 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.thesis.android.CApplication;
@@ -125,6 +128,25 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
                                 .getResources().getDrawable(newDrawableId));
                     }
                 }, 400);
+            }
+        });
+
+        mNameField.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        mNameField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId,
+                                          KeyEvent event) {
+                if (actionId == EditorInfo
+                        .IME_ACTION_DONE || (event != null &&
+                        event
+                                .isShiftPressed() && (event
+                        .getAction() == KeyEvent
+                        .ACTION_DOWN &&
+                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER))) {
+                    mEditNameButton.performClick();
+                    return Boolean.TRUE;
+                }
+                return Boolean.FALSE;
             }
         });
 
