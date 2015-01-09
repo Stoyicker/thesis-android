@@ -32,7 +32,6 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
     private SlidingUpPanelLayout mSlidingPaneLayout;
 
     //FIXME Adding a tag doesn't actually create it
-    //FIXME Cancelling a tag (with back) doesn't allow for more tags to be added
     //TODO Does it actually scroll? If it doesn't, consider the recalculateFlowLayoutHeight-way
     // in TagCloudCardExpand
 

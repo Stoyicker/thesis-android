@@ -13,8 +13,9 @@
     <issue id="ClickableViewAccessibility">
         <!--Required-->
         <ignore path="src/main/java/org/thesis/android/ui/adapter/NavigationDrawerAdapter.java"/>
-        <!--Required-->
         <ignore path="src/main/java/org/thesis/android/ui/card/tag/TagCloudCardExpand.java"/>
+        <ignore
+            path="src/main/java/org/thesis/android/ui/activity/MessageCompositionActivity.java"/>
     </issue>
     <issue id="Overdraw">
         <!--Required-->
