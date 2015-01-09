@@ -27,17 +27,17 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
     private final View mDummy;
 
     public TagCloudCardExpand(Context context, ITagCard.ITagChangedListener _callback,
-                              View expandView) {
+                              View dummy) {
         super(context, R.layout.card_tag_group_flow);
 
         mCallback = _callback;
 
-        mDummy = expandView;
+        mDummy = dummy;
 
         mDummy.setFocusable(Boolean.TRUE);
         mDummy.setFocusableInTouchMode(Boolean.TRUE);
 
-        expandView.setOnClickListener(new View.OnClickListener() {
+        dummy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TagCloudCardExpand.this.processClick();
