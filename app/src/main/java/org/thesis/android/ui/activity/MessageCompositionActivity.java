@@ -33,7 +33,6 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
 
     //FIXME Adding a tag doesn't actually create it
     //FIXME Cancelling a tag (with back) doesn't allow for more tags to be added
-    //FIXME Cancelling a tag (clicking outside) has a really weird behaviour
     //TODO Does it actually scroll? If it doesn't, consider the recalculateFlowLayoutHeight-way
     // in TagCloudCardExpand
 
@@ -79,7 +78,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                         startX = event.getX();
                         startY = event.getY();
                         break;
-                    case MotionEvent.ACTION_UP: {
+                    case MotionEvent.ACTION_UP:
                         float endX = event.getX();
                         float endY = event.getY();
                         if (isClick(startX, endX, startY, endY) && mSlidingPaneLayout
@@ -94,12 +93,12 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                             }
                             final AddedTagCardView tag;
                             mFlowLayout.addView(tag = new AddedTagCardView(mContext,
-                                    null, findViewById(android.R.id.content)));
+                                    MessageCompositionActivity.this,
+                                    findViewById(android.R.id.content)));
                             mTags.add(tag);
                             return Boolean.TRUE;
                         }
                         break;
-                    }
                 }
                 return Boolean.FALSE;
             }
