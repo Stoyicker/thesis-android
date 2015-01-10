@@ -31,9 +31,6 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
     private Context mContext;
     private SlidingUpPanelLayout mSlidingPaneLayout;
 
-    //TODO Does it actually scroll? If it doesn't, consider the recalculateFlowLayoutHeight-way
-    // in TagCloudCardExpand
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
