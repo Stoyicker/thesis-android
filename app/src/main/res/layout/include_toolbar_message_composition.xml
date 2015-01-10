@@ -8,8 +8,27 @@
     style="@style/AppTheme.Toolbar">
 
     <RelativeLayout
+        android:layout_marginStart="@dimen/toolbar_button_horizontal_margin"
+        android:layout_marginEnd="@dimen/toolbar_button_horizontal_margin"
+        android:layout_marginLeft="@dimen/toolbar_button_horizontal_margin"
+        android:layout_marginRight="@dimen/toolbar_button_horizontal_margin"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <ImageButton
+            android:layout_marginStart="@dimen/toolbar_button_horizontal_margin"
+            android:layout_marginEnd="@dimen/toolbar_button_horizontal_margin"
+            android:layout_marginLeft="@dimen/toolbar_button_horizontal_margin"
+            android:layout_marginRight="@dimen/toolbar_button_horizontal_margin"
+            android:id="@+id/action_attach"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_attachment"
+            android:background="@null"
+            android:contentDescription="@string/action_attach_content_description"
+            android:layout_alignBottom="@+id/action_send"
+            android:layout_toLeftOf="@+id/action_send"
+            android:layout_toStartOf="@+id/action_send"/>
 
         <TextView
             android:layout_marginStart="@dimen/toolbar_button_horizontal_margin"

@@ -30,6 +30,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
     private FlowLayout mFlowLayout;
     private Context mContext;
     private SlidingUpPanelLayout mSlidingPaneLayout;
+    private View mEmptyView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,8 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
         getSupportActionBar().setDisplayHomeAsUpEnabled(Boolean.TRUE);
 
         mContext = CApplication.getInstance().getContext();
+
+        mEmptyView = findViewById(android.R.id.empty);
 
         toolbar.findViewById(R.id.action_send).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +81,8 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                         float endY = event.getY();
                         if (isClick(startX, endX, startY, endY) && mSlidingPaneLayout
                                 .isPanelExpanded()) {
+                            if (mEmptyView.isShown())
+                                mEmptyView.setVisibility(View.GONE);
                             for (ITagCard c : mTags) {
                                 if (!(c instanceof AddedTagCardView)) continue;
                                 final AddedTagCardView castedC = (AddedTagCardView) c;
@@ -105,11 +110,12 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                         CLICK_ACTION_THRESHOLD);
             }
         });
+
+        updateEmptyViewVisibility();
     }
 
     @Override
     public void onTagCreated(ITagCard tag) {
-        //Do nothing, it as already added to both
     }
 
     @Override
@@ -126,12 +132,21 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
     public void onTagRemoved(ITagCard tag) {
         mTags.remove(tag);
         mFlowLayout.removeView((View) tag);
+        updateEmptyViewVisibility();
+    }
+
+    private void updateEmptyViewVisibility() {
+        if (mFlowLayout.getChildCount() == 1 && !(mFlowLayout.getChildAt(0) instanceof ITagCard))
+            mEmptyView.setVisibility(View.VISIBLE);
+        else
+            mEmptyView.setVisibility(View.GONE);
     }
 
     @Override
     public void onTagCreationCancelled(ITagCard tag) {
         mTags.remove(tag);
         mFlowLayout.removeView((View) tag);
+        updateEmptyViewVisibility();
     }
 
     private void tryToSendCurrentMessage() {

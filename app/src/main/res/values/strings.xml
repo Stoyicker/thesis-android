@@ -21,4 +21,6 @@
     <string name="action_compose">COMPOSE</string>
     <string name="action_send">SEND</string>
     <string name="message_body_hint">Say something</string>
+    <string name="touch_to_add_tags_hint">Touch to add tags</string>
+    <string name="action_attach_content_description">Add or remove attachments</string>
 </resources>
