@@ -60,6 +60,18 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
             }
         });
 
+        toolbar.findViewById(R.id.action_attach).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        showAddAttachmentDialog();
+                    }
+                });
+            }
+        });
+
         mSlidingPaneLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         mFlowLayout = (FlowLayout) mSlidingPaneLayout.findViewById(R.id.tag_container);
 
@@ -112,6 +124,11 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
         });
 
         updateEmptyViewVisibility();
+    }
+
+    private void showAddAttachmentDialog() {
+        //TODO showAddAttachmentDialog
+        //This runs on the UI, so no worries
     }
 
     @Override
