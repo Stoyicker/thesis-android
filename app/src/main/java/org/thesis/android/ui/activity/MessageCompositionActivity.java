@@ -89,7 +89,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                             final AddedTagCardView tag;
                             mFlowLayout.addView(tag = new AddedTagCardView(mContext,
                                     MessageCompositionActivity.this,
-                                    findViewById(android.R.id.content)));
+                                    findViewById(android.R.id.content), Boolean.FALSE));
                             mTags.add(tag);
                             return Boolean.TRUE;
                         }

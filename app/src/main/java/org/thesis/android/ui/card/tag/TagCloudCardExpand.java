@@ -66,7 +66,8 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
             }
         }
         if (viewToRemove == null)
-            mTagCardViews.add(new AddedTagCardView(mContext, TagCloudCardExpand.this, mDummy));
+            mTagCardViews.add(new AddedTagCardView(mContext, TagCloudCardExpand.this, mDummy,
+                    Boolean.TRUE));
         else
             viewToRemove.cancelTagCreation();
     }

@@ -42,9 +42,10 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnClick
             return null;
         }
     };
+    private final Boolean mIsPersistent;
 
     public AddedTagCardView(Context context, ITagChangedListener _callback,
-                            View _dummyFocusGatherer) {
+                            View _dummyFocusGatherer, Boolean isPersistent) {
         super(context);
 
         mContext = context;
@@ -52,6 +53,8 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnClick
         View v = ((LayoutInflater) context.getSystemService(Context
                 .LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_view_added_tag_card, this);
         mCallback = _callback;
+
+        mIsPersistent = isPersistent;
 
         super.setCardBackgroundColor(context.getResources().getColor(R.color
                 .material_deep_purple_900));
@@ -116,7 +119,7 @@ public class AddedTagCardView extends CardView implements ITagCard, View.OnClick
         if (!isBeingBuilt()) return;
         final String lowerCaseFieldText = mTagNameField.getText().toString().toLowerCase(Locale
                 .ENGLISH);
-        if (!SQLiteDAO.getInstance().isTagOrGroupNameValid(lowerCaseFieldText)) {
+        if (mIsPersistent && !SQLiteDAO.getInstance().isTagOrGroupNameValid(lowerCaseFieldText)) {
             Toast.makeText(mContext, R.string.invalid_tag_name,
                     Toast.LENGTH_LONG).show();
             return;
