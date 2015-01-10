@@ -25,6 +25,7 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
     private FlowLayout mFlowLayout;
     private ScrollView mScrollView;
     private final View mDummy;
+    private View mEmptyView;
 
     public TagCloudCardExpand(Context context, ITagCard.ITagChangedListener _callback,
                               View dummy) {
@@ -72,6 +73,13 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
             viewToRemove.cancelTagCreation();
     }
 
+    private void updateEmptyViewVisibility() {
+        if (mFlowLayout.getChildCount() == 1 && !(mFlowLayout.getChildAt(0) instanceof ITagCard))
+            mEmptyView.setVisibility(View.VISIBLE);
+        else
+            mEmptyView.setVisibility(View.GONE);
+    }
+
     @Override
     public void setupInnerViewElements(ViewGroup parent, View view) {
         if (view == null) return;
@@ -80,7 +88,7 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
 
         mFlowLayout = (FlowLayout) view.findViewById(R.id.flow_layout);
 
-        mFlowLayout.removeAllViews();
+        mEmptyView = view.findViewById(android.R.id.empty);
 
         mScrollView.setOnTouchListener(new View.OnTouchListener() {
 
@@ -119,6 +127,8 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
         for (ITagCard v : mTagCardViews) {
             mFlowLayout.addView((View) v);
         }
+
+        updateEmptyViewVisibility();
     }
 
     private void recalculateFlowLayoutHeight() {
@@ -131,6 +141,7 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
         mFlowLayout.addView((View) tag);
         mScrollView.smoothScrollTo(0, mScrollView.getHeight());
         recalculateFlowLayoutHeight();
+        updateEmptyViewVisibility();
     }
 
     @Override
@@ -144,6 +155,7 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
             mCallback.onTagAdded(tag);
         mFlowLayout.addView(v);
         recalculateFlowLayoutHeight();
+        updateEmptyViewVisibility();
     }
 
     @Override
@@ -153,6 +165,7 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
             mCallback.onTagRemoved(tag);
         mFlowLayout.removeView((View) tag);
         recalculateFlowLayoutHeight();
+        updateEmptyViewVisibility();
     }
 
     @Override
@@ -160,6 +173,7 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
         mTagCardViews.remove(tag);
         mFlowLayout.removeView((View) tag);
         recalculateFlowLayoutHeight();
+        updateEmptyViewVisibility();
     }
 
     @Override

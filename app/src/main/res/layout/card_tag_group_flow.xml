@@ -8,4 +8,17 @@
     android:gravity="start"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    xmlns:android="http://schemas.android.com/apk/res/android"/>
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@android:id/empty"
+        android:padding="@dimen/message_tags_padding"
+        android:layout_width="wrap_content"
+        android:hint="@string/touch_to_add_tags_hint"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:clickable="false"
+        android:longClickable="false"
+        android:linksClickable="false"/>
+</org.thesis.android.ui.component.FlowLayout>
