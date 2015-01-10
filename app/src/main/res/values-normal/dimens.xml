@@ -22,4 +22,5 @@
     <dimen name="new_message_destination_tag_set_unexpanded_height">50dp</dimen>
     <dimen name="compose_message_body_parallax_offset">70dp</dimen>
     <dimen name="text_button">16sp</dimen>
+    <dimen name="message_body_padding">10dp</dimen>
 </resources>

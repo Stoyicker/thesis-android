@@ -20,4 +20,5 @@
     <string name="group_deletion_successful">Group deleted.</string>
     <string name="action_compose">COMPOSE</string>
     <string name="action_send">SEND</string>
+    <string name="message_body_hint">Say something</string>
 </resources>
