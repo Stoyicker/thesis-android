@@ -24,4 +24,5 @@
     <string name="touch_to_add_tags_hint">Touch to add tags</string>
     <string name="action_attach">Add attachment</string>
     <string name="attach_error_file_is_directory">Directory attachments are not supported yet</string>
+    <string name="attach_error_file_already_exists">Attachment already exists. Attachment names are unique and case-insensitive</string>
 </resources>

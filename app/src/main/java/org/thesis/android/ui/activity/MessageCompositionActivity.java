@@ -15,18 +15,21 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import org.apache.commons.lang3.text.WordUtils;
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
+import org.thesis.android.ui.component.FlowLayout;
+import org.thesis.android.ui.component.attachment.AttachmentView;
 import org.thesis.android.ui.component.tag.AddedTagCardView;
 import org.thesis.android.ui.component.tag.ITagCard;
 import org.thesis.android.ui.component.tag.TagCardView;
-import org.thesis.android.ui.component.FlowLayout;
 import org.thesis.android.ui.dialog.FileSelectorDialog;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 public class MessageCompositionActivity extends ActionBarActivity implements ITagCard
-        .ITagChangedListener, FileSelectorDialog.IOnFolderSelectionListener {
+        .ITagChangedListener, FileSelectorDialog.IOnFolderSelectionListener,
+        AttachmentView.IOnAttachmentRemovedListener {
 
     public static final String EXTRA_TAG = "EXTRA_TAG";
     private final List<ITagCard> mTags = new LinkedList<>();
@@ -34,6 +37,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
     private Context mContext;
     private SlidingUpPanelLayout mSlidingPaneLayout;
     private View mEmptyTagsView;
+    private FlowLayout mAttachmentContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +81,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
 
         mSlidingPaneLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         mFlowLayout = (FlowLayout) mSlidingPaneLayout.findViewById(R.id.tag_container);
+        mAttachmentContainer = (FlowLayout) findViewById(R.id.attachment_container);
 
         mFlowLayout.setOnTouchListener(new View.OnTouchListener() {
 
@@ -173,11 +178,11 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
         //Parse the list of children of the flowlayout, extracting the tags with instanceof
         //If there are no tags, toast and return
         //Parse the message body
-        //If the message body is empty and there are no attachments, return
+        //If the message body is empty and there are no attachments, toast and return
         //If the message body contains "attach" but there are no attachments show confirmatory
         // dialog
         //If here, send. To send, just use an asynctask (will it hold if the app is minimized?
-        // and closed?)
+        // and closed?), inform with a toast and call requestActivityReturn
     }
 
     private void requestActivityReturn() {
@@ -224,11 +229,34 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
 
     @Override
     public void onFileSelection(File file) {
-        //TODO Attach
-        if (file.isDirectory())
+        if (file.isDirectory()) {
             Toast.makeText(mContext, R.string.attach_error_file_is_directory,
                     Toast.LENGTH_LONG).show();
-        //If the attachment name already exists, toast-complain and return
-        //Add the view and store the attachment name
+            return;
+        }
+        final String fileName = file.getName();
+        if (attachmentAlreadyExists(fileName)) {
+            Toast.makeText(mContext, R.string.attach_error_file_already_exists,
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+        mAttachmentContainer.addView(new AttachmentView(mContext, fileName, this));
+    }
+
+    private synchronized Boolean attachmentAlreadyExists(String name) {
+        final Integer count = mAttachmentContainer.getChildCount();
+        for (int i = 0; i < count; i++) {
+            final View thisView = mAttachmentContainer.getChildAt(i);
+            if (!(thisView instanceof AttachmentView)) continue;
+            if (((AttachmentView) thisView).getName().toLowerCase(Locale
+                    .ENGLISH).contentEquals(name.toLowerCase(Locale.ENGLISH)))
+                return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
+
+    @Override
+    public void onAttachmentRemoved(AttachmentView removed) {
+        mAttachmentContainer.removeView(removed);
     }
 }

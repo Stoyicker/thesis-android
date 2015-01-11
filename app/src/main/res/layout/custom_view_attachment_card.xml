@@ -11,5 +11,5 @@
     android:longClickable="false"
     android:focusableInTouchMode="false"
     android:focusable="false"
-    style="@style/AppTheme.TagName"/>
+    style="@style/AppTheme.AttachmentName"/>
 
