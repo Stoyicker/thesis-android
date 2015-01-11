@@ -220,7 +220,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
             @Override
             protected void onPreExecute() {
                 Toast.makeText(MessageCompositionActivity.this.mContext,
-                        R.string.message_send_requested, Toast.LENGTH_SHORT);
+                        R.string.message_send_requested, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -233,7 +233,8 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
             protected void onPostExecute(Boolean success) {
                 final Integer resId = success ? R.string.message_sent_status_ok : R.string
                         .message_sent_status_err;
-                Toast.makeText(MessageCompositionActivity.this.mContext, resId, Toast.LENGTH_SHORT);
+                Toast.makeText(MessageCompositionActivity.this.mContext, resId,
+                        Toast.LENGTH_SHORT).show();
             }
         }.executeOnExecutor(Executors
                 .newSingleThreadExecutor(), messageBody, attachments);
