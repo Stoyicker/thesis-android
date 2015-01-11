@@ -222,8 +222,10 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
     }
 
     @Override
-    public void onFileSelection(File folder) {
-        //TODO If the attachment name already exists, toast-complain and return
-        //TODO Add the view and store the attachment name
+    public void onFileSelection(File file) {
+        //TODO Attach
+        //If file is a folder, toast-complain and return
+        //If the attachment name already exists, toast-complain and return
+        //Add the view and store the attachment name
     }
 }
