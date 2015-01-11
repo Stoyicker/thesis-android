@@ -28,4 +28,7 @@
     <string name="attachment_included_pattern">attach</string>
     <string name="warning">Warning</string>
     <string name="send_anyway">Send anyway</string>
+    <string name="message_send_requested">Sending message...</string>
+    <string name="message_sent_status_ok">Message successfully sent</string>
+    <string name="message_sent_status_err">The message could not be sent (are you still in the intranet?)</string>
 </resources>
