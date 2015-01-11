@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.thesis.android.ui.component.AutoFitTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/attachment_name"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/tag_name_padding"
+    android:maxLines="1"
+    android:ellipsize="marquee"
+    android:minWidth="@dimen/min_tag_length"
+    android:longClickable="false"
+    android:focusableInTouchMode="false"
+    android:focusable="false"
+    style="@style/AppTheme.TagName"/>
+

@@ -24,4 +24,5 @@
     <dimen name="text_button">16sp</dimen>
     <dimen name="message_body_padding">10dp</dimen>
     <dimen name="message_tags_padding">10dp</dimen>
+    <dimen name="message_body_text">16sp</dimen>
 </resources>

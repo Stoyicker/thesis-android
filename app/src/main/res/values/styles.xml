@@ -96,5 +96,11 @@
         <item name="android:gravity">start|top</item>
     </style>
 
-    <dimen name="message_body_text">16sp</dimen>
+    <style name="AppTheme.AttachmentName" parent="AppTheme.TagName">
+        <item name="android:textColor">@color/material_blue_900</item>
+        <item name="android:textSize">@dimen/tag_name_text</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:ellipsize">end</item>
+    </style>
 </resources>
