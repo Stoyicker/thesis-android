@@ -35,7 +35,7 @@ public class InitialActivity extends ActionBarActivity {
         if (PreferenceAssistant.readSharedBoolean(context,
                 PreferenceAssistant.PREF_USER_HAS_SET_NAME, Boolean.FALSE)) {
             c = NavigationDrawerActivity.class;
-        } else c = NameProvisionActivity.class;
+        } else c = DataProvisionActivity.class;
         final Intent homeIntent = new Intent(context, c);
         finish();
         startActivity(homeIntent);

@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activity.NameProvisionActivity"
+            android:name=".ui.activity.DataProvisionActivity"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.ClearBackground"
             android:screenOrientation="sensorLandscape"

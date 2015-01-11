@@ -23,4 +23,9 @@
     <string name="action_attach">Add attachment</string>
     <string name="attach_error_file_is_directory">Directory attachments are not supported yet</string>
     <string name="attach_error_file_already_exists">Attachment already exists. Attachment names are unique and case-insensitive</string>
+    <string name="send_error_no_targets">Specify at least one tag to send the message to</string>
+    <string name="send_error_nothing_to_send">Nothing found to send!</string>
+    <string name="attachment_included_pattern">attach</string>
+    <string name="warning">Warning</string>
+    <string name="send_anyway">Send anyway</string>
 </resources>

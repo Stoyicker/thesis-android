@@ -18,7 +18,7 @@ import org.thesis.android.R;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.io.prefs.PreferenceAssistant;
 
-public class NameProvisionActivity extends ActionBarActivity {
+public class DataProvisionActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

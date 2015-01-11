@@ -1,15 +1,19 @@
 package org.thesis.android.ui.activity;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.apache.commons.lang3.text.WordUtils;
@@ -26,6 +30,8 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 public class MessageCompositionActivity extends ActionBarActivity implements ITagCard
         .ITagChangedListener, FileSelectorDialog.IOnFolderSelectionListener,
@@ -38,6 +44,8 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
     private SlidingUpPanelLayout mSlidingPaneLayout;
     private View mEmptyTagsView;
     private FlowLayout mAttachmentContainer;
+    private EditText mEditTextView;
+    private List<File> mAttachments = new LinkedList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +62,8 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
         mContext = CApplication.getInstance().getContext();
 
         mEmptyTagsView = findViewById(android.R.id.empty);
+
+        mEditTextView = (EditText) findViewById(R.id.message_body);
 
         toolbar.findViewById(R.id.action_send).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,15 +184,59 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
     }
 
     private void tryToSendCurrentMessage() {
-        //TODO tryToSendCurrentMessage
-        //Parse the list of children of the flowlayout, extracting the tags with instanceof
-        //If there are no tags, toast and return
-        //Parse the message body
-        //If the message body is empty and there are no attachments, toast and return
-        //If the message body contains "attach" but there are no attachments show confirmatory
-        // dialog
-        //If here, send. To send, just use an asynctask (will it hold if the app is minimized?
-        // and closed?), inform with a toast and call requestActivityReturn
+        if (mTags.isEmpty()) {
+            Toast.makeText(mContext, R.string.send_error_no_targets, Toast.LENGTH_LONG).show();
+            return;
+        }
+        final String messageBody = mEditTextView.getText().toString();
+        if (TextUtils.isEmpty(messageBody) && mAttachments.isEmpty()) {
+            Toast.makeText(mContext, R.string.send_error_nothing_to_send, Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (!TextUtils.isEmpty(messageBody) && Pattern.matches(getString(R.string
+                .attachment_included_pattern), messageBody) && mAttachments.isEmpty()) {
+            new MaterialDialog.Builder(this)
+                    .title(R.string.warning)
+                    .positiveText(R.string.send_anyway)
+                    .negativeText(android.R.string.cancel)
+                    .titleColor(R.color.material_purple_900)
+                    .positiveColorRes(R.color.material_purple_900)
+                    .negativeColorRes(R.color.material_purple_900)
+                    .backgroundColor(android.R.color.white)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog materialDialog) {
+                            MessageCompositionActivity.this.sendCurrentMessage(messageBody,
+                                    mAttachments);
+                        }
+                    })
+                    .show();
+        } else
+            sendCurrentMessage(messageBody, mAttachments);
+    }
+
+    private void sendCurrentMessage(String messageBody, List<File> attachments) {
+        new AsyncTask<Object, Void, Boolean>() {
+            @Override
+            protected void onPreExecute() {
+                Toast.makeText(MessageCompositionActivity.this.mContext,
+                        R.string.message_send_requested, Toast.LENGTH_SHORT);
+            }
+
+            @Override
+            protected Boolean doInBackground(Object... params) {
+                //TODO sendCurrentMessage, check overlapping behaviour of toasts
+                return Boolean.FALSE;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean success) {
+                final Integer resId = success ? R.string.message_sent_status_ok : R.string
+                        .message_sent_status_err;
+                Toast.makeText(MessageCompositionActivity.this.mContext, resId, Toast.LENGTH_SHORT);
+            }
+        }.executeOnExecutor(Executors
+                .newSingleThreadExecutor(), messageBody, attachments);
     }
 
     private void requestActivityReturn() {
@@ -240,7 +294,8 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                     Toast.LENGTH_LONG).show();
             return;
         }
-        mAttachmentContainer.addView(new AttachmentView(mContext, fileName, this));
+        mAttachmentContainer.addView(new AttachmentView(mContext, file, this));
+        mAttachments.add(file);
     }
 
     private synchronized Boolean attachmentAlreadyExists(String name) {
@@ -248,7 +303,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
         for (int i = 0; i < count; i++) {
             final View thisView = mAttachmentContainer.getChildAt(i);
             if (!(thisView instanceof AttachmentView)) continue;
-            if (((AttachmentView) thisView).getName().toLowerCase(Locale
+            if (((AttachmentView) thisView).getFile().getName().toLowerCase(Locale
                     .ENGLISH).contentEquals(name.toLowerCase(Locale.ENGLISH)))
                 return Boolean.TRUE;
         }
@@ -258,5 +313,6 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
     @Override
     public void onAttachmentRemoved(AttachmentView removed) {
         mAttachmentContainer.removeView(removed);
+        mAttachments.remove(removed.getFile());
     }
 }

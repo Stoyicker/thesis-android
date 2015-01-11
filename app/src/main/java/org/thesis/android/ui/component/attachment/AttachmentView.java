@@ -9,13 +9,15 @@ import android.widget.TextView;
 
 import org.thesis.android.R;
 
+import java.io.File;
+
 @SuppressLint("ViewConstructor") //They wouldn't be used anyway
 public class AttachmentView extends CardView implements View.OnClickListener {
 
-    private final String mAtachmentName;
     private final IOnAttachmentRemovedListener mCallback;
+    private final File mFile;
 
-    public AttachmentView(Context context, String attachmentName, IOnAttachmentRemovedListener
+    public AttachmentView(Context context, File attachmentFile, IOnAttachmentRemovedListener
             _callback) {
         super(context);
         View v = ((LayoutInflater) context.getSystemService(Context
@@ -24,9 +26,9 @@ public class AttachmentView extends CardView implements View.OnClickListener {
 
 
         final TextView textView = (TextView) v.findViewById(R.id.attachment_name);
-        textView.setText(attachmentName);
+        textView.setText(attachmentFile.getName());
         mCallback = _callback;
-        mAtachmentName = attachmentName;
+        mFile = attachmentFile;
 
 
         setOnClickListener(this);
@@ -39,8 +41,8 @@ public class AttachmentView extends CardView implements View.OnClickListener {
             mCallback.onAttachmentRemoved(this);
     }
 
-    public String getName() {
-        return mAtachmentName;
+    public File getFile() {
+        return mFile;
     }
 
     public interface IOnAttachmentRemovedListener {
