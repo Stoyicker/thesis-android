@@ -8,15 +8,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.apache.commons.lang3.text.WordUtils;
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
-import org.thesis.android.ui.card.tag.AddedTagCardView;
-import org.thesis.android.ui.card.tag.ITagCard;
-import org.thesis.android.ui.card.tag.TagCardView;
+import org.thesis.android.ui.component.tag.AddedTagCardView;
+import org.thesis.android.ui.component.tag.ITagCard;
+import org.thesis.android.ui.component.tag.TagCardView;
 import org.thesis.android.ui.component.FlowLayout;
 import org.thesis.android.ui.dialog.FileSelectorDialog;
 
@@ -224,7 +225,9 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
     @Override
     public void onFileSelection(File file) {
         //TODO Attach
-        //If file is a folder, toast-complain and return
+        if (file.isDirectory())
+            Toast.makeText(mContext, R.string.attach_error_file_is_directory,
+                    Toast.LENGTH_LONG).show();
         //If the attachment name already exists, toast-complain and return
         //Add the view and store the attachment name
     }

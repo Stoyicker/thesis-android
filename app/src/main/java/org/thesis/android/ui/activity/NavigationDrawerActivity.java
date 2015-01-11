@@ -27,8 +27,8 @@ import org.thesis.android.CApplication;
 import org.thesis.android.R;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.ui.adapter.NavigationDrawerAdapter;
-import org.thesis.android.ui.card.tag.ITagCard;
-import org.thesis.android.ui.card.tag.TagCloudCardExpand;
+import org.thesis.android.ui.component.tag.ITagCard;
+import org.thesis.android.ui.component.tag.TagCloudCardExpand;
 import org.thesis.android.ui.fragment.MessageContainerFragment;
 import org.thesis.android.ui.fragment.NavigationDrawerFragment;
 

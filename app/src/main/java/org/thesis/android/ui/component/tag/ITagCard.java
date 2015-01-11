@@ -1,4 +1,4 @@
-package org.thesis.android.ui.card.tag;
+package org.thesis.android.ui.component.tag;
 
 public interface ITagCard {
 

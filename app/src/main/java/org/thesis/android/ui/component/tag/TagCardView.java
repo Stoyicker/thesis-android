@@ -1,4 +1,4 @@
-package org.thesis.android.ui.card.tag;
+package org.thesis.android.ui.component.tag;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
