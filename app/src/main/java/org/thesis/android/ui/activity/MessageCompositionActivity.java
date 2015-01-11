@@ -30,7 +30,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
     private FlowLayout mFlowLayout;
     private Context mContext;
     private SlidingUpPanelLayout mSlidingPaneLayout;
-    private View mEmptyView;
+    private View mEmptyTagsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
 
         mContext = CApplication.getInstance().getContext();
 
-        mEmptyView = findViewById(android.R.id.empty);
+        mEmptyTagsView = findViewById(android.R.id.empty);
 
         toolbar.findViewById(R.id.action_send).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,8 +93,8 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                         float endY = event.getY();
                         if (isClick(startX, endX, startY, endY) && mSlidingPaneLayout
                                 .isPanelExpanded()) {
-                            if (mEmptyView.isShown())
-                                mEmptyView.setVisibility(View.GONE);
+                            if (mEmptyTagsView.isShown())
+                                mEmptyTagsView.setVisibility(View.GONE);
                             for (ITagCard c : mTags) {
                                 if (!(c instanceof AddedTagCardView)) continue;
                                 final AddedTagCardView castedC = (AddedTagCardView) c;
@@ -154,9 +154,9 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
 
     private void updateEmptyViewVisibility() {
         if (mFlowLayout.getChildCount() == 1 && !(mFlowLayout.getChildAt(0) instanceof ITagCard))
-            mEmptyView.setVisibility(View.VISIBLE);
+            mEmptyTagsView.setVisibility(View.VISIBLE);
         else
-            mEmptyView.setVisibility(View.GONE);
+            mEmptyTagsView.setVisibility(View.GONE);
     }
 
     @Override
