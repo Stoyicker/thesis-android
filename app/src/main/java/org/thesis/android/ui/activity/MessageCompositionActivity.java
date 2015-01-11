@@ -18,12 +18,14 @@ import org.thesis.android.ui.card.tag.AddedTagCardView;
 import org.thesis.android.ui.card.tag.ITagCard;
 import org.thesis.android.ui.card.tag.TagCardView;
 import org.thesis.android.ui.component.FlowLayout;
+import org.thesis.android.ui.dialog.FileSelectorDialog;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MessageCompositionActivity extends ActionBarActivity implements ITagCard
-        .ITagChangedListener {
+        .ITagChangedListener, FileSelectorDialog.IOnFolderSelectionListener {
 
     public static final String EXTRA_TAG = "EXTRA_TAG";
     private final List<ITagCard> mTags = new LinkedList<>();
@@ -127,8 +129,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
     }
 
     private void showAddAttachmentDialog() {
-        //TODO showAddAttachmentDialog
-        //This runs on the UI, so no worries
+        new FileSelectorDialog().show(this);
     }
 
     @Override
@@ -218,5 +219,11 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
 
         if (!consumed)
             super.onBackPressed();
+    }
+
+    @Override
+    public void onFileSelection(File folder) {
+        //TODO If the attachment name already exists, toast-complain and return
+        //TODO Add the view and store the attachment name
     }
 }
