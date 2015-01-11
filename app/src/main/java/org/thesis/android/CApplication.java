@@ -18,9 +18,10 @@ public class CApplication extends Application {
         mInstance = this;
     }
 
-    public Context getContext() {
-        if (mContext == null)
-            throw new IllegalStateException("Context requested when it is null.");
+    public synchronized Context getContext() {
+        if (mContext == null) {
+            return getApplicationContext();
+        }
         return mContext;
     }
 
