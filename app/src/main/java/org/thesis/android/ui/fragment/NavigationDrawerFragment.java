@@ -199,6 +199,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     }
 
     private void refreshAutoCompleteEntries(AutoCompleteTextView autoCompleteTextView) {
+        if (SQLiteDAO.getInstance() == null) return;
         List<String> allNames = SQLiteDAO.getInstance().getNames();
         String[] entries = allNames.toArray(new String[allNames.size()]);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
