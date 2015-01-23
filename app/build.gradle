@@ -25,6 +25,20 @@ android {
     }
 
     buildTypes {
+        homeTests {
+            minifyEnabled Boolean.TRUE
+            proguardFiles 'proguard-rules.pro'
+            zipAlignEnabled Boolean.TRUE
+            buildConfigField("String", "MESSAGE_SERVER", "\"http://192.168.1.18:56000\"")
+        }
+
+        lindholmenExperiment {
+            minifyEnabled Boolean.TRUE
+            proguardFiles 'proguard-rules.pro'
+            zipAlignEnabled Boolean.TRUE
+            buildConfigField("String", "MESSAGE_SERVER", "TODO") //TODO URL to the actual server
+        }
+
         release {
             minifyEnabled Boolean.TRUE
             proguardFiles 'proguard-rules.pro'

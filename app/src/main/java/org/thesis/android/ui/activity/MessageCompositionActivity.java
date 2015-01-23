@@ -17,6 +17,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.apache.commons.lang3.text.WordUtils;
+import org.thesis.android.BuildConfig;
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
 import org.thesis.android.ui.component.FlowLayout;
@@ -217,22 +218,28 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
 
     private void sendCurrentMessage(String messageBody, List<File> attachments) {
         new AsyncTask<Object, Void, Boolean>() {
+
+            Toast mSendingToast;
+
             @Override
             protected void onPreExecute() {
-                Toast.makeText(MessageCompositionActivity.this.mContext,
-                        R.string.message_send_requested, Toast.LENGTH_SHORT).show();
+                mSendingToast = Toast.makeText(MessageCompositionActivity.this.mContext,
+                        R.string.message_send_requested, Toast.LENGTH_SHORT);
+                mSendingToast.show();
             }
 
             @Override
             protected Boolean doInBackground(Object... params) {
-                //TODO sendCurrentMessage, check overlapping behaviour of toasts
-                return Boolean.FALSE;
+                final String messageServerAddr = BuildConfig.MESSAGE_SERVER;
+                //TODO sendCurrentMessage
+                return Boolean.FALSE; //Success of the sending
             }
 
             @Override
             protected void onPostExecute(Boolean success) {
                 final Integer resId = success ? R.string.message_sent_status_ok : R.string
                         .message_sent_status_err;
+                mSendingToast.cancel();
                 Toast.makeText(MessageCompositionActivity.this.mContext, resId,
                         Toast.LENGTH_SHORT).show();
             }
