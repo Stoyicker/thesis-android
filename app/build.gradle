@@ -29,27 +29,27 @@ android {
             minifyEnabled Boolean.TRUE
             proguardFiles 'proguard-rules.pro'
             zipAlignEnabled Boolean.TRUE
-            buildConfigField("String", "MESSAGE_SERVER", "\"http://192.168.1.18:56000\"")
+            buildConfigField("String", "FILE_SERVER_ADDR", "\"http://192.168.1.18:56000\"")
         }
 
         lindholmenExperiment {
             minifyEnabled Boolean.TRUE
             proguardFiles 'proguard-rules.pro'
             zipAlignEnabled Boolean.TRUE
-            buildConfigField("String", "MESSAGE_SERVER", "\"TODO\"") //TODO URL to the actual server
+            buildConfigField("String", "FILE_SERVER_ADDR", "\"TODO\"") //TODO URL to the actual server
         }
 
         release {
             minifyEnabled Boolean.TRUE
             proguardFiles 'proguard-rules.pro'
             zipAlignEnabled Boolean.TRUE
-            buildConfigField("String", "MESSAGE_SERVER", "\"STUB-RELEASE_MESSAGE_SERVER\"")
+            buildConfigField("String", "FILE_SERVER_ADDR", "\"STUB-RELEASE_MESSAGE_SERVER\"")
         }
 
         debug {
             minifyEnabled Boolean.FALSE
             zipAlignEnabled Boolean.FALSE
-            buildConfigField("String", "MESSAGE_SERVER", "\"STUB-DEBUG_MESSAGE_SERVER\"")
+            buildConfigField("String", "FILE_SERVER_ADDR", "\"http://192.168.1.18:56000\"")
         }
     }
 
@@ -71,4 +71,5 @@ dependencies {
     compile 'com.android.support:cardview-v7:21.0.3'
     compile 'com.afollestad:material-dialogs:0.5.8'
     compile 'com.sothree.slidinguppanel:library:2.0.4'
+    compile 'com.squareup.okhttp:okhttp:2.2.0'
 }

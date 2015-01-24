@@ -7,6 +7,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,11 +16,20 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 import org.apache.commons.lang3.text.WordUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.thesis.android.BuildConfig;
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
+import org.thesis.android.io.file.HTTPRequestsSingleton;
+import org.thesis.android.io.prefs.PreferenceAssistant;
 import org.thesis.android.ui.component.FlowLayout;
 import org.thesis.android.ui.component.attachment.AttachmentView;
 import org.thesis.android.ui.component.tag.AddedTagCardView;
@@ -216,10 +226,13 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
             sendCurrentMessage(messageBody, mAttachments);
     }
 
-    private void sendCurrentMessage(String messageBody, List<File> attachments) {
+    private void sendCurrentMessage(final String messageBody, List<File> attachments) {
         new AsyncTask<Object, Void, Boolean>() {
 
-            Toast mSendingToast;
+            private Toast mSendingToast;
+            private String mMessageBody;
+            private List<File> mMessageAttachments;
+            private List<ITagCard> mTagList;
 
             @Override
             protected void onPreExecute() {
@@ -230,8 +243,40 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
 
             @Override
             protected Boolean doInBackground(Object... params) {
-                final String messageServerAddr = BuildConfig.MESSAGE_SERVER;
-                //TODO sendCurrentMessage
+                final String MESSAGE_SERVER_ADDR = BuildConfig.FILE_SERVER_ADDR;
+                final String MESSAGE_BODY_SERVICE_PATH = "/messages";
+                final String MESSAGE_ATTACHMENTS_SERVICE_PATH = "/files";
+                mMessageBody = (String) params[0];
+                //noinspection unchecked
+                mMessageAttachments = (List<File>) params[1];
+                //noinspection unchecked
+                mTagList = (List<ITagCard>) params[2];
+
+                final JSONObject bodyContents = new JSONObject();
+
+                try {
+                    bodyContents.put("sender", PreferenceAssistant.readSharedString(MessageCompositionActivity.this.mContext,
+                            PreferenceAssistant.PREF_USER_NAME, null));
+                    bodyContents.put("content_html", mMessageBody);
+                    final JSONArray tagsContainer = new JSONArray();
+                    for (ITagCard t : mTagList)
+                        tagsContainer.put(t.getName());
+                    bodyContents.put("tags", tagsContainer);
+                } catch (JSONException e) {
+                    Log.wtf("debug", e);
+                    return Boolean.FALSE;
+                }
+
+                final RequestBody body = RequestBody.create(MediaType.parse("application/json; " +
+                        "charset=UTF-8"), bodyContents.toString());
+                final Request messageBodyRequest = new Request.Builder().url(MESSAGE_SERVER_ADDR + MESSAGE_BODY_SERVICE_PATH)
+                        .post(body).build();
+
+                final Response bodyResponse = HTTPRequestsSingleton.getInstance().performRequest
+                        (messageBodyRequest);
+
+                //TODO Process body response, send attachments if any and report success on return
+
                 return Boolean.FALSE; //Success of the sending
             }
 
@@ -244,7 +289,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                         Toast.LENGTH_SHORT).show();
             }
         }.executeOnExecutor(Executors
-                .newSingleThreadExecutor(), messageBody, attachments);
+                .newSingleThreadExecutor(), messageBody, attachments, mTags);
     }
 
     private void requestActivityReturn() {
