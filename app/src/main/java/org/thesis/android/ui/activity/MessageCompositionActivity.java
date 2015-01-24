@@ -276,6 +276,9 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                         (messageBodyRequest);
 
                 //TODO Process body response, send attachments if any and report success on return
+                //Processing the response includes storing the messageid in a table in SQLite so
+                // that when we receive a message with that id instead of requesting it we delete
+                // the value on the table
 
                 return Boolean.FALSE; //Success of the sending
             }
