@@ -21,4 +21,5 @@
         <!--Required-->
         <ignore path="src/main/res/layout/fragment_navigation_drawer.xml"/>
     </issue>
+    <issue id="InvalidPackage" severity="ignore"/>
 </lint>
