@@ -26,16 +26,14 @@ android {
 
     buildTypes {
         homeTests {
-            minifyEnabled Boolean.TRUE
-            proguardFiles 'proguard-rules.pro'
-            zipAlignEnabled Boolean.TRUE
+            minifyEnabled Boolean.FALSE
+            zipAlignEnabled Boolean.FALSE
             buildConfigField("String", "FILE_SERVER_ADDR", "\"http://192.168.1.18:56000\"")
         }
 
         lindholmenExperiment {
-            minifyEnabled Boolean.TRUE
-            proguardFiles 'proguard-rules.pro'
-            zipAlignEnabled Boolean.TRUE
+            minifyEnabled Boolean.FALSE
+            zipAlignEnabled Boolean.FALSE
             buildConfigField("String", "FILE_SERVER_ADDR", "\"TODO\"")
             //TODO URL to the actual server
         }
@@ -50,8 +48,12 @@ android {
         debug {
             minifyEnabled Boolean.FALSE
             zipAlignEnabled Boolean.FALSE
-            buildConfigField("String", "FILE_SERVER_ADDR", "\"http://192.168.1.18:56000\"")
+            buildConfigField("String", "FILE_SERVER_ADDR",
+                    "\"SET_IT_ON_EACH_CONFIGURATION_INSTEAD\"")
         }
+
+        homeTests.initWith(buildTypes.debug)
+        lindholmenExperiment.initWith(buildTypes.debug)
     }
 
     compileOptions {

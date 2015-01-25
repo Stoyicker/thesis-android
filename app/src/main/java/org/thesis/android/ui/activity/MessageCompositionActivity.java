@@ -275,10 +275,18 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                 final Response bodyResponse = HTTPRequestsSingleton.getInstance().performRequest
                         (messageBodyRequest);
 
-                //TODO Process body response, send attachments if any and report success on return
-                //Processing the response includes storing the messageid in a table in SQLite so
-                // that when we receive a message with that id instead of requesting it we delete
-                // the value on the table
+                if (bodyResponse.code() == HTTPRequestsSingleton.SC_OK) {
+                    try {
+                        Log.d("debug", new JSONObject(bodyResponse.toString()).toString());
+                    } catch (JSONException e) {
+                        Log.wtf("debug", e);
+                    }
+                    //TODO Process body response, send attachments if any and report success on return
+                    //Processing the response includes storing the messageid in a table in SQLite so
+                    // that when we receive a message with that id instead of requesting it we delete
+                    // the value on the table
+                } else
+                    return Boolean.FALSE;
 
                 return Boolean.FALSE; //Success of the sending
             }

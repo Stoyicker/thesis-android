@@ -9,7 +9,8 @@ import java.io.IOException;
 public final class HTTPRequestsSingleton {
 
     private static final Object LOCK = new Object();
-    public static final Integer IN_PLACE_ERROR_STATUS_CODE = 666;
+    public static final Integer SC_IN_PLACE_ERROR = 666;
+    public static final Integer SC_OK = 200;
     private static volatile HTTPRequestsSingleton mInstance;
     private final OkHttpClient mClient;
 
@@ -36,7 +37,7 @@ public final class HTTPRequestsSingleton {
             return mClient.newCall(request).execute();
         } catch (IOException e) {
             e.printStackTrace(System.err);
-            return new Response.Builder().code(IN_PLACE_ERROR_STATUS_CODE).build();
+            return new Response.Builder().code(SC_IN_PLACE_ERROR).build();
         }
     }
 }
