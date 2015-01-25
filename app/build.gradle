@@ -35,7 +35,7 @@ android {
         homeTests {
             minifyEnabled Boolean.FALSE
             zipAlignEnabled Boolean.FALSE
-            buildConfigField("String", "FILE_SERVER_ADDR", "\"http://192.168.1.18:56000\"")
+            buildConfigField("String", "FILE_SERVER_ADDR", "\"http://192.168.1.18:61000\"")
             signingConfig signingConfigs.debug
         }
 

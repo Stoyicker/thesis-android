@@ -21,4 +21,9 @@ public class CLog {
         if (BuildConfig.DEBUG)
             Log.d(tag, FORMATTER.format(new Date()) + ": " + msg);
     }
+
+    public static void wtf(String tag, Throwable e) {
+        if (BuildConfig.DEBUG)
+            Log.wtf(tag, FORMATTER.format(new Date()) + ": " + e);
+    }
 }

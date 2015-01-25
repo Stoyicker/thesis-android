@@ -1,7 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="org.thesis.android">
 
+    <!-- Store messages -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <!-- Send/receive messages -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Check if internet is available -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"

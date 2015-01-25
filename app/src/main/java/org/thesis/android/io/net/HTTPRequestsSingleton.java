@@ -4,12 +4,14 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import org.thesis.android.dev.CLog;
+import org.thesis.android.util.Utils;
+
 import java.io.IOException;
 
 public final class HTTPRequestsSingleton {
 
     private static final Object LOCK = new Object();
-    public static final Integer SC_IN_PLACE_ERROR = 666;
     public static final Integer SC_OK = 200;
     private static volatile HTTPRequestsSingleton mInstance;
     private final OkHttpClient mClient;
@@ -33,11 +35,13 @@ public final class HTTPRequestsSingleton {
     }
 
     public Response performRequest(Request request) {
+        if (!Utils.isInternetReachable())
+            return null;
         try {
             return mClient.newCall(request).execute();
         } catch (IOException e) {
-            e.printStackTrace(System.err);
-            return new Response.Builder().code(SC_IN_PLACE_ERROR).build();
+            CLog.wtf("debug", e);
+            return null;
         }
     }
 }
