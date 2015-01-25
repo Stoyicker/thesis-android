@@ -60,6 +60,12 @@ android {
             buildConfigField("String", "FILE_SERVER_ADDR",
                     "\"SET_IT_ON_EACH_CONFIGURATION_INSTEAD\"")
         }
+
+        travis {
+            minifyEnabled Boolean.FALSE
+            zipAlignEnabled Boolean.FALSE
+            buildConfigField("String", "FILE_SERVER_ADDR", "\"STUB\"")
+        }
     }
 
     compileOptions {
