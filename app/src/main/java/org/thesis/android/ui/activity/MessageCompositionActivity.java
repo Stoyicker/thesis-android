@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import org.thesis.android.BuildConfig;
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
+import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.io.net.HTTPRequestsSingleton;
 import org.thesis.android.io.prefs.PreferenceAssistant;
 import org.thesis.android.ui.component.FlowLayout;
@@ -303,11 +304,9 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
 
                 //TODO Process body response, send attachments if any and report success on return
                 //Processing the response includes
-                // (1) Storing the messageid in a table in SQLite so
-                // that when we receive a message with that id instead of requesting it we delete
-                // the value on the table
-                // (2) Subscribing to the topic (should send id in the bodyRequest)
-                // (3) Store subscription in "Uncategorized" if it's new
+                SQLiteDAO.getInstance().markMessageIdAsMine(messageId);
+                // -Subscribing to the topic (should send id in the bodyRequest)
+                // -Store subscription in "Uncategorized" if it's new
 
                 return Boolean.TRUE; //Success of the sending
             }

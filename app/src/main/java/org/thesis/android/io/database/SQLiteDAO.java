@@ -20,11 +20,11 @@ import java.util.regex.Pattern;
 public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
     private static final Object DB_LOCK = new Object();
-    private static final String NAME_TABLE_NAME = "NAMES_TABLE",
-            GROUPS_TABLE_NAME = "GROUPS_TABLE";
+    private static final String NAMES_TABLE_NAME = "NAMES_TABLE",
+            GROUPS_TABLE_NAME = "GROUPS_TABLE", MY_MESSAGES_TABLE_NAME = "MY_MESSAGE_IDS_TABLE";
     private final String UNGROUPED_TABLE_NAME;
     private static final String TABLE_KEY_NAME = "NAME", TABLE_KEY_GROUP_NAME = "GROUP_NAME",
-            TABLE_KEY_TAG_NAME = "TAG_NAME";
+            TABLE_KEY_TAG_NAME = "TAG_NAME", TABLE_KEY_MESSAGE_ID = "MESSAGE_ID";
     private static final String SQLITE_MASTER_KEY_TABLE_NAME = "tbl_name";
     private static SQLiteDAO mInstance;
 
@@ -32,7 +32,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         super(_context, String.format(Locale.ENGLISH, _context.getString(R.string
                         .database_name_template), _context.getString(R.string.app_name)), null,
                 BuildConfig.VERSION_CODE);
-        UNGROUPED_TABLE_NAME = _context.getString(R.string.ungrouped_table_name);
+        UNGROUPED_TABLE_NAME = _context.getString(R.string.ungrouped_table_name); //Loaded here because it's locale-dependent
     }
 
     public static void setup(@NonNull Context _context) {
@@ -63,7 +63,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         super.onCreate(db);
 
-        final String createNameTableCmd = "CREATE TABLE IF NOT EXISTS " + NAME_TABLE_NAME + " ( " +
+        final String createNameTableCmd = "CREATE TABLE IF NOT EXISTS " + NAMES_TABLE_NAME + " ( " +
                 TABLE_KEY_NAME + " TEXT PRIMARY KEY ON CONFLICT IGNORE"
                 + " )".toUpperCase(Locale.ENGLISH);
 
@@ -77,6 +77,10 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
                 TABLE_KEY_TAG_NAME + " TEXT PRIMARY KEY ON CONFLICT IGNORE"
                 + " )".toUpperCase(Locale.ENGLISH);
 
+        final String createMyMsgsCmd = "CREATE TABLE IF NOT EXISTS " + MY_MESSAGES_TABLE_NAME + " ( " +
+                "" + TABLE_KEY_MESSAGE_ID + " TEXT PRIMARY KEY ON CONFLICT IGNORE )".toUpperCase
+                (Locale.ENGLISH);
+
         synchronized (DB_LOCK) {
             db.execSQL(createNameTableCmd);
             db.execSQL(createGroupsTableCmd);
@@ -84,6 +88,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
             final ContentValues unGroupedIntoGroupsTable = new ContentValues();
             unGroupedIntoGroupsTable.put(TABLE_KEY_GROUP_NAME, UNGROUPED_TABLE_NAME);
             db.insert(GROUPS_TABLE_NAME, null, unGroupedIntoGroupsTable);
+            db.execSQL(createMyMsgsCmd);
         }
     }
 
@@ -111,7 +116,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         ContentValues x = mapNameToStorable(name);
         synchronized (DB_LOCK) {
             db.beginTransaction();
-            db.insert(NAME_TABLE_NAME, null, x);
+            db.insert(NAMES_TABLE_NAME, null, x);
             db.setTransactionSuccessful();
             db.endTransaction();
         }
@@ -143,7 +148,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         final SQLiteDatabase db = getReadableDatabase();
         synchronized (DB_LOCK) {
             db.beginTransaction();
-            Cursor allStorableNames = db.query(NAME_TABLE_NAME, null, null, null, null, null, null);
+            Cursor allStorableNames = db.query(NAMES_TABLE_NAME, null, null, null, null, null, null);
             if (allStorableNames != null && allStorableNames.moveToFirst()) {
                 do {
                     ret.add(mapStorableToName(allStorableNames));
@@ -317,5 +322,17 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         }
 
         return ret;
+    }
+
+    public void markMessageIdAsMine(String messageId) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues x = new ContentValues();
+        x.put(TABLE_KEY_MESSAGE_ID, messageId);
+        synchronized (DB_LOCK) {
+            db.beginTransaction();
+            db.insert(MY_MESSAGES_TABLE_NAME, null, x);
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }
     }
 }
