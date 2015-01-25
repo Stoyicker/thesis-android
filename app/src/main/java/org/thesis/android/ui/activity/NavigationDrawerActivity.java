@@ -313,6 +313,12 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        setTagGroupConfigHeader(mTagGroupIndexStack.peek());
+    }
+
+    @Override
     public void onTagCreated(ITagCard tag) {
         //Unused
     }

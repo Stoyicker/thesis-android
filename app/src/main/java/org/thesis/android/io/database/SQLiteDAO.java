@@ -221,6 +221,26 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         return ret;
     }
 
+    public void addTagToUngrouped(String tagName) {
+        final SQLiteDatabase db = getWritableDatabase();
+        final String groupName = UNGROUPED_TABLE_NAME;
+
+        //Just in case
+        final String createTagTable = "CREATE TABLE IF NOT EXISTS " + groupName.toUpperCase
+                (Locale.ENGLISH) +
+                " ( " +
+                TABLE_KEY_TAG_NAME + " TEXT PRIMARY KEY ON CONFLICT IGNORE"
+                + " )".toUpperCase(Locale.ENGLISH);
+
+        synchronized (DB_LOCK) {
+            db.beginTransaction();
+            db.execSQL(createTagTable);
+            db.insert(groupName.toUpperCase(Locale.ENGLISH), null, mapTagToStorable(tagName));
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }
+    }
+
     public Boolean addTagToGroupAndRemoveFromUngrouped(String tagName, String groupName) {
         final SQLiteDatabase db = getWritableDatabase();
         Boolean ret = Boolean.FALSE;
@@ -280,7 +300,8 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
                         if (c != null)
                             c.close();
                     } catch (SQLiteException ignored) {
-                        //A few tables do not store tags, so they will throw an exception
+                        //A few tables don't store tags so they'll throw an exception,
+                        // but it's fine
                     }
                 } while (allTablesMatching.moveToNext());
                 allTablesMatching.close();

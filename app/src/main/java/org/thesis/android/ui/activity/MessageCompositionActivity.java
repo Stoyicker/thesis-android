@@ -265,6 +265,8 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                     bodyContents.put("sender", PreferenceAssistant.readSharedString(MessageCompositionActivity.this.mContext,
                             PreferenceAssistant.PREF_USER_NAME, null));
                     bodyContents.put("content_html", mMessageBody);
+                    bodyContents.put("deviceid", "-1"); //TODO Get the device id,
+                    // and send this value only if the device id is available
                     final JSONArray tagsContainer = new JSONArray();
                     for (ITagCard t : mTagList)
                         tagsContainer.put(t.getName());
@@ -302,11 +304,17 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                     return Boolean.FALSE;
                 }
 
-                //TODO Process body response, send attachments if any and report success on return
-                //Processing the response includes
-                SQLiteDAO.getInstance().markMessageIdAsMine(messageId);
-                // -Subscribing to the topic (should send id in the bodyRequest)
-                // -Store subscription in "Uncategorized" if it's new
+                final SQLiteDAO instance = SQLiteDAO.getInstance();
+
+                instance.markMessageIdAsMine(messageId);
+                for (ITagCard x : mTagList) {
+                    //The tags are guaranteed to be cleaned by now, so if a tag is not a valid name
+                    // it means it already exists as a subscription, and therefore it is skipped
+                    if (instance.isTagOrGroupNameValid(x.getName()))
+                        SQLiteDAO.getInstance().addTagToUngrouped(x.getName());
+                }
+
+                //TODO Upload attachments
 
                 return Boolean.TRUE; //Success of the sending
             }
