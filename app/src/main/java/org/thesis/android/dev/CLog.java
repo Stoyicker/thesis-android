@@ -13,17 +13,23 @@ public class CLog {
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("HH:mm:ss", Locale
             .ENGLISH);
 
-    public static void e(String tag, String msg) {
-        Log.e(tag, FORMATTER.format(new Date()) + ": " + msg);
+    public static void e(String msg) {
+        Log.e(new Exception().getStackTrace()[1].getClassName(), FORMATTER.format(new Date()) + ": " + msg);
     }
 
-    public static void d(String tag, String msg) {
+    public static void d(String msg) {
         if (BuildConfig.DEBUG)
-            Log.d(tag, FORMATTER.format(new Date()) + ": " + msg);
+            Log.d(new Exception().getStackTrace()[1].getClassName(), FORMATTER.format(new Date()) + ": " + msg);
     }
 
-    public static void wtf(String tag, Throwable e) {
+    public static void wtf(Throwable e) {
         if (BuildConfig.DEBUG)
-            Log.wtf(tag, FORMATTER.format(new Date()) + ": " + e);
+            Log.wtf(new Exception().getStackTrace()[1].getClassName(),
+                    FORMATTER.format(new Date()) + ": " + e);
+    }
+
+    public static void i(String msg) {
+        if (BuildConfig.DEBUG)
+            Log.i(new Exception().getStackTrace()[1].getClassName(), FORMATTER.format(new Date()) + ": " + msg);
     }
 }

@@ -7,7 +7,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,6 +27,7 @@ import org.json.JSONObject;
 import org.thesis.android.BuildConfig;
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
+import org.thesis.android.dev.CLog;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.io.net.HTTPRequestsSingleton;
 import org.thesis.android.io.prefs.PreferenceAssistant;
@@ -272,7 +272,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                         tagsContainer.put(t.getName());
                     bodyContents.put("tags", tagsContainer);
                 } catch (JSONException e) {
-                    Log.wtf("debug", e);
+                    CLog.wtf(e);
                     return Boolean.FALSE;
                 }
 
@@ -300,7 +300,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                     }
                     messageId = jsonResp.getString("msgid");
                 } catch (JSONException | IOException e) {
-                    Log.wtf("debug", e);
+                    CLog.wtf(e);
                     return Boolean.FALSE;
                 }
 

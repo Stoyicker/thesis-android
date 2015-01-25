@@ -44,7 +44,7 @@ public final class HTTPRequestsSingleton {
         try {
             return mClient.newCall(request).execute();
         } catch (IOException e) {
-            CLog.wtf("debug", e);
+            CLog.wtf(e);
             return null;
         }
     }

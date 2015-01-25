@@ -7,6 +7,18 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Check if internet is available -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- GCM: http://developer.android.com/google/gcm/client.html#manifest -->
+    <!-- Register and receive messages -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+    <!-- GCM requires a Google account (if running below 4.0.4, and minSdk is 4.0) -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <!-- Keep the processor from sleeping: user time is money to the company -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <!-- To prevent other applications from receiving the messages -->
+    <permission
+        android:name="org.thesis.android.permission.C2D_MESSAGE"
+        android:protectionLevel="signature"/>
+    <uses-permission android:name="org.thesis.android.permission.C2D_MESSAGE"/>
 
     <application
         android:allowBackup="true"
@@ -55,5 +67,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activity.NavigationDrawerActivity"/>
         </activity>
+
+        <receiver
+            android:name=".receiver.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <category android:name="org.thesis.android"/>
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".service.GcmIntentService"/>
     </application>
 </manifest>

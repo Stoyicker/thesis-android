@@ -48,7 +48,7 @@ public class InitialActivity extends ActionBarActivity {
         if ((cacheDir = context.getCacheDir()).length() >
                 CACHE_SIZE_LIMIT_BYTES) {
             if (!FileOperations.recursivelyDelete(cacheDir)) {
-                CLog.e(getClass().getName(), "Could not clean the cache.");
+                CLog.e("Could not clean the cache.");
             }
         }
     }

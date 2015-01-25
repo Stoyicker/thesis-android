@@ -22,9 +22,12 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
+import org.thesis.android.dev.CLog;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.ui.adapter.NavigationDrawerAdapter;
 import org.thesis.android.ui.component.tag.ITagCard;
@@ -45,14 +48,38 @@ import it.gmariotti.cardslib.library.view.CardView;
 public class NavigationDrawerActivity extends ActionBarActivity implements
         NavigationDrawerAdapter.INavigationDrawerCallback, ITagCard.ITagChangedListener {
 
+    private static final Integer PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Context mContext;
     private Stack<Integer> mTagGroupIndexStack;
     private Card mTagCloudCard;
 
+    /**
+     * Check the device to make sure it has the Google Play Services APK. If
+     * it doesn't, display a dialog that allows users to download the APK from
+     * the Google Play Store or enable it in the device's system settings.
+     */
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mContext);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                CLog.i("This device does not support Google Play Services.");
+            }
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mContext = CApplication.getInstance().getContext();
+
+        handleGcmRegistration();
         setContentView(R.layout.activity_navigation_drawer);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
@@ -62,8 +89,6 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
 
         mNavigationDrawerFragment = (NavigationDrawerFragment) supportFragmentManager
                 .findFragmentById(R.id.navigation_drawer_fragment);
-
-        mContext = CApplication.getInstance().getContext();
 
         mNavigationDrawerFragment.setup(R.id.navigation_drawer_fragment,
                 (DrawerLayout) findViewById(R.id.navigation_drawer), toolbar);
@@ -87,6 +112,13 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         });
 
         showInitialFragment();
+    }
+
+    private void handleGcmRegistration() {
+        if (checkPlayServices()) {
+            //TODO register device if it is not stored
+        } else
+            CLog.i("No valid Google Play Services APK found.");
     }
 
     private void launchMessageCompositionActivity(String tag) {
@@ -315,6 +347,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        checkPlayServices();
         setTagGroupConfigHeader(mTagGroupIndexStack.peek());
     }
 
