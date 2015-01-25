@@ -1,4 +1,4 @@
-package org.thesis.android.io.file;
+package org.thesis.android.io.net;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;

@@ -28,7 +28,7 @@ import org.json.JSONObject;
 import org.thesis.android.BuildConfig;
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
-import org.thesis.android.io.file.HTTPRequestsSingleton;
+import org.thesis.android.io.net.HTTPRequestsSingleton;
 import org.thesis.android.io.prefs.PreferenceAssistant;
 import org.thesis.android.ui.component.FlowLayout;
 import org.thesis.android.ui.component.attachment.AttachmentView;
