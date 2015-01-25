@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.thesis.android.R;
 
 @SuppressLint("ViewConstructor") //They wouldn't be used anyway
@@ -14,9 +15,12 @@ public class TagCardView extends CardView implements ITagCard, View.OnClickListe
 
     private ITagChangedListener mCallback;
     private final String mTagName;
+    private final Integer mHashCode;
 
     public TagCardView(Context context, String tagName, ITagChangedListener _callback) {
         super(context);
+        mHashCode = new HashCodeBuilder(17, 31).append(tagName).toHashCode();
+
         View v = ((LayoutInflater) context.getSystemService(Context
                 .LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_view_tag_card, this,
                 Boolean.TRUE);
@@ -40,5 +44,18 @@ public class TagCardView extends CardView implements ITagCard, View.OnClickListe
     @Override
     public String getName() {
         return mTagName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof ITagCard) {
+            return getName().equalsIgnoreCase(((ITagCard) o).getName());
+        }
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return mHashCode;
     }
 }

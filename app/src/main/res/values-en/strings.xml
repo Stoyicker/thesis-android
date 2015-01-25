@@ -22,7 +22,8 @@
     <string name="touch_to_add_tags_hint">Touch to add tags</string>
     <string name="action_attach">Add attachment</string>
     <string name="attach_error_file_is_directory">Directory attachments are not supported yet</string>
-    <string name="attach_error_file_already_exists">Attachment already exists. Attachment names are unique and case-insensitive</string>
+    <string name="attach_error_file_already_exists">Attachment already exists. Attachment names
+        are unique and case-insensitive.</string>
     <string name="send_error_no_targets">Specify at least one tag to send the message to</string>
     <string name="send_error_nothing_to_send">Nothing found to send!</string>
     <string name="attachment_included_pattern">attach</string>
@@ -31,4 +32,5 @@
     <string name="message_send_requested">Sending message</string>
     <string name="message_sent_status_ok">Message successfully sent</string>
     <string name="message_sent_status_err">The message could not be sent (are you still in the intranet?)</string>
+    <string name="send_duplicated_tag">That tag has already been specified. Duplicating tags on send is meaningless.</string>
 </resources>

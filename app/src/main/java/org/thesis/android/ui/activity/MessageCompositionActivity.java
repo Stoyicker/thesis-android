@@ -38,6 +38,7 @@ import org.thesis.android.ui.component.tag.TagCardView;
 import org.thesis.android.ui.dialog.FileSelectorDialog;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -169,8 +170,13 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
         mFlowLayout.removeView((View) tag);
         final TagCardView v = new TagCardView(mContext, WordUtils.capitalizeFully(tag.getName()),
                 this);
-        mTags.add(v);
-        mFlowLayout.addView(v);
+        if (!mTags.contains(v)) {
+            mTags.add(v);
+            mFlowLayout.addView(v);
+        } else {
+            Toast.makeText(mContext, R.string.send_duplicated_tag,
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -275,20 +281,35 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                 final Response bodyResponse = HTTPRequestsSingleton.getInstance().performRequest
                         (messageBodyRequest);
 
-                if (bodyResponse.code() == HTTPRequestsSingleton.SC_OK) {
-                    try {
-                        Log.d("debug", new JSONObject(bodyResponse.toString()).toString());
-                    } catch (JSONException e) {
-                        Log.wtf("debug", e);
-                    }
-                    //TODO Process body response, send attachments if any and report success on return
-                    //Processing the response includes storing the messageid in a table in SQLite so
-                    // that when we receive a message with that id instead of requesting it we delete
-                    // the value on the table
-                } else
+                if (bodyResponse == null || bodyResponse.code() !=
+                        HTTPRequestsSingleton
+                                .SC_OK)
                     return Boolean.FALSE;
 
-                return Boolean.FALSE; //Success of the sending
+                JSONObject jsonResp;
+                String messageId;
+
+                try {
+                    jsonResp = new JSONObject(bodyResponse.body().string());
+                    if (!jsonResp.getString
+                            ("status").contentEquals("ok")) {
+                        return Boolean.FALSE;
+                    }
+                    messageId = jsonResp.getString("msgid");
+                } catch (JSONException | IOException e) {
+                    Log.wtf("debug", e);
+                    return Boolean.FALSE;
+                }
+
+                //TODO Process body response, send attachments if any and report success on return
+                //Processing the response includes
+                // (1) Storing the messageid in a table in SQLite so
+                // that when we receive a message with that id instead of requesting it we delete
+                // the value on the table
+                // (2) Subscribing to the topic (should send id in the bodyRequest)
+                // (3) Store subscription in "Uncategorized" if it's new
+
+                return Boolean.TRUE; //Success of the sending
             }
 
             @Override
@@ -298,9 +319,10 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                 mSendingToast.cancel();
                 Toast.makeText(MessageCompositionActivity.this.mContext, resId,
                         Toast.LENGTH_SHORT).show();
+                if (success)
+                    MessageCompositionActivity.this.requestActivityReturn();
             }
-        }.executeOnExecutor(Executors
-                .newSingleThreadExecutor(), messageBody, attachments, mTags);
+        }.executeOnExecutor(Executors.newSingleThreadExecutor(), messageBody, attachments, mTags);
     }
 
     private void requestActivityReturn() {

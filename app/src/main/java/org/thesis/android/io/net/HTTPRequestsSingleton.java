@@ -1,5 +1,8 @@
 package org.thesis.android.io.net;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -34,7 +37,8 @@ public final class HTTPRequestsSingleton {
         return ret;
     }
 
-    public Response performRequest(Request request) {
+    @Nullable
+    public Response performRequest(@NonNull Request request) {
         if (!Utils.isInternetReachable())
             return null;
         try {

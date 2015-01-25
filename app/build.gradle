@@ -35,6 +35,7 @@ android {
         homeTests {
             minifyEnabled Boolean.FALSE
             zipAlignEnabled Boolean.FALSE
+            debuggable Boolean.TRUE
             buildConfigField("String", "FILE_SERVER_ADDR", "\"http://192.168.1.18:61000\"")
             signingConfig signingConfigs.debug
         }
@@ -42,6 +43,7 @@ android {
         lindholmenExperiment {
             minifyEnabled Boolean.FALSE
             zipAlignEnabled Boolean.FALSE
+            debuggable Boolean.TRUE
             //TODO URL to the actual server
             buildConfigField("String", "FILE_SERVER_ADDR", "\"TODO\"")
             signingConfig signingConfigs.debug
@@ -51,12 +53,14 @@ android {
             minifyEnabled Boolean.TRUE
             proguardFiles 'proguard-rules.pro'
             zipAlignEnabled Boolean.TRUE
+            debuggable Boolean.FALSE
             buildConfigField("String", "FILE_SERVER_ADDR", "\"STUB-RELEASE_MESSAGE_SERVER\"")
         }
 
         debug {
             minifyEnabled Boolean.FALSE
             zipAlignEnabled Boolean.FALSE
+            debuggable Boolean.TRUE
             buildConfigField("String", "FILE_SERVER_ADDR",
                     "\"SET_IT_ON_EACH_CONFIGURATION_INSTEAD\"")
         }
@@ -64,6 +68,7 @@ android {
         travis {
             minifyEnabled Boolean.FALSE
             zipAlignEnabled Boolean.FALSE
+            debuggable Boolean.FALSE
             buildConfigField("String", "FILE_SERVER_ADDR", "\"STUB\"")
         }
     }
