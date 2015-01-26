@@ -8,6 +8,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import org.thesis.android.dev.CLog;
 import org.thesis.android.receiver.GcmBroadcastReceiver;
 
 public class GcmIntentService extends IntentService {
@@ -33,15 +34,10 @@ public class GcmIntentService extends IntentService {
              * recognize.
              */
             if (GoogleCloudMessaging.
-                    MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-                //TODO Do something upon error?
-            } else if (GoogleCloudMessaging.
-                    MESSAGE_TYPE_DELETED.equals(messageType)) {
-                //TODO Do something upon deletion?
-            } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 // TODO Ask for the message, download it and put its data into the database
-            }
+            } else
+                CLog.w("Received GCM message with messageType " + messageType + "\n" + extras.toString());
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);
