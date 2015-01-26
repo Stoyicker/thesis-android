@@ -33,6 +33,10 @@
     <string name="send_anyway">Send anyway</string>
     <string name="message_send_requested">Sending message</string>
     <string name="message_sent_status_ok">Message successfully sent</string>
-    <string name="message_sent_status_err">The message could not be sent (are you still in the intranet?)</string>
+    <string name="send_error_generic">The message could not be sent (are you still in the intranet?)</string>
     <string name="send_duplicated_tag">That tag has already been specified. Duplicating tags on send is meaningless.</string>
+    <string name="send_error_not_registered">This device is lacking a registration id. Try again later.</string>
+    <string name="google_play_services_error_not_supported">This device does not support Google
+        Play Services. The app will misbehave.</string>
+    <string name="google_play_services_error_not_installed">No valid Google Play Services APK found. Install Google Play Services or the app will misbehave.</string>
 </resources>

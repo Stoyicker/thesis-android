@@ -37,6 +37,7 @@ android {
             zipAlignEnabled Boolean.FALSE
             debuggable Boolean.TRUE
             buildConfigField("String", "FILE_SERVER_ADDR", "\"http://192.168.1.18:61000\"")
+            buildConfigField("String", "GCM_SENDER_ID", "\"128297271029\"")
             signingConfig signingConfigs.debug
         }
 
@@ -46,6 +47,7 @@ android {
             debuggable Boolean.TRUE
             //TODO URL to the actual server
             buildConfigField("String", "FILE_SERVER_ADDR", "\"TODO\"")
+            buildConfigField("String", "GCM_SENDER_ID", "\"128297271029\"")
             signingConfig signingConfigs.debug
         }
 
@@ -54,7 +56,8 @@ android {
             proguardFiles 'proguard-rules.pro'
             zipAlignEnabled Boolean.TRUE
             debuggable Boolean.FALSE
-            buildConfigField("String", "FILE_SERVER_ADDR", "\"STUB-RELEASE_MESSAGE_SERVER\"")
+            buildConfigField("String", "FILE_SERVER_ADDR", "\"STUB\"")
+            buildConfigField("String", "GCM_SENDER_ID", "\"STUB\"")
         }
 
         debug {
@@ -62,7 +65,8 @@ android {
             zipAlignEnabled Boolean.FALSE
             debuggable Boolean.TRUE
             buildConfigField("String", "FILE_SERVER_ADDR",
-                    "\"SET_IT_ON_EACH_CONFIGURATION_INSTEAD\"")
+                    "\"STUB\"")
+            buildConfigField("String", "GCM_SENDER_ID", "\"STUB\"")
         }
 
         travis {
@@ -70,6 +74,7 @@ android {
             zipAlignEnabled Boolean.FALSE
             debuggable Boolean.FALSE
             buildConfigField("String", "FILE_SERVER_ADDR", "\"STUB\"")
+            buildConfigField("String", "GCM_SENDER_ID", "\"STUB\"")
         }
     }
 
@@ -89,7 +94,7 @@ dependencies {
     compile 'com.github.gabrielemariotti.cards:cardslib-core:2.0.1'
     compile 'org.apache.commons:commons-lang3:3.0'
     compile 'com.android.support:cardview-v7:21.0.3'
-    compile 'com.afollestad:material-dialogs:0.5.8'
+    compile 'com.afollestad:material-dialogs:0.6.1.6'
     compile 'com.sothree.slidinguppanel:library:2.0.4'
     compile 'com.squareup.okio:okio:1.1.0'
     compile 'com.squareup.okhttp:okhttp:2.2.0'

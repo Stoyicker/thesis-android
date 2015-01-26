@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,21 +25,27 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import org.thesis.android.BuildConfig;
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
 import org.thesis.android.dev.CLog;
 import org.thesis.android.io.database.SQLiteDAO;
+import org.thesis.android.io.prefs.PreferenceAssistant;
 import org.thesis.android.ui.adapter.NavigationDrawerAdapter;
 import org.thesis.android.ui.component.tag.ITagCard;
 import org.thesis.android.ui.component.tag.TagCloudCardExpand;
 import org.thesis.android.ui.fragment.MessageContainerFragment;
 import org.thesis.android.ui.fragment.NavigationDrawerFragment;
+import org.thesis.android.util.Utils;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.Executors;
 
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardExpand;
@@ -67,6 +74,8 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                         PLAY_SERVICES_RESOLUTION_REQUEST).show();
             } else {
                 CLog.i("This device does not support Google Play Services.");
+                Toast.makeText(mContext, R.string.google_play_services_error_not_supported,
+                        Toast.LENGTH_LONG).show();
             }
             return Boolean.FALSE;
         }
@@ -116,9 +125,75 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
 
     private void handleGcmRegistration() {
         if (checkPlayServices()) {
-            //TODO register device if it is not stored
-        } else
+            final String registrationId = getRegistrationId(mContext);
+
+            //If the current regId is wrong because there was an update,
+            //this ensures that it is invalidated
+            PreferenceAssistant.saveSharedString(mContext, PreferenceAssistant.PROPERTY_REG_ID,
+                    registrationId);
+
+            if (TextUtils.isEmpty(registrationId)) {
+                registerInBackground();
+            }
+        } else {
             CLog.i("No valid Google Play Services APK found.");
+            Toast.makeText(mContext, R.string.google_play_services_error_not_installed,
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private String getRegistrationId(Context context) {
+        String registrationId = PreferenceAssistant.readSharedString(context, PreferenceAssistant
+                .PROPERTY_REG_ID, "");
+        if (registrationId.isEmpty()) {
+            CLog.i("Registration id not found.");
+            return "";
+        }
+        // Check if app was updated; if so, it must clear the registration ID
+        // since the existing regID is not guaranteed to work with the new
+        // app version.
+        int registeredVersion = PreferenceAssistant.readSharedInteger
+                (context, PreferenceAssistant.PROPERTY_APP_VERSION,
+                        Integer.MIN_VALUE);
+        int currentVersion = Utils.getAppVersion(context);
+        if (registeredVersion != currentVersion) {
+            CLog.i("App version changed.");
+            return "";
+        }
+        return registrationId;
+    }
+
+    private void registerInBackground() {
+        new AsyncTask<Object, Void, String>() {
+
+            Context mContext;
+
+            @Override
+            protected String doInBackground(Object... params) {
+
+                mContext = (Context) params[0];
+                GoogleCloudMessaging gcm;
+                String registrationId = "";
+
+                try {
+                    gcm = GoogleCloudMessaging.getInstance(mContext);
+                    registrationId = gcm.register(BuildConfig.GCM_SENDER_ID);
+                } catch (IOException ex) {
+                    CLog.wtf(ex);
+                    //A new attempt will be made through onResume()
+                }
+                return registrationId;
+            }
+
+            @Override
+            protected void onPostExecute(String registrationId) {
+                PreferenceAssistant.saveSharedString(mContext,
+                        PreferenceAssistant.PROPERTY_REG_ID, registrationId);
+                PreferenceAssistant.saveSharedInteger(mContext, PreferenceAssistant.PROPERTY_APP_VERSION,
+                        Utils.getAppVersion
+                                (mContext));
+            }
+        }.executeOnExecutor(Executors.newSingleThreadExecutor(), mContext);
     }
 
     private void launchMessageCompositionActivity(String tag) {
@@ -347,7 +422,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        checkPlayServices();
+        handleGcmRegistration();
         setTagGroupConfigHeader(mTagGroupIndexStack.peek());
     }
 

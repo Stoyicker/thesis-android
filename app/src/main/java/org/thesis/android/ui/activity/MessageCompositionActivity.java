@@ -250,6 +250,13 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
 
             @Override
             protected Boolean doInBackground(Object... params) {
+                final String registrationId = PreferenceAssistant.readSharedString(MessageCompositionActivity.this.mContext,
+                        PreferenceAssistant.PROPERTY_REG_ID, "");
+
+                if (TextUtils.isEmpty(registrationId)) {
+                    return Boolean.FALSE;
+                }
+
                 final String MESSAGE_SERVER_ADDR = BuildConfig.FILE_SERVER_ADDR;
                 final String MESSAGE_BODY_SERVICE_PATH = "/messages";
                 final String MESSAGE_ATTACHMENTS_SERVICE_PATH = "/files";
@@ -265,7 +272,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                     bodyContents.put("sender", PreferenceAssistant.readSharedString(MessageCompositionActivity.this.mContext,
                             PreferenceAssistant.PREF_USER_NAME, null));
                     bodyContents.put("content_html", mMessageBody);
-                    bodyContents.put("deviceid", "-1"); //TODO Get the device id,
+                    bodyContents.put("device_id", registrationId);
                     // and send this value only if the device id is available
                     final JSONArray tagsContainer = new JSONArray();
                     for (ITagCard t : mTagList)
@@ -321,13 +328,22 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
 
             @Override
             protected void onPostExecute(Boolean success) {
-                final Integer resId = success ? R.string.message_sent_status_ok : R.string
-                        .message_sent_status_err;
                 mSendingToast.cancel();
-                Toast.makeText(MessageCompositionActivity.this.mContext, resId,
-                        Toast.LENGTH_SHORT).show();
-                if (success)
+                if (!success) {
+                    if (TextUtils.isEmpty(PreferenceAssistant.readSharedString(MessageCompositionActivity.this.mContext,
+                            PreferenceAssistant.PROPERTY_REG_ID, "")))
+                        Toast.makeText(MessageCompositionActivity.this.mContext, R.string.send_error_not_registered,
+                                Toast.LENGTH_SHORT).show();
+                    else {
+                        Toast.makeText(MessageCompositionActivity.this.mContext, R.string.send_error_generic,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(MessageCompositionActivity.this.mContext,
+                            R.string.message_sent_status_ok,
+                            Toast.LENGTH_SHORT).show();
                     MessageCompositionActivity.this.requestActivityReturn();
+                }
             }
         }.executeOnExecutor(Executors.newSingleThreadExecutor(), messageBody, attachments, mTags);
     }

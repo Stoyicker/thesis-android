@@ -1,6 +1,8 @@
 package org.thesis.android.util;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -30,5 +32,16 @@ public final class Utils {
         ret = isWifiConnected || isDataConnected;
 
         return ret;
+    }
+
+    public static Integer getAppVersion(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // Should never happen
+            throw new RuntimeException("Could not get package name: " + e);
+        }
     }
 }
