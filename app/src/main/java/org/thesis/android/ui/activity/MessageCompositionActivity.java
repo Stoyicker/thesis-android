@@ -7,6 +7,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,7 +16,9 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
@@ -234,18 +237,20 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
     }
 
     private void sendCurrentMessage(final String messageBody, List<File> attachments) {
-        new AsyncTask<Object, Void, Boolean>() {
+        new AsyncTask<Object, String, Boolean>() {
 
-            private Toast mSendingToast;
+            private Toast mToast;
             private String mMessageBody;
             private List<File> mMessageAttachments;
             private List<ITagCard> mTagList;
 
             @Override
             protected void onPreExecute() {
-                mSendingToast = Toast.makeText(MessageCompositionActivity.this.mContext,
+                mToast = Toast.makeText(MessageCompositionActivity.this.mContext,
                         R.string.message_send_requested, Toast.LENGTH_SHORT);
-                mSendingToast.show();
+                mToast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0,
+                        0);
+                mToast.show();
             }
 
             @Override
@@ -286,7 +291,9 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
 
                 final RequestBody body = RequestBody.create(MediaType.parse("application/json; " +
                         "charset=UTF-8"), bodyContents.toString());
-                final Request messageBodyRequest = new Request.Builder().url(MESSAGE_SERVER_ADDR + MESSAGE_BODY_SERVICE_PATH)
+                final Request messageBodyRequest = new Request.Builder().url(
+                        HTTPRequestsSingleton.httpEncodeAndStringify(MESSAGE_SERVER_ADDR,
+                                MESSAGE_BODY_SERVICE_PATH, ""))
                         .post(body).build();
 
                 final Response bodyResponse = HTTPRequestsSingleton.getInstance().performRequest
@@ -322,14 +329,53 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                         SQLiteDAO.getInstance().addTagToUngrouped(x.getName());
                 }
 
-                //TODO Upload attachments
+                RequestBody multipartBody;
+                Request attachmentRequest;
+
+                for (File f : mMessageAttachments) {
+                    multipartBody = new MultipartBuilder()
+                            .type(MultipartBuilder.FORM)
+                            .addPart(Headers.of("Content-Disposition", "form-data; name=\"file\""),
+                                    RequestBody.create(MediaType.parse("todo"), f))
+                            .build();
+                    attachmentRequest = new Request.Builder()
+                            .url(HTTPRequestsSingleton.httpEncodeAndStringify(
+                                    MESSAGE_SERVER_ADDR,
+                                    MESSAGE_ATTACHMENTS_SERVICE_PATH,
+                                    "filename=" + f
+                                            .getName() + "&messageid" +
+                                            "=" + messageId
+                            ))
+                            .post(multipartBody)
+                            .build();
+                    final Response attachmentResponse = HTTPRequestsSingleton.getInstance().performRequest
+                            (attachmentRequest);
+
+                    if (attachmentResponse == null || attachmentResponse.code() !=
+                            HTTPRequestsSingleton
+                                    .SC_OK) {
+                        publishProgress(String.format(Locale.ENGLISH,
+                                mContext.getString(R.string
+                                        .send_error_attachment_problem_pattern),
+                                f.getName()));
+                    }
+                }
 
                 return Boolean.TRUE; //Success of the sending
             }
 
             @Override
+            protected void onProgressUpdate(String... errorMsg) {
+                mToast.cancel();
+                mToast = Toast.makeText(mContext, errorMsg[0], Toast.LENGTH_SHORT);
+                mToast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0,
+                        0);
+                mToast.show();
+            }
+
+            @Override
             protected void onPostExecute(Boolean success) {
-                mSendingToast.cancel();
+                mToast.cancel();
                 if (!success) {
                     if (TextUtils.isEmpty(PreferenceAssistant.readSharedString(MessageCompositionActivity.this.mContext,
                             PreferenceAssistant.PROPERTY_REG_ID, "")))
