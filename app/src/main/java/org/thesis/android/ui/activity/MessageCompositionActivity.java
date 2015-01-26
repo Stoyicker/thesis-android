@@ -273,6 +273,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                             PreferenceAssistant.PREF_USER_NAME, null));
                     bodyContents.put("content_html", mMessageBody);
                     bodyContents.put("device_id", registrationId);
+                    bodyContents.put("wait_for_attachments", !mMessageAttachments.isEmpty());
                     // and send this value only if the device id is available
                     final JSONArray tagsContainer = new JSONArray();
                     for (ITagCard t : mTagList)
