@@ -37,6 +37,7 @@ android {
             zipAlignEnabled Boolean.FALSE
             debuggable Boolean.TRUE
             buildConfigField("String", "FILE_SERVER_ADDR", "\"192.168.1.18:61000\"")
+            buildConfigField("String", "GCM_SERVER_ADDR", "\"192.168.1.18:60000\"")
             buildConfigField("String", "GCM_SENDER_ID", "\"128297271029\"")
             signingConfig signingConfigs.debug
         }
@@ -45,8 +46,9 @@ android {
             minifyEnabled Boolean.FALSE
             zipAlignEnabled Boolean.FALSE
             debuggable Boolean.TRUE
-            //TODO URL to the actual server
+            //TODO URL to the actual servers
             buildConfigField("String", "FILE_SERVER_ADDR", "\"TODO\"")
+            buildConfigField("String", "GCM_SERVER_ADDR", "\"TODO\"")
             buildConfigField("String", "GCM_SENDER_ID", "\"128297271029\"")
             signingConfig signingConfigs.debug
         }
@@ -57,6 +59,7 @@ android {
             zipAlignEnabled Boolean.TRUE
             debuggable Boolean.FALSE
             buildConfigField("String", "FILE_SERVER_ADDR", "\"STUB\"")
+            buildConfigField("String", "GCM_SERVER_ADDR", "\"STUB\"")
             buildConfigField("String", "GCM_SENDER_ID", "\"STUB\"")
         }
 
@@ -64,8 +67,8 @@ android {
             minifyEnabled Boolean.FALSE
             zipAlignEnabled Boolean.FALSE
             debuggable Boolean.TRUE
-            buildConfigField("String", "FILE_SERVER_ADDR",
-                    "\"STUB\"")
+            buildConfigField("String", "FILE_SERVER_ADDR", "\"STUB\"")
+            buildConfigField("String", "GCM_SERVER_ADDR", "\"STUB\"")
             buildConfigField("String", "GCM_SENDER_ID", "\"STUB\"")
         }
 
@@ -74,6 +77,7 @@ android {
             zipAlignEnabled Boolean.FALSE
             debuggable Boolean.FALSE
             buildConfigField("String", "FILE_SERVER_ADDR", "\"STUB\"")
+            buildConfigField("String", "GCM_SERVER_ADDR", "\"STUB\"")
             buildConfigField("String", "GCM_SENDER_ID", "\"STUB\"")
         }
     }

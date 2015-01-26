@@ -40,4 +40,6 @@
     <string name="google_play_services_error_not_installed">No valid Google Play Services APK found. Install Google Play Services or the app will misbehave.</string>
     <string name="send_error_attachment_problem_pattern">An error occurred when trying to attach
         %s</string>
+    <string name="subscription_error_pattern">Couldn\'t subscribe to tag %s</string>
+    <string name="unsubscription_error_pattern">Couldn\'t unsubscribe from tag %s</string>
 </resources>

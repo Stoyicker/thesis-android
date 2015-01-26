@@ -5,20 +5,24 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import org.apache.commons.lang3.text.WordUtils;
 import org.thesis.android.R;
 import org.thesis.android.io.database.SQLiteDAO;
+import org.thesis.android.io.net.SubscriptionManager;
 import org.thesis.android.ui.activity.NavigationDrawerActivity;
 import org.thesis.android.ui.component.FlowLayout;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import it.gmariotti.cardslib.library.internal.CardExpand;
 
 public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChangedListener,
-        NavigationDrawerActivity.IOnBackPressedListener {
+        NavigationDrawerActivity.IOnBackPressedListener,
+        SubscriptionManager.ISubscriptionListener, SubscriptionManager.IUnsubscriptionListener {
 
     private final List<ITagCard> mTagCardViews = new LinkedList<>();
     private final ITagCard.ITagChangedListener mCallback;
@@ -150,20 +154,44 @@ public class TagCloudCardExpand extends CardExpand implements ITagCard.ITagChang
         mFlowLayout.removeView((View) tag);
         final TagCardView v = new TagCardView(mContext, WordUtils.capitalizeFully(tag.getName()),
                 this);
-        mTagCardViews.add(v);
-        if (mCallback != null)
-            mCallback.onTagAdded(tag);
-        mFlowLayout.addView(v);
+        SubscriptionManager.subscribeToTagInBackground(mContext, v, this);
+    }
+
+    @Override
+    public void onSubscriptionAttemptFinished(TagCardView tag, Boolean success) {
+        if (success) {
+            mTagCardViews.add(tag);
+            if (mCallback != null)
+                mCallback.onTagAdded(tag);
+            mFlowLayout.addView(tag);
+        } else {
+            Toast.makeText(mContext, String.format(Locale.ENGLISH, mContext.getString(R.string
+                            .subscription_error_pattern),
+                    tag.getName()), Toast.LENGTH_SHORT).show();
+        }
         recalculateFlowLayoutHeight();
         updateEmptyViewVisibility();
     }
 
     @Override
     public void onTagRemoved(ITagCard tag) {
-        mTagCardViews.remove(tag);
-        if (mCallback != null)
-            mCallback.onTagRemoved(tag);
-        mFlowLayout.removeView((View) tag);
+        SubscriptionManager.unsubscribeFromTagInBackground(mContext, tag, this);
+    }
+
+    @Override
+    public void onUnsubscriptionAttemptFinished(ITagCard tag, Boolean success) {
+        final View tagAsView = (View) tag;
+        if (success) {
+            mTagCardViews.remove(tag);
+            if (mCallback != null)
+                mCallback.onTagRemoved(tag);
+            mFlowLayout.removeView(tagAsView);
+        } else {
+            tagAsView.setVisibility(View.VISIBLE);
+            Toast.makeText(mContext, String.format(Locale.ENGLISH, mContext.getString(R.string
+                            .unsubscription_error_pattern),
+                    tag.getName()), Toast.LENGTH_SHORT).show();
+        }
         recalculateFlowLayoutHeight();
         updateEmptyViewVisibility();
     }
