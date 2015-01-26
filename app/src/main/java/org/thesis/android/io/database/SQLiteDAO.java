@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.thesis.android.BuildConfig;
 import org.thesis.android.R;
+import org.thesis.android.dev.CLog;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -286,9 +287,10 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
                     null);
             if (allTablesMatching != null && allTablesMatching.moveToFirst()) {
                 do {
+                    final String tableName = mapSqliteMasterStorableToUpperCaseTagName
+                            (allTablesMatching);
                     try {
-                        Cursor c = db.query(mapSqliteMasterStorableToUpperCaseTagName
-                                (allTablesMatching), null, TABLE_KEY_TAG_NAME + " = '" +
+                        Cursor c = db.query(tableName, null, TABLE_KEY_TAG_NAME + " = '" +
                                 upperCaseName + "'", null, null, null, null);
                         if (c != null && c.getCount() > 0) {
                             c.close();
@@ -302,6 +304,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
                     } catch (SQLiteException ignored) {
                         //A few tables don't store tags so they'll throw an exception,
                         // but it's fine
+                        CLog.w("Table " + tableName + " skipped on group name check.");
                     }
                 } while (allTablesMatching.moveToNext());
                 allTablesMatching.close();

@@ -32,4 +32,10 @@ public class CLog {
         if (BuildConfig.DEBUG)
             Log.i(new Exception().getStackTrace()[1].getClassName(), FORMATTER.format(new Date()) + ": " + msg);
     }
+
+    public static void w(String msg) {
+        if (BuildConfig.DEBUG)
+            Log.w(new Exception().getStackTrace()[1].getClassName(), FORMATTER.format(new Date())
+                    + ": " + msg);
+    }
 }
