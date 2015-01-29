@@ -36,7 +36,7 @@ import org.thesis.android.io.prefs.PreferenceAssistant;
 import org.thesis.android.ui.adapter.NavigationDrawerAdapter;
 import org.thesis.android.ui.component.tag.ITagCard;
 import org.thesis.android.ui.component.tag.TagCloudCardExpand;
-import org.thesis.android.ui.fragment.MessageContainerFragment;
+import org.thesis.android.ui.fragment.MessageListContainerFragment;
 import org.thesis.android.ui.fragment.NavigationDrawerFragment;
 import org.thesis.android.util.Utils;
 
@@ -56,6 +56,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         NavigationDrawerAdapter.INavigationDrawerCallback, ITagCard.ITagChangedListener {
 
     private static final Integer PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final String EXTRA_KEY_EXIT = "EXTRA_KEY_EXIT";
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Context mContext;
     private Stack<Integer> mTagGroupIndexStack;
@@ -76,6 +77,12 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
                 CLog.i("This device does not support Google Play Services.");
                 Toast.makeText(mContext, R.string.google_play_services_error_not_supported,
                         Toast.LENGTH_LONG).show();
+                final Intent intent = new Intent(this, NavigationDrawerActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra(EXTRA_KEY_EXIT, Boolean.TRUE);
+                startActivity(intent);
+                finish();
+
             }
             return Boolean.FALSE;
         }
@@ -84,6 +91,9 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (getIntent().getBooleanExtra(EXTRA_KEY_EXIT, Boolean.FALSE)) {
+            finish();
+        }
         super.onCreate(savedInstanceState);
 
         mContext = CApplication.getInstance().getContext();
@@ -206,7 +216,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     }
 
     private void showInitialFragment() {
-        Fragment fragment = configureMessageContainer(0);
+        Fragment fragment = configureNewMessageContainer(0);
 
         getSupportFragmentManager().beginTransaction().
                 replace(R.id.content_fragment_container, fragment)
@@ -215,8 +225,8 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         //running
     }
 
-    private Fragment configureMessageContainer(Integer tagGroupIndex) {
-        return MessageContainerFragment.newInstance(mContext,
+    private Fragment configureNewMessageContainer(Integer tagGroupIndex) {
+        return MessageListContainerFragment.newInstance(mContext,
                 SQLiteDAO.getInstance().getTagGroups().get(tagGroupIndex));
     }
 
@@ -241,7 +251,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
 
     private void goToEntry(final Integer position) {
 
-        final Fragment target = configureMessageContainer(position);
+        final Fragment target = configureNewMessageContainer(position);
         findViewById(android.R.id.content).post(new Runnable() {
             @Override
             public void run() {

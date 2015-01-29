@@ -52,7 +52,7 @@
             android:screenOrientation="sensorLandscape"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="org.thesis.android.SYNC_DONE"/>
             </intent-filter>
         </activity>
         <activity
@@ -78,5 +78,6 @@
         </receiver>
 
         <service android:name=".service.GcmIntentService"/>
+        <service android:name=".service.ManualSyncIntentService"/>
     </application>
 </manifest>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.jorge.cmp.ui.component.ChainableSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                        android:id="@+id/refreshable_layout"
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent"
+                                                        android:animateLayoutChanges="true">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/message_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:requiresFadingEdge="vertical"
+            android:fadeScrollbars="true"
+            android:scrollbars="vertical"
+            xmlns:android="http://schemas.android.com/apk/res/android"/>
+
+        <TextView
+            android:id="@android:id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/message_list_adapter_empty"/>
+    </FrameLayout>
+</org.jorge.cmp.ui.component.ChainableSwipeRefreshLayout>

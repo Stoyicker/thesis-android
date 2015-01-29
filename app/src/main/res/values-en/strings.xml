@@ -42,4 +42,5 @@
         %s</string>
     <string name="subscription_error_pattern">Couldn\'t subscribe to tag %s</string>
     <string name="unsubscription_error_pattern">Couldn\'t unsubscribe from tag %s</string>
+    <string name="message_list_adapter_empty">No messages.</string>
 </resources>
