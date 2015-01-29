@@ -22,10 +22,11 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
     private static final Object DB_LOCK = new Object();
     private static final String NAMES_TABLE_NAME = "NAMES_TABLE",
-            GROUPS_TABLE_NAME = "GROUPS_TABLE", MY_MESSAGES_TABLE_NAME = "MY_MESSAGE_IDS_TABLE";
+            GROUPS_TABLE_NAME = "GROUPS_TABLE", MY_MESSAGES_TABLE_NAME = "MY_MESSAGE_IDS_TABLE",
+            FETCHED_STAMPS_TABLE_NAME = "FETCHED_STAMPS_TABLE_NAME";
     private final String UNGROUPED_TABLE_NAME;
     private static final String TABLE_KEY_NAME = "NAME", TABLE_KEY_GROUP_NAME = "GROUP_NAME",
-            TABLE_KEY_TAG_NAME = "TAG_NAME", TABLE_KEY_MESSAGE_ID = "MESSAGE_ID";
+            TABLE_KEY_TAG_NAME = "TAG_NAME", TABLE_KEY_MESSAGE_ID = "MESSAGE_ID", TABLE_KEY_EPOCH = "TIMESTAMP";
     private static final String SQLITE_MASTER_KEY_TABLE_NAME = "tbl_name";
     private static SQLiteDAO mInstance;
 
@@ -79,13 +80,20 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
                 + " )".toUpperCase(Locale.ENGLISH);
 
         final String createMyMsgsCmd = "CREATE TABLE IF NOT EXISTS " + MY_MESSAGES_TABLE_NAME + " ( " +
-                "" + TABLE_KEY_MESSAGE_ID + " TEXT PRIMARY KEY ON CONFLICT IGNORE )".toUpperCase
+                "" + TABLE_KEY_MESSAGE_ID + " TEXT PRIMARY KEY ON CONFLICT REPLACE )".toUpperCase
                 (Locale.ENGLISH);
+
+        final String createFetchedStampsCmd = ("CREATE TABLE IF NOT EXISTS " + FETCHED_STAMPS_TABLE_NAME
+                + " ( " + TABLE_KEY_TAG_NAME + " TEXT PRIMARY KEY ON CONFLICT IGNORE," +
+                " " + TABLE_KEY_EPOCH + " INTEGER DEFAULT 0" +
+                ")").toUpperCase(
+                Locale.ENGLISH);
 
         synchronized (DB_LOCK) {
             db.execSQL(createNameTableCmd);
             db.execSQL(createGroupsTableCmd);
             db.execSQL(createUngroupedCmd);
+            db.execSQL(createFetchedStampsCmd);
             final ContentValues unGroupedIntoGroupsTable = new ContentValues();
             unGroupedIntoGroupsTable.put(TABLE_KEY_GROUP_NAME, UNGROUPED_TABLE_NAME);
             db.insert(GROUPS_TABLE_NAME, null, unGroupedIntoGroupsTable);
@@ -109,6 +117,19 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
     private ContentValues mapGroupToStorable(String groupName) {
         ContentValues ret = new ContentValues();
         ret.put(TABLE_KEY_GROUP_NAME, groupName.toUpperCase(Locale.ENGLISH));
+        return ret;
+    }
+
+    private ContentValues mapFetchedEpochToStorable(String upperCaseTagName, Long epoch) {
+        ContentValues ret = new ContentValues();
+        ret.put(TABLE_KEY_TAG_NAME, upperCaseTagName);
+        ret.put(TABLE_KEY_EPOCH, epoch);
+        return ret;
+    }
+
+    private ContentValues mapMessageIdToStorable(String messageId) {
+        ContentValues ret = new ContentValues();
+        ret.put(TABLE_KEY_MESSAGE_ID, messageId);
         return ret;
     }
 
@@ -141,6 +162,11 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
     private String mapStorableToTag(Cursor tagCursor) {
         return WordUtils.capitalizeFully(tagCursor.getString(tagCursor.getColumnIndex
                 (TABLE_KEY_TAG_NAME)));
+    }
+
+    private Long mapStorableToTimestamp(Cursor epochCursor) {
+        return (long) epochCursor.getInt(epochCursor.getColumnIndex
+                (TABLE_KEY_EPOCH));
     }
 
     public List<String> getNames() {
@@ -219,7 +245,35 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
             db.endTransaction();
         }
 
+        deleteTagTableIfNotOnAnyGroup(tagName);
+
         return ret;
+    }
+
+    private void deleteTagTableIfNotOnAnyGroup(String tagName) {
+        if (TextUtils.isEmpty(tagName)) {
+            return;
+        }
+
+        final String upperCaseTagName = tagName.toUpperCase(Locale.ENGLISH);
+        final String formattedTag = WordUtils.capitalizeFully(tagName);
+        final List<String> groups = getTagGroups();
+        for (String group : groups) {
+            final List<String> tagsInThisGroup = getGroupTags(group);
+            if (tagsInThisGroup.contains(formattedTag)) {
+                return;
+            }
+        }
+
+        final SQLiteDatabase db = getWritableDatabase();
+        final String dropTableStatement = "DROP TABLE IF EXISTS '" + upperCaseTagName + "'";
+
+        synchronized (DB_LOCK) {
+            db.beginTransaction();
+            db.execSQL(dropTableStatement);
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }
     }
 
     public void addTagToUngrouped(String tagName) {
@@ -227,7 +281,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         final String groupName = UNGROUPED_TABLE_NAME;
 
         //Just in case
-        final String createTagTable = "CREATE TABLE IF NOT EXISTS " + groupName.toUpperCase
+        final String createGroupTableCmd = "CREATE TABLE IF NOT EXISTS " + groupName.toUpperCase
                 (Locale.ENGLISH) +
                 " ( " +
                 TABLE_KEY_TAG_NAME + " TEXT PRIMARY KEY ON CONFLICT IGNORE"
@@ -235,7 +289,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
         synchronized (DB_LOCK) {
             db.beginTransaction();
-            db.execSQL(createTagTable);
+            db.execSQL(createGroupTableCmd);
             db.insert(groupName.toUpperCase(Locale.ENGLISH), null, mapTagToStorable(tagName));
             db.setTransactionSuccessful();
             db.endTransaction();
@@ -247,7 +301,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         Boolean ret = Boolean.FALSE;
 
         //Just in case
-        final String createTagTable = "CREATE TABLE IF NOT EXISTS " + groupName.toUpperCase
+        final String createGroupTableCmd = "CREATE TABLE IF NOT EXISTS " + groupName.toUpperCase
                 (Locale.ENGLISH) +
                 " ( " +
                 TABLE_KEY_TAG_NAME + " TEXT PRIMARY KEY ON CONFLICT IGNORE"
@@ -255,12 +309,11 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
         synchronized (DB_LOCK) {
             db.beginTransaction();
-            db.execSQL(createTagTable);
+            db.execSQL(createGroupTableCmd);
             db.insert(groupName.toUpperCase(Locale.ENGLISH), null, mapTagToStorable(tagName));
             if (!groupName.toUpperCase(Locale.ENGLISH).contentEquals(UNGROUPED_TABLE_NAME))
                 ret = db.delete(UNGROUPED_TABLE_NAME, TABLE_KEY_TAG_NAME + " = '" +
-                        tagName
-                                .toUpperCase(Locale.ENGLISH) + "'", null) > 0;
+                        tagName.toUpperCase(Locale.ENGLISH) + "'", null) > 0;
             db.setTransactionSuccessful();
             db.endTransaction();
         }
@@ -317,7 +370,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
     public void addGroup(String groupName) {
         final SQLiteDatabase db = getWritableDatabase();
-        final String createTagTable = "CREATE TABLE IF NOT EXISTS " + groupName.toUpperCase
+        final String createGroupTableCmd = "CREATE TABLE IF NOT EXISTS " + groupName.toUpperCase
                 (Locale.ENGLISH) +
                 " ( " +
                 TABLE_KEY_TAG_NAME + " TEXT PRIMARY KEY ON CONFLICT IGNORE"
@@ -325,7 +378,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
         synchronized (DB_LOCK) {
             db.beginTransaction();
-            db.execSQL(createTagTable);
+            db.execSQL(createGroupTableCmd);
             db.insert(GROUPS_TABLE_NAME, null, mapGroupToStorable(groupName));
             db.setTransactionSuccessful();
             db.endTransaction();
@@ -335,6 +388,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
     public Boolean removeGroup(String groupName) {
         final SQLiteDatabase db = getWritableDatabase();
         final Boolean ret;
+        final List<String> tagNames = getGroupTags(groupName);
 
         synchronized (DB_LOCK) {
             db.beginTransaction();
@@ -343,6 +397,11 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
                             .toUpperCase(Locale.ENGLISH) + "'", null) > 0;
             db.setTransactionSuccessful();
             db.endTransaction();
+        }
+
+        if (ret) {
+            for (String tagName : tagNames)
+                deleteTagTableIfNotOnAnyGroup(tagName);
         }
 
         return ret;
@@ -355,6 +414,73 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         synchronized (DB_LOCK) {
             db.beginTransaction();
             db.insert(MY_MESSAGES_TABLE_NAME, null, x);
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }
+    }
+
+    public Long getLastFetchedEpoch(String tagName) {
+        if (TextUtils.isEmpty(tagName))
+            return -1L;
+        Long ret = -1L;
+        final String upperCaseTagName = tagName.toUpperCase(Locale.ENGLISH);
+
+        final SQLiteDatabase db = getReadableDatabase();
+        synchronized (DB_LOCK) {
+            db.beginTransaction();
+            final Cursor epochCursor = db.query(FETCHED_STAMPS_TABLE_NAME, new String[]{TABLE_KEY_EPOCH},
+                    TABLE_KEY_TAG_NAME + " = ?",
+                    new String[]{upperCaseTagName}, null, null,
+                    null);
+            if (epochCursor != null && epochCursor.moveToFirst()) {
+                ret = mapStorableToTimestamp(epochCursor);
+            }
+            if (epochCursor != null)
+                epochCursor.close();
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }
+        return ret;
+    }
+
+    public void setLastFetchedEpoch(String tagName, Long epoch) {
+        if (TextUtils.isEmpty(tagName))
+            return;
+
+        final SQLiteDatabase db = getWritableDatabase();
+        final String upperCaseTagName = tagName.toUpperCase(Locale.ENGLISH);
+        final ContentValues cv = mapFetchedEpochToStorable(upperCaseTagName, epoch);
+
+        synchronized (DB_LOCK) {
+            db.beginTransaction();
+            if (getLastFetchedEpoch(tagName) != -1) { //Means that this tag already has an entry
+                db.update(FETCHED_STAMPS_TABLE_NAME, cv, TABLE_KEY_TAG_NAME + " = ?",
+                        new String[]{upperCaseTagName});
+            } else
+                db.insert(FETCHED_STAMPS_TABLE_NAME, null, cv);
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }
+    }
+
+    public void addMessageIdsToTag(List<String> messageIds, String tagName) {
+        if (TextUtils.isEmpty(tagName)) {
+            return;
+        }
+        final SQLiteDatabase db = getWritableDatabase();
+        final String upperCaseTableName = tagName.toUpperCase(Locale.ENGLISH);
+
+        //The tag table may or may not exist
+        final String createTagTableCmd = "CREATE TABLE IF NOT EXISTS " + upperCaseTableName +
+                " ( " +
+                TABLE_KEY_MESSAGE_ID + " TEXT PRIMARY KEY ON CONFLICT REPLACE"
+                + " )".toUpperCase(Locale.ENGLISH);
+
+        synchronized (DB_LOCK) {
+            db.beginTransaction();
+            db.execSQL(createTagTableCmd);
+            for (String id : messageIds)
+                db.insert(upperCaseTableName, null, mapMessageIdToStorable(id));
             db.setTransactionSuccessful();
             db.endTransaction();
         }
