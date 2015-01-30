@@ -20,6 +20,7 @@ import org.thesis.android.CApplication;
 import org.thesis.android.R;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.service.ManualSyncIntentService;
+import org.thesis.android.ui.adapter.MessageListAdapter;
 import org.thesis.android.ui.component.ChainableSwipeRefreshLayout;
 import org.thesis.android.ui.component.EndlessRecyclerOnScrollListener;
 
@@ -37,7 +38,7 @@ public class MessageListContainerFragment extends Fragment {
     private SwipeRefreshLayout mRefreshLayout;
     private String mGroupName;
     public static final String EXTRA_KEY_TAG_LIST = "EXTRA_KEY_TAG_LIST";
-    private final MessageListAdapter mMessageListAdapter;
+    private MessageListAdapter mMessageListAdapter;
 
     public static Fragment newInstance(Context context, String tagGroup) {
         Bundle args = new Bundle();

@@ -436,6 +436,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         setTagGroupConfigHeader(mTagGroupIndexStack.peek());
     }
 
+    //TODO In (some of) these methods the fragment will need to be notified to update the adapter
     @Override
     public void onTagCreated(ITagCard tag) {
         //Unused
