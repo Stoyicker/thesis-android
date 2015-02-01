@@ -5,10 +5,12 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +26,7 @@ import org.thesis.android.service.ManualSyncIntentService;
 import org.thesis.android.ui.adapter.MessageListAdapter;
 import org.thesis.android.ui.component.ChainableSwipeRefreshLayout;
 import org.thesis.android.ui.component.EndlessRecyclerOnScrollListener;
+import org.thesis.android.ui.component.tag.ITagCard;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +35,7 @@ import java.util.Locale;
 
 import static android.support.v4.content.WakefulBroadcastReceiver.startWakefulService;
 
-public class MessageListContainerFragment extends Fragment {
+public class MessageListContainerFragment extends Fragment implements ITagCard.ITagChangedListener {
 
     private static final String EXTRA_KEY_TAG_GROUP_TABLE = "EXTRA_KEY_TAG_GROUP_TABLE";
     private Context mContext;
@@ -40,6 +43,7 @@ public class MessageListContainerFragment extends Fragment {
     private String mGroupName;
     public static final String EXTRA_KEY_TAG_LIST = "EXTRA_KEY_TAG_LIST";
     private MessageListAdapter mMessageListAdapter;
+    private BroadcastReceiver mReceiver;
 
     public static Fragment newInstance(Context context, String tagGroup) {
         Bundle args = new Bundle();
@@ -56,6 +60,16 @@ public class MessageListContainerFragment extends Fragment {
         final Bundle args;
         if ((args = getArguments()) != null)
             mGroupName = args.getString(EXTRA_KEY_TAG_GROUP_TABLE);
+        final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance
+                (mContext);
+        localBroadcastManager.registerReceiver(mReceiver = new SyncDoneBroadcastReceiver(),
+                new IntentFilter("org.thesis.android.SYNC_DONE"));
+    }
+
+    @Override
+    public void onDetach() {
+        LocalBroadcastManager.getInstance(mContext).unregisterReceiver(mReceiver);
+        super.onDetach();
     }
 
     @Override
@@ -109,6 +123,26 @@ public class MessageListContainerFragment extends Fragment {
                         (intent.setComponent(comp)));
             }
         });
+    }
+
+    @Override
+    public void onTagCreated(ITagCard tag) {
+        //Do nothing
+    }
+
+    @Override
+    public void onTagAdded(ITagCard tag) {
+        //TODO Notify adapter
+    }
+
+    @Override
+    public void onTagRemoved(ITagCard tag) {
+        //TODO Notify adapter
+    }
+
+    @Override
+    public void onTagCreationCancelled(ITagCard tag) {
+        //Do nothing
     }
 
     private class SyncDoneBroadcastReceiver extends BroadcastReceiver {

@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/navigation_drawer"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:animateLayoutChanges="true"
-              android:focusable="true"
-              android:focusableInTouchMode="true">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/navigation_drawer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:animateLayoutChanges="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true">
 
     <include
         android:id="@+id/toolbar_actionbar"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         layout="@layout/include_toolbar_message_composition"/>
 
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
@@ -17,6 +19,7 @@
         android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/toolbar_actionbar"
         android:gravity="bottom"
         android:background="@android:color/white"
         sothree:paralaxOffset="@dimen/compose_message_body_parallax_offset"
@@ -52,4 +55,4 @@
         </org.thesis.android.ui.component.FlowLayout>
 
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
-</LinearLayout>
+</RelativeLayout>

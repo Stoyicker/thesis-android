@@ -6,28 +6,38 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:animateLayoutChanges="true">
 
         <include
             android:id="@+id/toolbar_actionbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             layout="@layout/include_toolbar_main"/>
 
-        <it.gmariotti.cardslib.library.view.CardView
-            android:id="@+id/card_tag_group_configuration"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/tag_group_config_margin"
-            card:card_layout_resourceID="@layout/card_tag_group_configuration"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_above="@+id/toolbar_actionbar"
+            android:animateLayoutChanges="true">
 
-        <FrameLayout
-            android:id="@+id/content_fragment_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
+            <it.gmariotti.cardslib.library.view.CardView
+                android:id="@+id/card_tag_group_configuration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/tag_group_config_margin"
+                card:card_layout_resourceID="@layout/card_tag_group_configuration"/>
+
+            <FrameLayout
+                android:id="@+id/content_fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+    </RelativeLayout>
 
     <fragment
         android:id="@+id/navigation_drawer_fragment"

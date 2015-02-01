@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -105,6 +106,6 @@ class MessageParsingTask extends AsyncTask<Object, Void, ArrayList<String>> {
         Intent intent = new Intent();
         intent.setAction("org.thesis.android.SYNC_DONE");
         intent.putStringArrayListExtra(MessageListContainerFragment.EXTRA_KEY_TAG_LIST, tags);
-        mContext.sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(mContext).sendBroadcastSync(intent);
     }
 }

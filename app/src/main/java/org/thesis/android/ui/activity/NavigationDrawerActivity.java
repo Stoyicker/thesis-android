@@ -62,6 +62,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     private Context mContext;
     private Stack<Integer> mTagGroupIndexStack;
     private Card mTagCloudCard;
+    private Fragment mMessageContainerFragment;
 
     /**
      * Check the device to make sure it has the Google Play Services APK. If
@@ -217,17 +218,16 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     }
 
     private void showInitialFragment() {
-        Fragment fragment = configureNewMessageContainer(0);
-
+        configureMessageContainer(0);
         getSupportFragmentManager().beginTransaction().
-                replace(R.id.content_fragment_container, fragment)
+                replace(R.id.content_fragment_container, mMessageContainerFragment)
                 .commitAllowingStateLoss(); //This transaction must not go into the back stack
         //Otherwise it might happen that the message content is hidden but the app is still
         //running
     }
 
-    private Fragment configureNewMessageContainer(Integer tagGroupIndex) {
-        return MessageListContainerFragment.newInstance(mContext,
+    private void configureMessageContainer(Integer tagGroupIndex) {
+        mMessageContainerFragment = MessageListContainerFragment.newInstance(mContext,
                 SQLiteDAO.getInstance().getTagGroups().get(tagGroupIndex));
     }
 
@@ -252,13 +252,13 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
 
     private void goToEntry(final Integer position) {
 
-        final Fragment target = configureNewMessageContainer(position);
+        configureMessageContainer(position);
         findViewById(android.R.id.content).post(new Runnable() {
             @Override
             public void run() {
                 getSupportFragmentManager().beginTransaction().replace(R.id
                                 .content_fragment_container,
-                        target).addToBackStack(null).commitAllowingStateLoss();
+                        mMessageContainerFragment).addToBackStack(null).commitAllowingStateLoss();
                 mTagGroupIndexStack.push(position);
                 setTagGroupConfigHeader(mTagGroupIndexStack.peek());
             }
@@ -438,7 +438,6 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         MessageReceivedNotification.getInstance().dismiss(mContext);
     }
 
-    //TODO In (some of) these methods the fragment will need to be notified to update the adapter
     @Override
     public void onTagCreated(ITagCard tag) {
         //Unused
@@ -448,12 +447,14 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
     public void onTagAdded(ITagCard tag) {
         SQLiteDAO.getInstance().addTagToGroupAndRemoveFromUngrouped(tag.getName(),
                 SQLiteDAO.getInstance().getTagGroups().get(mTagGroupIndexStack.peek()));
+        ((ITagCard.ITagChangedListener) mMessageContainerFragment).onTagAdded(tag);
     }
 
     @Override
     public void onTagRemoved(ITagCard tag) {
         SQLiteDAO.getInstance().removeTagFromGroup(tag.getName(),
                 SQLiteDAO.getInstance().getTagGroups().get(mTagGroupIndexStack.peek()));
+        ((ITagCard.ITagChangedListener) mMessageContainerFragment).onTagRemoved(tag);
     }
 
     @Override
