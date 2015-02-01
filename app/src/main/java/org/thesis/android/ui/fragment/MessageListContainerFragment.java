@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -60,15 +61,15 @@ public class MessageListContainerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_message_list_container, container,
+        final View v = inflater.inflate(R.layout.fragment_message_list_container, container,
                 Boolean.FALSE);
+
+        setUpRecyclerView(v);
+
+        return v;
     }
 
-    private void setUpRecyclerView() {
-        final View v = getView();
-        if (v == null)
-            throw new IllegalStateException("This call requires the fragment to already have an " +
-                    "inflated view.");
+    private void setUpRecyclerView(@NonNull View v) {
         final RecyclerView messageListRecyclerView = (RecyclerView) v.findViewById(R.id
                 .message_recycler_view);
         messageListRecyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
@@ -130,12 +131,5 @@ public class MessageListContainerFragment extends Fragment {
                 mRefreshLayout.setRefreshing(Boolean.FALSE);
             }
         }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setUpRecyclerView();
     }
 }
