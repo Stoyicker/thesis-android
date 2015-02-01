@@ -36,8 +36,8 @@ android {
             minifyEnabled Boolean.FALSE
             zipAlignEnabled Boolean.FALSE
             debuggable Boolean.TRUE
-            buildConfigField("String", "FILE_SERVER_ADDR", "\"192.168.1.18:56000\"")
-            buildConfigField("String", "GCM_SERVER_ADDR", "\"192.168.1.18:55000\"")
+            buildConfigField("String", "FILE_SERVER_ADDR", "\"10.42.0.1:56000\"")
+            buildConfigField("String", "GCM_SERVER_ADDR", "\"10.42.0.1:55000\"")
             buildConfigField("String", "GCM_SENDER_ID", "\"128297271029\"")
             signingConfig signingConfigs.debug
         }
