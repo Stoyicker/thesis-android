@@ -84,7 +84,6 @@ public class MessageListContainerFragment extends Fragment {
         messageListRecyclerView.setOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
             @Override
             public void onLoadMore(Integer currentPage) {
-                //TODO Infinite scroll support
                 mMessageListAdapter.showNextItemBatch();
             }
         });
