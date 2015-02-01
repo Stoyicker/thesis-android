@@ -27,4 +27,9 @@
     <dimen name="message_body_padding">10dp</dimen>
     <dimen name="message_tags_padding">10dp</dimen>
     <dimen name="message_body_text">16sp</dimen>
+    <dimen name="list_item_message_horizontal_padding">16dp</dimen>
+    <dimen name="list_item_message_vertical_padding">8dp</dimen>
+    <dimen name="list_item_message_shadow_height">2dp</dimen>
+    <dimen name="sender_letter_image_side">36dp</dimen>
+    <dimen name="message_list_sender_letter_to_sender_title_margin">16dp</dimen>
 </resources>

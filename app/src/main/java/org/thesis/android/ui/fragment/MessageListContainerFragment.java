@@ -132,12 +132,12 @@ public class MessageListContainerFragment extends Fragment implements ITagCard.I
 
     @Override
     public void onTagAdded(ITagCard tag) {
-        //TODO Notify adapter
+        mMessageListAdapter.addTagAndRefresh(tag.getName());
     }
 
     @Override
     public void onTagRemoved(ITagCard tag) {
-        //TODO Notify adapter
+        mMessageListAdapter.removeTagAndRefresh(tag.getName());
     }
 
     @Override

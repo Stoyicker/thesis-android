@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-          android:id="@+id/textview"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"/>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:cardview="http://schemas.android.com/apk/res-auto"
+                                    cardview:cardElevation="@dimen/list_item_message_shadow_height"
+                                    cardview:cardPreventCornerOverlap="true"
+                                    android:hapticFeedbackEnabled="true"
+                                    android:animateLayoutChanges="true"
+                                    android:foreground="?android:selectableItemBackground"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/list_item_message_vertical_padding"
+        android:paddingBottom="@dimen/list_item_message_vertical_padding"
+        android:paddingLeft="@dimen/list_item_message_horizontal_padding"
+        android:paddingRight="@dimen/list_item_message_horizontal_padding"
+        android:background="@android:color/white">
+
+        <TextView
+            android:id="@+id/circle_view"
+            style="@style/AppTheme.SenderGeneratedLetter"
+            android:layout_width="@dimen/sender_letter_image_side"
+            android:layout_height="@dimen/sender_letter_image_side"
+            android:background="@drawable/circle"
+            android:layout_marginRight="@dimen/message_list_sender_letter_to_sender_title_margin"
+            android:layout_marginEnd="@dimen/message_list_sender_letter_to_sender_title_margin"/>
+
+        <TextView
+            android:id="@+id/sender_view"
+            style="@style/AppTheme.SenderText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+</android.support.v7.widget.CardView>
