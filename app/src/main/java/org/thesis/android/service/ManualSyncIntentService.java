@@ -4,7 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 
-import org.thesis.android.dev.CLog;
+import org.thesis.android.devutil.CLog;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.receiver.GcmBroadcastReceiver;
 import org.thesis.android.ui.fragment.MessageListContainerFragment;

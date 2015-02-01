@@ -30,7 +30,7 @@ import org.json.JSONObject;
 import org.thesis.android.BuildConfig;
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
-import org.thesis.android.dev.CLog;
+import org.thesis.android.devutil.CLog;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.io.net.HTTPRequestsSingleton;
 import org.thesis.android.io.prefs.PreferenceAssistant;

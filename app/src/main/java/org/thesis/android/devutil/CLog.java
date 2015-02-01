@@ -1,4 +1,4 @@
-package org.thesis.android.dev;
+package org.thesis.android.devutil;
 
 import android.util.Log;
 

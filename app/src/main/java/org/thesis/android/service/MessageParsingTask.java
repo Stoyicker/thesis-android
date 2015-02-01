@@ -13,10 +13,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.thesis.android.BuildConfig;
-import org.thesis.android.dev.CLog;
+import org.thesis.android.devutil.CLog;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.io.net.HTTPRequestsSingleton;
+import org.thesis.android.notification.MessageReceivedNotification;
 import org.thesis.android.ui.fragment.MessageListContainerFragment;
+import org.thesis.android.util.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import java.util.List;
 class MessageParsingTask extends AsyncTask<Object, Void, ArrayList<String>> {
 
     private Context mContext;
+    private Boolean mIsRunningOnForeground;
 
     public MessageParsingTask(Context context) {
         mContext = context;
@@ -76,6 +79,9 @@ class MessageParsingTask extends AsyncTask<Object, Void, ArrayList<String>> {
 
             ret.add(WordUtils.capitalizeFully(tag));
         }
+
+        mIsRunningOnForeground = Utils.isRunningOnForeground(mContext);
+
         return ret;
     }
 
@@ -83,8 +89,9 @@ class MessageParsingTask extends AsyncTask<Object, Void, ArrayList<String>> {
     protected void onPostExecute(@Nullable ArrayList<String> tags) {
         if (tags != null) {
             broadcastSyncDone(tags);
-            if (!tags.isEmpty()) {
-                //TODO Show notification if it's not mine
+            if (!tags.isEmpty() && !mIsRunningOnForeground) {
+                //TODO ONLY IF IT IS NOT MINE
+                MessageReceivedNotification.getInstance().show(mContext);
             }
         }
     }

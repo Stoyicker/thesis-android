@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-import org.thesis.android.dev.CLog;
+import org.thesis.android.devutil.CLog;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.receiver.GcmBroadcastReceiver;
 

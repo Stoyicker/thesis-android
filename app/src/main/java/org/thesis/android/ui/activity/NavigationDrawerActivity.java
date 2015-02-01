@@ -30,9 +30,10 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import org.thesis.android.BuildConfig;
 import org.thesis.android.CApplication;
 import org.thesis.android.R;
-import org.thesis.android.dev.CLog;
+import org.thesis.android.devutil.CLog;
 import org.thesis.android.io.database.SQLiteDAO;
 import org.thesis.android.io.prefs.PreferenceAssistant;
+import org.thesis.android.notification.MessageReceivedNotification;
 import org.thesis.android.ui.adapter.NavigationDrawerAdapter;
 import org.thesis.android.ui.component.tag.ITagCard;
 import org.thesis.android.ui.component.tag.TagCloudCardExpand;
@@ -434,6 +435,7 @@ public class NavigationDrawerActivity extends ActionBarActivity implements
         super.onResume();
         handleGcmRegistration();
         setTagGroupConfigHeader(mTagGroupIndexStack.peek());
+        MessageReceivedNotification.getInstance().dismiss(mContext);
     }
 
     //TODO In (some of) these methods the fragment will need to be notified to update the adapter

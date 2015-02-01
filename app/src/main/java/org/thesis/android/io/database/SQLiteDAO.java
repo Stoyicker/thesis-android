@@ -11,7 +11,7 @@ import android.text.TextUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.thesis.android.BuildConfig;
 import org.thesis.android.R;
-import org.thesis.android.dev.CLog;
+import org.thesis.android.devutil.CLog;
 
 import java.util.LinkedList;
 import java.util.List;
