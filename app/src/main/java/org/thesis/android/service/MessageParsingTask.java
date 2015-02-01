@@ -29,6 +29,7 @@ class MessageParsingTask extends AsyncTask<Object, Void, ArrayList<String>> {
 
     private Context mContext;
     private Boolean mIsRunningOnForeground;
+    private final List<String> mNewIds = new LinkedList<>();
 
     public MessageParsingTask(Context context) {
         mContext = context;
@@ -59,22 +60,21 @@ class MessageParsingTask extends AsyncTask<Object, Void, ArrayList<String>> {
 
             final JSONObject jsonResp;
             final JSONArray jsonArray;
-            final List<String> messageIds = new LinkedList<>();
             try {
                 jsonResp = new JSONObject(response.body().string());
                 jsonArray = jsonResp.getJSONArray("messages");
                 for (Integer i = 0; i < jsonArray.length(); i++) {
-                    messageIds.add(jsonArray.getJSONObject(i).getString("msgId"));
+                    mNewIds.add(jsonArray.getJSONObject(i).getString("msgId"));
                 }
             } catch (JSONException | IOException e) {
                 CLog.wtf(e);
                 return null;
             }
 
-            CLog.i("Message ids received upon sync request: " + messageIds.toString());
+            CLog.i("Message ids received upon sync request: " + mNewIds.toString());
 
             final SQLiteDAO instance = SQLiteDAO.getInstance();
-            instance.addMessageIdsToTag(messageIds, tag);
+            instance.addMessageIdsToTag(mNewIds, tag);
             instance.setLastFetchedEpoch(tag, System.currentTimeMillis());
 
             ret.add(WordUtils.capitalizeFully(tag));
@@ -90,8 +90,13 @@ class MessageParsingTask extends AsyncTask<Object, Void, ArrayList<String>> {
         if (tags != null) {
             broadcastSyncDone(tags);
             if (!tags.isEmpty() && !mIsRunningOnForeground) {
-                //TODO ONLY IF IT IS NOT MINE
-                MessageReceivedNotification.getInstance().show(mContext);
+                final SQLiteDAO instance = SQLiteDAO.getInstance();
+                for (final String id : mNewIds) {
+                    if (!instance.isMessageIdMine(id)) {
+                        MessageReceivedNotification.getInstance().show(mContext);
+                        break;
+                    }
+                }
             }
         }
     }

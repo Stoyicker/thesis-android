@@ -175,7 +175,8 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         final SQLiteDatabase db = getReadableDatabase();
         synchronized (DB_LOCK) {
             db.beginTransaction();
-            Cursor allStorableNames = db.query(NAMES_TABLE_NAME, null, null, null, null, null, null);
+            final Cursor allStorableNames = db.query(NAMES_TABLE_NAME, null, null, null, null, null,
+                    null);
             if (allStorableNames != null && allStorableNames.moveToFirst()) {
                 do {
                     ret.add(mapStorableToName(allStorableNames));
@@ -195,7 +196,8 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         final SQLiteDatabase db = getReadableDatabase();
         synchronized (DB_LOCK) {
             db.beginTransaction();
-            Cursor allStorableGroups = db.query(GROUPS_TABLE_NAME, null, null, null, null, null,
+            final Cursor allStorableGroups = db.query(GROUPS_TABLE_NAME, null, null, null, null,
+                    null,
                     null);
             if (allStorableGroups != null && allStorableGroups.moveToFirst()) {
                 do {
@@ -216,7 +218,8 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         final SQLiteDatabase db = getReadableDatabase();
         synchronized (DB_LOCK) {
             db.beginTransaction();
-            Cursor allStorableTags = db.query(groupName.toUpperCase(Locale.ENGLISH), null, null,
+            final Cursor allStorableTags = db.query(groupName.toUpperCase(Locale.ENGLISH), null,
+                    null,
                     null, null, null,
                     null);
             if (allStorableTags != null && allStorableTags.moveToFirst()) {
@@ -333,7 +336,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
         synchronized (DB_LOCK) {
             db.beginTransaction();
-            Cursor allTablesMatching = db.query("sqlite_master", null,
+            final Cursor allTablesMatching = db.query("sqlite_master", null,
                     "type = 'table'", null,
                     null,
                     null,
@@ -343,7 +346,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
                     final String tableName = mapSqliteMasterStorableToUpperCaseTagName
                             (allTablesMatching);
                     try {
-                        Cursor c = db.query(tableName, null, TABLE_KEY_TAG_NAME + " = '" +
+                        final Cursor c = db.query(tableName, null, TABLE_KEY_TAG_NAME + " = '" +
                                 upperCaseName + "'", null, null, null, null);
                         if (c != null && c.getCount() > 0) {
                             c.close();
@@ -408,7 +411,7 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
     }
 
     public void markMessageIdAsMine(String messageId) {
-        SQLiteDatabase db = getWritableDatabase();
+        final SQLiteDatabase db = getWritableDatabase();
         ContentValues x = new ContentValues();
         x.put(TABLE_KEY_MESSAGE_ID, messageId);
         synchronized (DB_LOCK) {
@@ -417,6 +420,22 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
             db.setTransactionSuccessful();
             db.endTransaction();
         }
+    }
+
+    public Boolean isMessageIdMine(String messageId) {
+        final SQLiteDatabase db = getReadableDatabase();
+        final Boolean ret;
+
+        synchronized (DB_LOCK) {
+            db.beginTransaction();
+            final Integer count = db.delete(MY_MESSAGES_TABLE_NAME,
+                    TABLE_KEY_MESSAGE_ID + " = ?", new String[]{messageId});
+            ret = count != 0;
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }
+
+        return ret;
     }
 
     public Long getLastFetchedEpoch(String tagName) {
