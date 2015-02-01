@@ -164,7 +164,8 @@ public class MessageListContainerFragment extends Fragment implements ITagCard.I
                     mMessageListAdapter.requestDataLoad();
                 else
                     mRefreshLayout.setRefreshing(Boolean.FALSE);
-            }
+            } else
+                mRefreshLayout.setRefreshing(Boolean.FALSE);
         }
     }
 }

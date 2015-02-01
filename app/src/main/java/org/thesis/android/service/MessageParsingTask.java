@@ -88,8 +88,8 @@ class MessageParsingTask extends AsyncTask<Object, Void, ArrayList<String>> {
 
     @Override
     protected void onPostExecute(@Nullable ArrayList<String> tags) {
+        broadcastSyncDone(tags);
         if (tags != null) {
-            broadcastSyncDone(tags);
             if (!tags.isEmpty() && !mIsRunningOnForeground) {
                 final SQLiteDAO instance = SQLiteDAO.getInstance();
                 for (final String id : mNewIds) {
