@@ -32,4 +32,7 @@
     <dimen name="list_item_message_shadow_height">2dp</dimen>
     <dimen name="sender_letter_image_side">36dp</dimen>
     <dimen name="message_list_sender_letter_to_sender_title_margin">16dp</dimen>
+    <dimen name="sender_letter">22sp</dimen>
+    <dimen name="sender_name">16sp</dimen>
+    <dimen name="message_list_sender_title_to_body_margin">32dp</dimen>
 </resources>

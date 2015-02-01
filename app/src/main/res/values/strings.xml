@@ -45,4 +45,5 @@
     <string name="unsubscription_error_pattern">Couldn\'t unsubscribe from tag %s</string>
     <string name="message_list_adapter_empty">No messages.</string>
     <string name="new_messages_notification">New message(s)!</string>
+    <string name="has_attachments">Has attachments</string>
 </resources>

@@ -92,7 +92,7 @@ public class MessageListContainerFragment extends Fragment implements ITagCard.I
         final View emptyView = v.findViewById(android.R.id.empty);
         messageListRecyclerView.setHasFixedSize(Boolean.FALSE);
         mMessageListAdapter =
-                new MessageListAdapter(mContext, emptyView);
+                new MessageListAdapter(emptyView, SQLiteDAO.getInstance().getGroupTags(mGroupName));
         messageListRecyclerView.setAdapter(mMessageListAdapter);
         messageListRecyclerView.setItemAnimator(new DefaultItemAnimator());
         messageListRecyclerView.setOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
