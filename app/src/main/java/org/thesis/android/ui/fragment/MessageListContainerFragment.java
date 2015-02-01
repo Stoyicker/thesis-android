@@ -91,8 +91,10 @@ public class MessageListContainerFragment extends Fragment implements ITagCard.I
         messageListRecyclerView.setLayoutManager(layoutManager = new LinearLayoutManager(mContext));
         final View emptyView = v.findViewById(android.R.id.empty);
         messageListRecyclerView.setHasFixedSize(Boolean.FALSE);
+        mRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.refreshable_layout);
         mMessageListAdapter =
-                new MessageListAdapter(emptyView, SQLiteDAO.getInstance().getGroupTags(mGroupName));
+                new MessageListAdapter(emptyView, SQLiteDAO.getInstance().getGroupTags
+                        (mGroupName), mRefreshLayout);
         messageListRecyclerView.setAdapter(mMessageListAdapter);
         messageListRecyclerView.setItemAnimator(new DefaultItemAnimator());
         messageListRecyclerView.setOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
@@ -101,7 +103,6 @@ public class MessageListContainerFragment extends Fragment implements ITagCard.I
                 mMessageListAdapter.showNextItemBatch();
             }
         });
-        mRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.refreshable_layout);
         ((ChainableSwipeRefreshLayout) mRefreshLayout).setRecyclerView(messageListRecyclerView);
         mRefreshLayout.setColorSchemeResources(R.color.material_deep_purple_900,
                 R.color.material_deep_purple_900);
@@ -161,7 +162,8 @@ public class MessageListContainerFragment extends Fragment implements ITagCard.I
                 }
                 if (!Collections.disjoint(l1, l2))
                     mMessageListAdapter.requestDataLoad();
-                mRefreshLayout.setRefreshing(Boolean.FALSE);
+                else
+                    mRefreshLayout.setRefreshing(Boolean.FALSE);
             }
         }
     }

@@ -11,7 +11,6 @@ import android.text.TextUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.thesis.android.BuildConfig;
 import org.thesis.android.R;
-import org.thesis.android.datamodel.MessageWrapper;
 import org.thesis.android.devutil.CLog;
 
 import java.util.Collection;
@@ -169,6 +168,10 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
     private Long mapStorableToTimestamp(Cursor epochCursor) {
         return (long) epochCursor.getInt(epochCursor.getColumnIndex
                 (TABLE_KEY_EPOCH));
+    }
+
+    private String mapStorableToMessageId(Cursor messageCursor) {
+        return messageCursor.getString(messageCursor.getColumnIndex(TABLE_KEY_MESSAGE_ID));
     }
 
     public List<String> getNames() {
@@ -507,7 +510,26 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         }
     }
 
-    public Collection<MessageWrapper> getTagMessages(@NonNull final String tagName) {
-        return null;
+    public Collection<String> getTagMessageIds(@NonNull final String tagName) {
+        final List<String> ret = new LinkedList<>();
+
+        final SQLiteDatabase db = getReadableDatabase();
+        synchronized (DB_LOCK) {
+            db.beginTransaction();
+            final Cursor allStorableIds = db.query(tagName.toUpperCase(Locale.ENGLISH), null,
+                    null,
+                    null, null, null,
+                    null);
+            if (allStorableIds != null && allStorableIds.moveToFirst()) {
+                do {
+                    ret.add(mapStorableToMessageId(allStorableIds));
+                } while (allStorableIds.moveToNext());
+            }
+            if (allStorableIds != null)
+                allStorableIds.close();
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }
+        return ret;
     }
 }

@@ -1,6 +1,8 @@
 package org.thesis.android.ui.adapter;
 
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -12,15 +14,19 @@ import org.thesis.android.R;
 import org.thesis.android.datamodel.MessageWrapper;
 import org.thesis.android.io.database.SQLiteDAO;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.ViewHolder> {
 
     private final List<MessageWrapper> mData = new LinkedList<>();
-    private final List<String> mTags;
+    private final Collection<String> mTags;
     private final View mEmptyView;
-    private final Object ADAPTER_RELOAD_LOCK = new Object();
+    private final SwipeRefreshLayout mSwipeRefreshLayout;
     private static final Integer NEW_ITEM_BATCH_AMOUNT = 5;
     private Integer mVisibleItems = 10;
 
@@ -30,9 +36,11 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     }
 
     public MessageListAdapter(@NonNull final View emptyView,
-                              @NonNull final List<String> tags) {
+                              @NonNull final Collection<String> tags,
+                              @NonNull final SwipeRefreshLayout swipeRefreshLayout) {
         mEmptyView = emptyView;
         mTags = tags;
+        mSwipeRefreshLayout = swipeRefreshLayout;
         requestDataLoad();
     }
 
@@ -84,13 +92,8 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     }
 
     public void requestDataLoad() {
-        synchronized (ADAPTER_RELOAD_LOCK) {
-            mData.clear();
-            for (String x : mTags)
-                mData.addAll(SQLiteDAO.getInstance().getTagMessages(x));
-            refreshEmptyViewVisibility();
-            notifyDataSetChanged();
-        }
+        new MessageDownloaderTask(this, mTags, mData, mSwipeRefreshLayout).executeOnExecutor
+                (Executors.newSingleThreadExecutor());
     }
 
     private void refreshEmptyViewVisibility() {
@@ -111,12 +114,22 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
             .OnClickListener {
 
         private final TextView circleView, senderView, bodyView;
+        private final View attachmentImageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             circleView = (TextView) itemView.findViewById(R.id.circle_view);
             senderView = (TextView) itemView.findViewById(R.id.sender_view);
             bodyView = (TextView) itemView.findViewById(R.id.body_view);
+            attachmentImageView = itemView.findViewById(R.id.attachment_view);
+            if (attachmentImageView != null)
+                attachmentImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //TODO Attachment download onClickListener
+                    }
+                });
         }
 
         private void setSender(@NonNull final String senderName) {
@@ -133,7 +146,51 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
         @Override
         public void onClick(View v) {
+            //TODO List item onClickListener
+        }
+    }
 
+    private static class MessageDownloaderTask extends AsyncTask<Void, Void, Collection<MessageWrapper>> {
+
+        private final MessageListAdapter mAdapter;
+        private final Collection<MessageWrapper> mAdapterData;
+        private final Collection<String> mTags;
+        private final SwipeRefreshLayout mRefreshLayout;
+
+        private MessageDownloaderTask(@NonNull final MessageListAdapter adapter,
+                                      @NonNull final Collection<String> tags,
+                                      @NonNull final Collection<MessageWrapper> adapterData,
+                                      @NonNull final SwipeRefreshLayout swipeRefreshLayout) {
+            mAdapter = adapter;
+            mTags = tags;
+            mAdapterData = adapterData;
+            mRefreshLayout = swipeRefreshLayout;
+        }
+
+        @Override
+        protected synchronized Collection<MessageWrapper> doInBackground(Void... params) {
+            List<MessageWrapper> messages = new LinkedList<>();
+            final SQLiteDAO sqLiteDAO = SQLiteDAO.getInstance();
+            for (final String tag : mTags) {
+                final Collection<String> idsInThisTag = sqLiteDAO.getTagMessageIds(tag);
+                for (final String id : idsInThisTag)
+                    //TODO Replace this for the real message information
+                    messages.add(new MessageWrapper("Sender of " + id, "body of " + id,
+                            Boolean.FALSE, Arrays.asList("TAG1", "TAG2")));
+            }
+            Collections.reverse(messages);
+            return messages;
+        }
+
+        @Override
+        protected void onPostExecute(@NonNull final Collection<MessageWrapper> messages) {
+            if (!messages.isEmpty()) {
+                mAdapterData.clear();
+                mAdapterData.addAll(messages);
+                mAdapter.refreshEmptyViewVisibility();
+                mAdapter.notifyDataSetChanged();
+            }
+            mRefreshLayout.setRefreshing(Boolean.FALSE);
         }
     }
 }
