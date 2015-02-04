@@ -48,7 +48,7 @@ class MessageParsingTask extends AsyncTask<Object, Void, ArrayList<String>> {
         for (String tag : tags) {
             final Request messageIdListRequest = new Request.Builder().url(
                     HTTPRequestsSingleton.httpEncodeAndStringify(MESSAGE_SERVER_ADDR,
-                            TAGS_SERVICE_PATH, "epoch=" + mLastSyncEpoch + "&tags=" + tag))
+                            TAGS_SERVICE_PATH, "epoch=" + mLastSyncEpoch, "tags=" + tag))
                     .get().build();
 
             final Response response = HTTPRequestsSingleton.getInstance().performRequest
@@ -101,6 +101,10 @@ class MessageParsingTask extends AsyncTask<Object, Void, ArrayList<String>> {
             }
         }
     }
+
+    //TODO Fix a bug where tags that have been subscribed to once can't be re-subscribed to
+    //TODO Fix a bug where the messages are not being refreshed when a tag is supressed (or at
+    // least when going from tag L to no tags)
 
     public void broadcastSyncDone(ArrayList<String> tags) {
         Intent intent = new Intent();

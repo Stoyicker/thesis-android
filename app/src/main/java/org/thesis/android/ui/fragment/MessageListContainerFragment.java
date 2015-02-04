@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,6 +25,7 @@ import org.thesis.android.service.ManualSyncIntentService;
 import org.thesis.android.ui.adapter.MessageListAdapter;
 import org.thesis.android.ui.component.ChainableSwipeRefreshLayout;
 import org.thesis.android.ui.component.EndlessRecyclerOnScrollListener;
+import org.thesis.android.ui.component.rvanims.SlideInOutBottomItemAnimator;
 import org.thesis.android.ui.component.tag.ITagCard;
 
 import java.util.ArrayList;
@@ -96,7 +96,7 @@ public class MessageListContainerFragment extends Fragment implements ITagCard.I
                 new MessageListAdapter(emptyView, SQLiteDAO.getInstance().getGroupTags
                         (mGroupName), mRefreshLayout);
         messageListRecyclerView.setAdapter(mMessageListAdapter);
-        messageListRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        messageListRecyclerView.setItemAnimator(new SlideInOutBottomItemAnimator(messageListRecyclerView));
         messageListRecyclerView.setOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
             @Override
             public void onLoadMore(Integer currentPage) {
@@ -120,8 +120,7 @@ public class MessageListContainerFragment extends Fragment implements ITagCard.I
 
                 ComponentName comp = new ComponentName(mContext.getPackageName(),
                         ManualSyncIntentService.class.getName());
-                startWakefulService(mContext,
-                        (intent.setComponent(comp)));
+                startWakefulService(mContext, intent.setComponent(comp));
             }
         });
     }

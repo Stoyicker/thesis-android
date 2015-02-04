@@ -14,6 +14,7 @@ import org.thesis.android.R;
 import org.thesis.android.devutil.CLog;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -179,7 +180,6 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
         final SQLiteDatabase db = getReadableDatabase();
         synchronized (DB_LOCK) {
-            db.beginTransaction();
             final Cursor allStorableNames = db.query(NAMES_TABLE_NAME, null, null, null, null, null,
                     null);
             if (allStorableNames != null && allStorableNames.moveToFirst()) {
@@ -189,8 +189,6 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
             }
             if (allStorableNames != null)
                 allStorableNames.close();
-            db.setTransactionSuccessful();
-            db.endTransaction();
         }
         return ret;
     }
@@ -200,7 +198,6 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
         final SQLiteDatabase db = getReadableDatabase();
         synchronized (DB_LOCK) {
-            db.beginTransaction();
             final Cursor allStorableGroups = db.query(GROUPS_TABLE_NAME, null, null, null, null,
                     null,
                     null);
@@ -211,8 +208,6 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
             }
             if (allStorableGroups != null)
                 allStorableGroups.close();
-            db.setTransactionSuccessful();
-            db.endTransaction();
         }
         return ret;
     }
@@ -222,7 +217,6 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
         final SQLiteDatabase db = getReadableDatabase();
         synchronized (DB_LOCK) {
-            db.beginTransaction();
             final Cursor allStorableTags = db.query(groupName.toUpperCase(Locale.ENGLISH), null,
                     null,
                     null, null, null,
@@ -234,8 +228,6 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
             }
             if (allStorableTags != null)
                 allStorableTags.close();
-            db.setTransactionSuccessful();
-            db.endTransaction();
         }
         return ret;
     }
@@ -340,7 +332,6 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
             return Boolean.FALSE;
 
         synchronized (DB_LOCK) {
-            db.beginTransaction();
             final Cursor allTablesMatching = db.query("sqlite_master", null,
                     "type = 'table'", null,
                     null,
@@ -353,15 +344,14 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
                     try {
                         final Cursor c = db.query(tableName, null, TABLE_KEY_TAG_NAME + " = '" +
                                 upperCaseName + "'", null, null, null, null);
-                        if (c != null && c.getCount() > 0) {
+                        if (c != null) {
+                            final Integer count = c.getCount();
                             c.close();
-                            allTablesMatching.close();
-                            db.setTransactionSuccessful();
-                            db.endTransaction();
-                            return Boolean.FALSE;
+                            if (count > 0) {
+                                allTablesMatching.close();
+                                return Boolean.FALSE;
+                            }
                         }
-                        if (c != null)
-                            c.close();
                     } catch (SQLiteException ignored) {
                         //A few tables don't store tags so they'll throw an exception,
                         // but it's fine
@@ -370,8 +360,6 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
                 } while (allTablesMatching.moveToNext());
                 allTablesMatching.close();
             }
-            db.setTransactionSuccessful();
-            db.endTransaction();
             return Boolean.TRUE;
         }
     }
@@ -432,12 +420,9 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
         final Boolean ret;
 
         synchronized (DB_LOCK) {
-            db.beginTransaction();
             final Integer count = db.delete(MY_MESSAGES_TABLE_NAME,
                     TABLE_KEY_MESSAGE_ID + " = ?", new String[]{messageId});
             ret = count != 0;
-            db.setTransactionSuccessful();
-            db.endTransaction();
         }
 
         return ret;
@@ -451,7 +436,6 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
 
         final SQLiteDatabase db = getReadableDatabase();
         synchronized (DB_LOCK) {
-            db.beginTransaction();
             final Cursor epochCursor = db.query(FETCHED_STAMPS_TABLE_NAME, new String[]{TABLE_KEY_EPOCH},
                     TABLE_KEY_TAG_NAME + " = ?",
                     new String[]{upperCaseTagName}, null, null,
@@ -461,8 +445,6 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
             }
             if (epochCursor != null)
                 epochCursor.close();
-            db.setTransactionSuccessful();
-            db.endTransaction();
         }
         return ret;
     }
@@ -511,11 +493,11 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
     }
 
     public Collection<String> getTagMessageIds(@NonNull final String tagName) {
-        final List<String> ret = new LinkedList<>();
-
         final SQLiteDatabase db = getReadableDatabase();
+        final List<String> ret = new LinkedList<>();
         synchronized (DB_LOCK) {
-            db.beginTransaction();
+            if (!tableExists(tagName, db))
+                return Collections.emptyList();
             final Cursor allStorableIds = db.query(tagName.toUpperCase(Locale.ENGLISH), null,
                     null,
                     null, null, null,
@@ -527,9 +509,20 @@ public class SQLiteDAO extends RobustSQLiteOpenHelper {
             }
             if (allStorableIds != null)
                 allStorableIds.close();
-            db.setTransactionSuccessful();
-            db.endTransaction();
         }
         return ret;
+    }
+
+    private Boolean tableExists(@NonNull final String tableName, @NonNull final SQLiteDatabase readableDatabase) {
+        final Cursor cursor = readableDatabase.rawQuery("select DISTINCT tbl_name from " +
+                "sqlite_master where tbl_name = '" + tableName + "'", null);
+        if (cursor != null) {
+            if (cursor.getCount() > 0) {
+                cursor.close();
+                return Boolean.TRUE;
+            }
+            cursor.close();
+        }
+        return Boolean.FALSE;
     }
 }

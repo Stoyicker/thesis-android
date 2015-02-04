@@ -80,7 +80,8 @@ public abstract class SubscriptionManager {
                     BuildConfig.GCM_SERVER_ADDR,
                     "/tags",
                     "type=" + (mOperationType == SubscriptionOperationType.SUBSCRIBE ?
-                            "subscribe" : "unsubscribe") + "&tags=" + mTag.getName() + "&id=" + deviceId))
+                            "subscribe" : "unsubscribe"), "tags=" + mTag.getName(), "id=" +
+                            deviceId))
                     .post(null).build();
 
             final Response response = HTTPRequestsSingleton.getInstance()

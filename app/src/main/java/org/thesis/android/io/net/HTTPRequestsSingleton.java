@@ -2,6 +2,7 @@ package org.thesis.android.io.net;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -41,7 +42,8 @@ public final class HTTPRequestsSingleton {
         return ret;
     }
 
-    public static String httpEncodeAndStringify(String hostWithPort, String path, String query) {
+    public static String httpEncodeAndStringify(@NonNull String hostWithPort, @NonNull String path,
+                                                @Nullable String... params) {
         final String host;
         final Integer port;
         final StringTokenizer tokenizer = new StringTokenizer(hostWithPort, ":");
@@ -54,8 +56,12 @@ public final class HTTPRequestsSingleton {
 
         final URI uri;
 
+        final String cleanParams;
+
+        cleanParams = params == null ? "" : TextUtils.join("&", params);
+
         try {
-            uri = new URI("http", null, host, port, path, query, null);
+            uri = new URI("http", null, host, port, path, cleanParams, null);
         } catch (URISyntaxException e) {
             //Should never happen
             CLog.wtf(e);

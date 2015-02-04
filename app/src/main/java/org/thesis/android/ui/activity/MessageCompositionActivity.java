@@ -293,7 +293,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                         "charset=UTF-8"), bodyContents.toString());
                 final Request messageBodyRequest = new Request.Builder().url(
                         HTTPRequestsSingleton.httpEncodeAndStringify(MESSAGE_SERVER_ADDR,
-                                MESSAGE_BODY_SERVICE_PATH, ""))
+                                MESSAGE_BODY_SERVICE_PATH))
                         .post(body).build();
 
                 final Response bodyResponse = HTTPRequestsSingleton.getInstance().performRequest
@@ -343,7 +343,7 @@ public class MessageCompositionActivity extends ActionBarActivity implements ITa
                                     MESSAGE_SERVER_ADDR,
                                     MESSAGE_ATTACHMENTS_SERVICE_PATH,
                                     "filename=" + f
-                                            .getName() + "&messageid" +
+                                            .getName(), "messageid" +
                                             "=" + messageId
                             ))
                             .post(multipartBody)

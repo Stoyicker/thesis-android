@@ -10,11 +10,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.thesis.android.BuildConfig;
 import org.thesis.android.R;
 import org.thesis.android.datamodel.MessageWrapper;
+import org.thesis.android.devutil.CLog;
 import org.thesis.android.io.database.SQLiteDAO;
+import org.thesis.android.io.net.HTTPRequestsSingleton;
 
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -127,7 +136,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
                 attachmentImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //TODO Attachment download onClickListener
+                        //TODO Attachment download onClickListener with DownloadManager
                     }
                 });
         }
@@ -173,10 +182,45 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
             final SQLiteDAO sqLiteDAO = SQLiteDAO.getInstance();
             for (final String tag : mTags) {
                 final Collection<String> idsInThisTag = sqLiteDAO.getTagMessageIds(tag);
-                for (final String id : idsInThisTag)
-                    //TODO Replace this for the real message information
-                    messages.add(new MessageWrapper("Sender of " + id, "body of " + id,
-                            Boolean.FALSE, Arrays.asList("TAG1", "TAG2")));
+                for (final String id : idsInThisTag) {
+                    final Request messageRequest = new Request.Builder().get().url
+                            (HTTPRequestsSingleton.httpEncodeAndStringify(BuildConfig
+                                            .FILE_SERVER_ADDR,
+                                    "/messages",
+                                    "messageid=" + id)).build();
+
+                    final Response response = HTTPRequestsSingleton.getInstance().performRequest
+                            (messageRequest);
+
+                    if (response != null && response.isSuccessful()) {
+                        try {
+
+                            final JSONObject object = new JSONObject(response.body().string());
+                            final JSONArray array = object.getJSONArray("tags");
+                            final String[] tags = new String[array.length()];
+                            for (int i = 0; i < array.length(); i++) {
+                                tags[i] = array.getString(i);
+                            }
+                            String regularBody = null, sketchBoard = null;
+                            if (object.getBoolean("has_Normal")) {
+                                regularBody = object.getString("content_html");
+                            }
+                            if (object.getBoolean("has_SketchBoard")) {
+                                sketchBoard = object.getString("sketchboard_content_html");
+                            }
+
+                            if (regularBody == null && sketchBoard == null)
+                                throw new JSONException("No body found, of any types.");
+
+                            messages.add(new MessageWrapper(object.getString("sender"),
+                                    regularBody != null ? regularBody : sketchBoard,
+                                    object.getBoolean("has_attachments"),
+                                    tags));
+                        } catch (JSONException | IOException e) {
+                            CLog.wtf(e);
+                        }
+                    }
+                }
             }
             Collections.reverse(messages);
             return messages;

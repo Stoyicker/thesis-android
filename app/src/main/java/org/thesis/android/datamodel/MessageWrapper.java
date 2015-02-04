@@ -2,7 +2,9 @@ package org.thesis.android.datamodel;
 
 import android.support.annotation.NonNull;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public final class MessageWrapper {
 
@@ -12,11 +14,11 @@ public final class MessageWrapper {
 
     public MessageWrapper(@NonNull final String sender, @NonNull final String body,
                           @NonNull final Boolean hasAttachments,
-                          @NonNull final Collection<String> tags) {
+                          final String... tags) {
         this.sender = sender;
         this.body = body;
         this.mHasAttachments = hasAttachments;
-        this.mTags = tags;
+        this.mTags = tags == null ? Collections.<String>emptyList() : Arrays.asList(tags);
     }
 
     public String getSender() {

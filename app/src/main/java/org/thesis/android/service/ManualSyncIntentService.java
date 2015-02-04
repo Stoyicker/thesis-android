@@ -33,11 +33,16 @@ public class ManualSyncIntentService extends IntentService {
             for (String tag : tagList) {
                 epochs.add(instance.getLastFetchedEpoch(tag));
             }
-            Long lastSyncEpoch = Collections.min(epochs);
+            Long lastSyncEpoch;
+            if (!epochs.isEmpty()) {
+                lastSyncEpoch = Collections.min(epochs);
+            } else
+                lastSyncEpoch = -1L;
             lastSyncEpoch = lastSyncEpoch == -1 ? 0 : lastSyncEpoch;
             new MessageParsingTask(getApplicationContext()).executeOnExecutor(Executors
                             .newSingleThreadExecutor(),
                     lastSyncEpoch, tagList);
+
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);
